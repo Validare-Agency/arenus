@@ -71,7 +71,7 @@
         "enable_sticky_header": "always",
         "color_scheme_top": "scheme-1",
         "color_scheme_transparent": "scheme-6",
-        "transparent_pages": "index, collection, ambassadors, about-us, contact, employees",
+        "transparent_pages": "index, collection, ambassadors, about-us, contact, employees", 
         "transparent_color_scheme": "default"
       }
     }
