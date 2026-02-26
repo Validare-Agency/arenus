@@ -1,0 +1,347 @@
+{%- comment -%}
+  About Us — Content section
+  Renders: rich text body, sub-heading + sub-body, YouTube embeds, hashtag.
+{%- endcomment -%}
+
+<div
+  id="ArenusAboutContent-{{ section.id }}"
+  class="arenus-auc"
+  style="
+    --arenus-auc-bg: {{ section.settings.background_color }};
+    --arenus-auc-text: {{ section.settings.text_color }};
+    --arenus-auc-link: {{ section.settings.link_color }};
+    --arenus-auc-pt: {{ section.settings.padding_top }}px;
+    --arenus-auc-pb: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="arenus-auc__inner">
+
+    {%- comment -%} Main rich text body {%- endcomment -%}
+    {%- if section.settings.content != blank -%}
+      <div class="arenus-auc__richtext">
+        {{ section.settings.content }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Sub-heading {%- endcomment -%}
+    {%- if section.settings.sub_heading != blank -%}
+      <h2 class="arenus-auc__sub-heading">{{ section.settings.sub_heading }}</h2>
+    {%- endif -%}
+
+    {%- comment -%} Sub-body rich text {%- endcomment -%}
+    {%- if section.settings.sub_content != blank -%}
+      <div class="arenus-auc__richtext">
+        {{ section.settings.sub_content }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} YouTube video embeds {%- endcomment -%}
+    {%- assign has_video_1 = false -%}
+    {%- assign has_video_2 = false -%}
+
+    {%- if section.settings.video_url_1 != blank -%}
+      {%- assign vid1 = section.settings.video_url_1 | default: '' -%}
+      {%- assign vid1_id = '' -%}
+      {%- if vid1 contains 'youtube.com/watch' -%}
+        {%- assign vid1_id = vid1 | split: 'v=' | last | split: '&' | first -%}
+      {%- elsif vid1 contains 'youtu.be/' -%}
+        {%- assign vid1_id = vid1 | split: 'youtu.be/' | last | split: '?' | first -%}
+      {%- elsif vid1 contains 'youtube.com/embed/' -%}
+        {%- assign vid1_id = vid1 | split: '/embed/' | last | split: '?' | first -%}
+      {%- endif -%}
+      {%- if vid1_id != '' -%}
+        {%- assign has_video_1 = true -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if section.settings.video_url_2 != blank -%}
+      {%- assign vid2 = section.settings.video_url_2 | default: '' -%}
+      {%- assign vid2_id = '' -%}
+      {%- if vid2 contains 'youtube.com/watch' -%}
+        {%- assign vid2_id = vid2 | split: 'v=' | last | split: '&' | first -%}
+      {%- elsif vid2 contains 'youtu.be/' -%}
+        {%- assign vid2_id = vid2 | split: 'youtu.be/' | last | split: '?' | first -%}
+      {%- elsif vid2 contains 'youtube.com/embed/' -%}
+        {%- assign vid2_id = vid2 | split: '/embed/' | last | split: '?' | first -%}
+      {%- endif -%}
+      {%- if vid2_id != '' -%}
+        {%- assign has_video_2 = true -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if has_video_1 or has_video_2 -%}
+      <div class="arenus-auc__videos">
+        {%- if has_video_1 -%}
+          <div class="arenus-auc__video">
+            <iframe
+              src="https://www.youtube.com/embed/{{ vid1_id }}"
+              title="{{ section.settings.sub_heading | default: 'Video' }}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        {%- endif -%}
+        {%- if has_video_2 -%}
+          <div class="arenus-auc__video">
+            <iframe
+              src="https://www.youtube.com/embed/{{ vid2_id }}"
+              title="{{ section.settings.sub_heading | default: 'Video' }} 2"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Hashtag text {%- endcomment -%}
+    {%- if section.settings.hashtag_text != blank -%}
+      <p class="arenus-auc__hashtag">{{ section.settings.hashtag_text }}</p>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus About Us Content — Mobile-first ===== */
+
+  .arenus-auc {
+    background-color: var(--arenus-auc-bg, #fff);
+    color: var(--arenus-auc-text, #000);
+    padding: var(--arenus-auc-pt, 40px) 20px var(--arenus-auc-pb, 40px);
+  }
+
+  .arenus-auc__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Rich text ── */
+  .arenus-auc__richtext {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+  }
+
+  .arenus-auc__richtext p {
+    margin: 0 0 0.5em;
+  }
+
+  .arenus-auc__richtext p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arenus-auc__richtext a {
+    color: var(--arenus-auc-link, currentColor);
+    text-decoration: underline;
+  }
+
+  .arenus-auc__richtext strong,
+  .arenus-auc__richtext b {
+    font-weight: 700;
+  }
+
+  /* ── Sub-heading ── */
+  .arenus-auc__sub-heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.48px;
+    margin: 0;
+  }
+
+  /* ── Video embeds ── */
+  .arenus-auc__videos {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arenus-auc__video {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+  }
+
+  .arenus-auc__video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* ── Hashtag ── */
+  .arenus-auc__hashtag {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.48px;
+    margin: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-auc {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
+    .arenus-auc__richtext {
+      font-size: 20px;
+    }
+
+    .arenus-auc__inner {
+      max-width: 905px;
+      margin: 0 auto;
+    }
+
+    .arenus-auc__sub-heading {
+      font-size: 32px;
+    }
+
+    .arenus-auc__videos {
+      flex-direction: row;
+    }
+
+    .arenus-auc__video {
+      flex: 1;
+    }
+
+    .arenus-auc__hashtag {
+      font-size: 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Us Content",
+  "tag": "section",
+  "class": "arenus-auc-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main content"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Body text"
+    },
+    {
+      "type": "header",
+      "content": "Sub-section"
+    },
+    {
+      "type": "text",
+      "id": "sub_heading",
+      "label": "Sub-heading",
+      "default": "Ride for a Green World"
+    },
+    {
+      "type": "richtext",
+      "id": "sub_content",
+      "label": "Sub-section text"
+    },
+    {
+      "type": "header",
+      "content": "Videos"
+    },
+    {
+      "type": "url",
+      "id": "video_url_1",
+      "label": "YouTube video URL 1"
+    },
+    {
+      "type": "url",
+      "id": "video_url_2",
+      "label": "YouTube video URL 2"
+    },
+    {
+      "type": "header",
+      "content": "Hashtag"
+    },
+    {
+      "type": "text",
+      "id": "hashtag_text",
+      "label": "Hashtag text",
+      "default": "#SHAREYOURLEGACY"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Us Content",
+      "category": "Text",
+      "settings": {
+        "sub_heading": "Ride for a Green World",
+        "hashtag_text": "#SHAREYOURLEGACY",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "link_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    }
+  ]
+}
+{% endschema %}

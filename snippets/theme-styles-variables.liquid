@@ -123,6 +123,15 @@
     endunless
   %}
 
+  /* Custom font: Momo Trust Sans (variable) */
+  @font-face {
+    font-family: 'Momo Trust Sans';
+    src: url('https://cdn.shopify.com/s/files/1/0708/7403/8342/files/MomoTrustSans-VariableFont_wght.woff2?v=1771901496') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
   :root {
     /* Page Layout */
     --sidebar-width: 25rem;
@@ -155,9 +164,9 @@
     --letter-spacing-md: 0.13em;
 
     /* Font families */
-    --font-body--family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
-    --font-body--style: {{ settings.type_body_font.style }};
-    --font-body--weight: {{ settings.type_body_font.weight }};
+    --font-body--family: 'Momo Trust Sans', {{ settings.type_body_font.fallback_families }};
+    --font-body--style: normal;
+    --font-body--weight: 400;
     --font-subheading--family: {{ settings.type_subheading_font.family }}, {{ settings.type_subheading_font.fallback_families }};
     --font-subheading--style: {{ settings.type_subheading_font.style }};
     --font-subheading--weight: {{ settings.type_subheading_font.weight }};

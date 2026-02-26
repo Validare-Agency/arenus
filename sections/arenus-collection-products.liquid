@@ -1,0 +1,1705 @@
+{%- comment -%}
+  Arenus Collection Products — Grid with tag filtering, quick-add-to-cart, and AJAX "Load More"
+{%- endcomment -%}
+
+{%- liquid
+  assign products_per_page = section.settings.products_per_page
+  assign image_bg = section.settings.image_background_color
+-%}
+
+<div
+  id="ArenusCollectionProducts-{{ section.id }}"
+  class="arenus-cpg"
+  data-section-id="{{ section.id }}"
+  data-collection-handle="{{ collection.handle }}"
+  data-products-per-page="{{ products_per_page }}"
+  style="
+    --arenus-cpg-image-bg: {{ image_bg }};
+    padding-block-start: {{ section.settings.padding_top }}px;
+    padding-block-end: {{ section.settings.padding_bottom }}px;
+  "
+>
+  {%- comment -%} ── Filter buttons ── {%- endcomment -%}
+  {%- if section.blocks.size > 0 -%}
+    <div class="arenus-cpg__filters">
+      <div class="arenus-cpg__filters-row arenus-cpg__filters-row--categories">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'filter' -%}
+            <button
+              type="button"
+              class="arenus-cpg__filter-btn{% if forloop.first %} is-active{% endif %}"
+              data-tag="{{ block.settings.tag | handleize }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.label }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- comment -%} Animal filter row (separate row on mobile, same row on desktop) {%- endcomment -%}
+      {%- assign has_animal_filters = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'animal_filter' -%}
+          {%- assign has_animal_filters = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if has_animal_filters -%}
+        <div class="arenus-cpg__filters-row arenus-cpg__filters-row--animals">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'animal_filter' -%}
+              <button
+                type="button"
+                class="arenus-cpg__filter-btn arenus-cpg__filter-btn--animal"
+                data-tag="{{ block.settings.tag | handleize }}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.icon == 'horse' -%}
+                  {{ 'icon-horse.svg' | inline_asset_content }}
+                  {% comment %} <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M14.5 1.5L13.5 2.5C13.5 2.5 12.5 2.5 11.5 3.5C10.5 4.5 10.5 6.5 10.5 6.5L8.5 8.5C8.5 8.5 7.5 7.5 6 7.5C4.5 7.5 3 8.5 2 10C1 11.5 1 13 1 14.5H3C3 14.5 3 13 3.5 12C4 11 5 10 6 10C7 10 7.5 10.5 7.5 10.5L5.5 14.5H7.5L9.5 10.5C9.5 10.5 11 9 12 8L14.5 5.5V1.5Z" fill="currentColor"/>
+                  </svg> {% endcomment %}
+                {%- elsif block.settings.icon == 'dog' -%}
+                  {{ 'icon-dog.svg' | inline_asset_content }}
+                  {% comment %} <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M13.5 3.5L14.5 1.5H12.5L11 3C11 3 9.5 2.5 8 2.5C6.5 2.5 5 3 5 3L3.5 1.5H1.5L2.5 3.5C2.5 3.5 1 5 1 7C1 9 2 10 2 10V14.5H4V11C4 11 5.5 12 8 12C10.5 12 12 11 12 11V14.5H14V10C14 10 15 9 15 7C15 5 13.5 3.5 13.5 3.5ZM5 8C4.44772 8 4 7.55228 4 7C4 6.44772 4.44772 6 5 6C5.55228 6 6 6.44772 6 7C6 7.55228 5.55228 8 5 8Z" fill="currentColor"/>
+                  </svg> {% endcomment %}
+                {%- endif -%}
+                {{ block.settings.label }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ── Products grid ── {%- endcomment -%}
+  {%- comment -%}
+    Detect whether the current tag filter is valid:
+    current_tags is set by Shopify when the URL includes /tag-handle.
+    If Shopify redirects (tag doesn't exist anywhere), current_tags is empty.
+    We also track the requested tag via query param so JS can compare.
+  {%- endcomment -%}
+  {%- assign has_active_filter = false -%}
+  {%- if current_tags and current_tags.size > 0 -%}
+    {%- assign has_active_filter = true -%}
+  {%- endif -%}
+  <div class="arenus-cpg__grid-wrapper" data-has-active-filter="{{ has_active_filter }}" data-current-tags="{{ current_tags | join: '+' | handleize }}">
+    {% paginate collection.products by products_per_page %}
+      {%- if collection.products_count == 0 and has_active_filter -%}
+        <div class="arenus-cpg__empty">
+          <p>No products found in this category.</p>
+        </div>
+      {%- endif -%}
+      <div class="arenus-cpg__grid" data-page="{{ paginate.current_page }}" data-total-pages="{{ paginate.pages }}" {% if collection.products_count == 0 and has_active_filter %}style="display:none"{% endif %}>
+        {%- for product in collection.products -%}
+          <div class="arenus-cpg__card">
+            <a href="{{ product.url }}" class="arenus-cpg__card-link" aria-label="{{ product.title | escape }}" tabindex="-1"></a>
+            <div class="arenus-cpg__card-image">
+              {%- if product.featured_image != blank -%}
+                {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '200, 400, 600, 800' }}
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Product info {%- endcomment -%}
+            <div class="arenus-cpg__card-info">
+              {%- comment -%} Star rating — placeholder {%- endcomment -%}
+              <div class="arenus-cpg__rating">
+                <div class="arenus-cpg__stars" aria-label="5 out of 5 stars">
+                  {%- for i in (1..5) -%}
+                    {% render 'icon-star', width: 12, height: 12 %}
+                  {%- endfor -%}
+                </div>
+                <span class="arenus-cpg__review-count">0 reviews</span>
+              </div>
+
+              {%- comment -%} Title + price {%- endcomment -%}
+              <div class="arenus-cpg__title-price">
+                <span class="arenus-cpg__title">{{ product.title }}</span>
+                <span class="arenus-cpg__price">
+                  {%- render 'format-price', price: product.selected_or_first_available_variant.price -%}
+                </span>
+              </div>
+
+              {%- comment -%} Tag badges {%- endcomment -%}
+              {%- assign badges = product.metafields.custom.product_card_badges.value -%}
+              {%- if badges != blank and badges.size > 0 -%}
+                <div class="arenus-cpg__tags">
+                  {%- for badge in badges -%}
+                    <span class="arenus-cpg__tag">{{ badge }}</span>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Quick add-to-cart button {%- endcomment -%}
+            <button
+              type="button"
+              class="arenus-cpg__add-btn{% unless product.available %} is-sold-out{% endunless %}"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+              {% if product.has_only_default_variant %}
+                data-single-variant="true"
+              {% endif %}
+              {% unless product.available %}disabled{% endunless %}
+              aria-label="{% if product.available %}Add {{ product.title | escape }} to cart{% else %}{{ product.title | escape }} is sold out{% endif %}"
+            >
+              {%- if product.available -%}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+                </svg>
+                ADD TO CART
+              {%- else -%}
+                SOLD OUT
+              {%- endif -%}
+            </button>
+
+            {%- comment -%} Variant data for quick-add modal {%- endcomment -%}
+            {%- unless product.has_only_default_variant -%}
+              <script type="application/json" class="arenus-cpg__card-data">
+                {
+                  "id": {{ product.id }},
+                  "title": {{ product.title | json }},
+                  "url": {{ product.url | json }},
+                  "image": {{ product.featured_image | image_url: width: 400 | json }},
+                  "options": {{ product.options_with_values | json }},
+                  "variants": [
+                    {%- for variant in product.variants -%}
+                      {
+                        "id": {{ variant.id }},
+                        "available": {{ variant.available }},
+                        "price": {{ variant.price }},
+                        "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+                        "options": {{ variant.options | json }}
+                      }{%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                  ]
+                }
+              </script>
+            {%- endunless -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Load More button {%- endcomment -%}
+      <div class="arenus-cpg__load-more-wrap" {% if paginate.pages <= 1 %}style="display:none"{% endif %}>
+        <button
+          type="button"
+          class="arenus-cpg__load-more-btn"
+          data-next-page="2"
+          data-total-pages="{{ paginate.pages }}"
+        >
+          LOAD MORE
+        </button>
+      </div>
+    {% endpaginate %}
+  </div>
+
+  {%- comment -%} Quick-add modal (shared, single instance) {%- endcomment -%}
+  <dialog class="arenus-cpg-qam__dialog" id="arenus-cpg-qam-{{ section.id }}">
+    <div class="arenus-cpg-qam">
+      <button type="button" class="arenus-cpg-qam__close" aria-label="Close">
+        {{ 'icon-close-black.svg' | inline_asset_content }}
+      </button>
+
+      <div class="arenus-cpg-qam__header">
+        <div class="arenus-cpg-qam__image">
+          <img src="" alt="" width="80" height="80" loading="lazy" />
+        </div>
+        <div class="arenus-cpg-qam__meta">
+          <div class="arenus-cpg-qam__rating">
+            <div class="arenus-cpg-qam__stars">
+              {%- for i in (1..5) -%}
+                {% render 'icon-star', width: 16, height: 16 %}
+              {%- endfor -%}
+            </div>
+            <span class="arenus-cpg-qam__review-count">0 reviews</span>
+          </div>
+          <h3 class="arenus-cpg-qam__title"></h3>
+          <div class="arenus-cpg-qam__price-wrap">
+            <span class="arenus-cpg-qam__price"></span>
+            <span class="arenus-cpg-qam__compare-price"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arenus-cpg-qam__options"></div>
+
+      <div class="arenus-cpg-qam__footer">
+        <div class="arenus-cpg-qam__stepper">
+          <button type="button" class="arenus-cpg-qam__stepper-btn arenus-cpg-qam__stepper-minus" aria-label="Decrease quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <span class="arenus-cpg-qam__stepper-value">1</span>
+          <button type="button" class="arenus-cpg-qam__stepper-btn arenus-cpg-qam__stepper-plus" aria-label="Increase quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7 2.75L7 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button type="button" class="arenus-cpg-qam__add-btn" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+          </svg>
+          ADD TO CART
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Collection Products Grid — Mobile-first ===== */
+
+  .arenus-cpg {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* ── Filter buttons ── */
+  .arenus-cpg__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .arenus-cpg__filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .arenus-cpg__filters-row--categories {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .arenus-cpg__filters-row--categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arenus-cpg__filters-row--animals {
+    flex-wrap: nowrap;
+  }
+
+  .arenus-cpg__filter-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 20px;
+    background-color: #f9f9f9;
+    color: #000000;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .arenus-cpg__filter-btn:hover {
+    /* background-color: #ffffff; */
+    border-color: #000000;
+  }
+
+  .arenus-cpg__filter-btn:first-child {
+    margin-left: 20px;
+  }
+
+  .arenus-cpg__filter-btn:last-child {
+    margin-right: 20px;
+  }
+
+  .arenus-cpg__filter-btn.is-active {
+    background-color: #ffffff;
+    border-color: #000000;
+  }
+
+  .arenus-cpg__filters-row.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .arenus-cpg__filter-btn--animal {
+    flex: 1;
+  }
+
+  .arenus-cpg__filter-btn--animal svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* ── Empty state ── */
+  .arenus-cpg__empty {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .arenus-cpg__empty p {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    color: #808085;
+    margin: 0;
+  }
+
+  /* ── Products grid ── */
+  .arenus-cpg__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+    padding-inline: 20px;
+  }
+
+  /* ── Product card ── */
+  .arenus-cpg__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+  }
+
+  .arenus-cpg__card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    text-decoration: none;
+  }
+
+  /* Image area */
+  .arenus-cpg__card-image {
+    aspect-ratio: 1;
+    background-color: var(--arenus-cpg-image-bg, #fffcea);
+    border-radius: 12px;
+    padding: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-cpg__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Info area */
+  .arenus-cpg__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+  }
+
+  /* Star rating */
+  .arenus-cpg__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-cpg__stars {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .arenus-cpg__stars svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  .arenus-cpg__review-count {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+  }
+
+  /* Title + price */
+  .arenus-cpg__title-price {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .arenus-cpg__title {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .arenus-cpg__price {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    white-space: nowrap;
+  }
+
+  /* Tag badges */
+  .arenus-cpg__tags {
+    display: none;
+  }
+
+  /* ===== Card Add-to-Cart Button (mobile: bottom of card) ===== */
+  .arenus-cpg__add-btn {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #e6b236;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .arenus-cpg__add-btn.is-sold-out {
+    background-color: #d4d4d4;
+    cursor: not-allowed;
+  }
+
+  .arenus-cpg__add-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .arenus-cpg__add-btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* ── Load More ── */
+  .arenus-cpg__load-more-wrap {
+    margin-top: 40px;
+    margin-inline: 20px;
+  }
+
+  .arenus-cpg__load-more-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-cpg__load-more-btn:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-cpg__load-more-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* ===== Quick-Add Modal (reuses arenus-qam styles with cpg prefix) ===== */
+  .arenus-cpg-qam__dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    max-width: calc(100% - 32px);
+    width: 100%;
+    max-height: 85vh;
+    max-height: 85dvh;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  .arenus-cpg-qam__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .arenus-cpg-qam__dialog[open] {
+    animation: arenusCpgQamFadeIn 0.25s ease forwards;
+  }
+
+  .arenus-cpg-qam__dialog.is-closing {
+    animation: arenusCpgQamFadeOut 0.2s ease forwards;
+  }
+
+  .arenus-cpg-qam__dialog.is-closing::backdrop {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  @keyframes arenusCpgQamFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes arenusCpgQamFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.95); }
+  }
+
+  .arenus-cpg-qam {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+  }
+
+  .arenus-cpg-qam__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1;
+    color: #000;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-cpg-qam__close:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-cpg-qam__header {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .arenus-cpg-qam__image {
+    flex-shrink: 0;
+    width: 112px;
+    height: 112px;
+    background: #fffcea;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .arenus-cpg-qam__image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  .arenus-cpg-qam__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    padding-right: 40px;
+  }
+
+  .arenus-cpg-qam__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-cpg-qam__stars {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .arenus-cpg-qam__stars svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .arenus-cpg-qam__review-count {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #808085;
+  }
+
+  .arenus-cpg-qam__title {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+    color: #000000;
+  }
+
+  .arenus-cpg-qam__price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-cpg-qam__price {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.16px;
+    color: #000000;
+  }
+
+  .arenus-cpg-qam__compare-price {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: -0.14px;
+    color: #808085;
+    text-decoration: line-through;
+  }
+
+  .arenus-cpg-qam__compare-price:empty {
+    display: none;
+  }
+
+  .arenus-cpg-qam__options {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .arenus-cpg-qam__option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .arenus-cpg-qam__option-label {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000000;
+    margin: 0;
+  }
+
+  .arenus-cpg-qam__option-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .arenus-cpg-qam__option-btn {
+    padding: 12px 16px;
+    border: 1px solid #eeeeef;
+    border-radius: 6px;
+    background: #ffffff;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000000;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .arenus-cpg-qam__option-btn:hover {
+    border-color: #c0c0c0;
+  }
+
+  .arenus-cpg-qam__option-btn.is-selected {
+    border-color: #191919;
+  }
+
+  .arenus-cpg-qam__option-btn.is-unavailable {
+    opacity: 0.4;
+    text-decoration: line-through;
+  }
+
+  .arenus-cpg-qam__footer {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .arenus-cpg-qam__stepper {
+    flex-shrink: 0;
+    width: 125px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e3e4e5;
+    border-radius: 6px;
+    padding: 4px;
+  }
+
+  .arenus-cpg-qam__stepper-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    padding: 0;
+    color: #000;
+    transition: opacity 0.15s ease;
+  }
+
+  .arenus-cpg-qam__stepper-btn:hover {
+    opacity: 0.6;
+  }
+
+  .arenus-cpg-qam__stepper-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .arenus-cpg-qam__stepper-value {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    text-align: center;
+    width: 32px;
+    color: #1e2122;
+    user-select: none;
+  }
+
+  .arenus-cpg-qam__add-btn {
+    flex: 1;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: #e6b236;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-cpg-qam__add-btn:hover {
+    opacity: 0.85;
+  }
+
+  .arenus-cpg-qam__add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .arenus-cpg-qam__add-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .arenus-cpg-qam__add-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-cpg {
+      padding-inline: 40px;
+    }
+
+    /* Filter rows side by side */
+    .arenus-cpg__filters {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 50px;
+      margin-bottom: 32px;
+    }
+
+    .arenus-cpg__filters-row--animals {
+      flex-shrink: 0;
+    }
+
+    .arenus-cpg__filter-btn:first-child {
+      margin-left: 0;
+    }
+
+    .arenus-cpg__filter-btn:last-child {
+      margin-right: 0;
+    }
+
+    .arenus-cpg__filter-btn--animal {
+      flex: 0 0 auto;
+    }
+
+    /* 4-column grid */
+    .arenus-cpg__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px 20px;
+      padding-inline: 0;
+    }
+
+    /* Desktop card adjustments */
+    .arenus-cpg__card {
+      gap: 20px;
+      container-type: inline-size;
+    }
+
+    .arenus-cpg__card-info {
+      gap: 12px;
+    }
+
+    .arenus-cpg__stars svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .arenus-cpg__review-count {
+      font-size: 14px;
+      line-height: 1.5;
+      letter-spacing: -0.14px;
+    }
+
+    .arenus-cpg__title-price {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .arenus-cpg__title {
+      font-size: 20px;
+      line-height: 1.4;
+      letter-spacing: -0.4px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .arenus-cpg__price {
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: -0.32px;
+    }
+
+    /* Show tag badges on desktop */
+    .arenus-cpg__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .arenus-cpg__tag {
+      background-color: #f9f9f9;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-family: var(--font-body--family);
+      font-weight: var(--font-body--weight);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    /* Desktop: add-to-cart button overlays image on hover */
+    .arenus-cpg__add-btn {
+      position: absolute;
+      z-index: 2;
+      /* Place over the image area: top = image bottom - button height - 26px offset */
+      top: calc(100cqi - 26px);
+      left: 50%;
+      transform: translate(-50%, -100%);
+      width: calc(100% - 40px);
+      max-width: 225px;
+      padding: 16px 32px;
+      font-size: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .arenus-cpg__card:hover .arenus-cpg__add-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .arenus-cpg__add-btn:hover {
+      opacity: 0.85;
+    }
+
+    .arenus-cpg__add-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Load more button */
+    .arenus-cpg__load-more-wrap {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .arenus-cpg__load-more-btn {
+      width: auto;
+      min-width: 218px;
+      margin-inline: 0;
+    }
+
+    /* Desktop modal */
+    .arenus-cpg-qam__dialog {
+      max-width: 588px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  /* ===== Arenus Collection Products — Filtering, Load More, Quick Add ===== */
+  (function() {
+    var section = document.getElementById('ArenusCollectionProducts-{{ section.id }}');
+    if (!section) return;
+
+    var sectionId = section.getAttribute('data-section-id');
+    var collectionHandle = section.getAttribute('data-collection-handle');
+    var productsPerPage = parseInt(section.getAttribute('data-products-per-page'), 10) || 20;
+
+    var grid = section.querySelector('.arenus-cpg__grid');
+    var gridWrapper = section.querySelector('.arenus-cpg__grid-wrapper');
+    var loadMoreWrap = section.querySelector('.arenus-cpg__load-more-wrap');
+    var loadMoreBtn = section.querySelector('.arenus-cpg__load-more-btn');
+    var categoryRow = section.querySelector('.arenus-cpg__filters-row--categories');
+    var animalRow = section.querySelector('.arenus-cpg__filters-row--animals');
+    var dialog = section.querySelector('.arenus-cpg-qam__dialog');
+
+    var currentCategoryTag = '';
+    var currentAnimalTag = '';
+    var currentPage = 1;
+    var totalPages = grid ? parseInt(grid.getAttribute('data-total-pages'), 10) : 1;
+    var isFetching = false;
+
+    /* --- Helpers --- */
+    var rootUrl = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    if (rootUrl.charAt(rootUrl.length - 1) !== '/') rootUrl += '/';
+
+    function buildCombinedTag() {
+      var parts = [];
+      if (currentCategoryTag) parts.push(currentCategoryTag);
+      if (currentAnimalTag) parts.push(currentAnimalTag);
+      return parts.join('+');
+    }
+
+    function buildUrl(tag, page) {
+      var url = rootUrl + 'collections/' + collectionHandle;
+      if (tag) url += '/' + tag;
+      url += '?section_id=arenus-collection-products';
+      if (page > 1) url += '&page=' + page;
+      return url;
+    }
+
+    function extractGrid(html) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      var wrapper = tmp.querySelector('.arenus-cpg__grid-wrapper');
+      return {
+        grid: tmp.querySelector('.arenus-cpg__grid'),
+        empty: tmp.querySelector('.arenus-cpg__empty'),
+        loadMoreWrap: tmp.querySelector('.arenus-cpg__load-more-wrap'),
+        hasActiveFilter: wrapper ? wrapper.getAttribute('data-has-active-filter') === 'true' : false
+      };
+    }
+
+    function setRowLoading(row, loading) {
+      if (!row) return;
+      if (loading) {
+        row.classList.add('is-loading');
+      } else {
+        row.classList.remove('is-loading');
+      }
+    }
+
+    function fetchFiltered(activeRow) {
+      currentPage = 1;
+      isFetching = true;
+      setRowLoading(activeRow, true);
+
+      var combinedTag = buildCombinedTag();
+
+      fetch(buildUrl(combinedTag, 1))
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var extracted = extractGrid(html);
+
+          /*
+           * If we requested a tag but Shopify stripped it (redirect → no active filter),
+           * show the empty state instead of the unfiltered products.
+           */
+          var requestedTag = combinedTag;
+          var tagWasStripped = requestedTag && !extracted.hasActiveFilter;
+
+          if (tagWasStripped) {
+            /* Tag doesn't exist — show empty state */
+            gridWrapper.innerHTML = '<div class="arenus-cpg__empty"><p>No products found in this category.</p></div>';
+            grid = null;
+            loadMoreWrap = null;
+            loadMoreBtn = null;
+            totalPages = 0;
+            currentPage = 1;
+          } else if (extracted.grid && gridWrapper) {
+            gridWrapper.innerHTML = '';
+            if (extracted.empty) {
+              gridWrapper.appendChild(extracted.empty);
+            }
+            gridWrapper.appendChild(extracted.grid);
+            if (extracted.loadMoreWrap) {
+              gridWrapper.appendChild(extracted.loadMoreWrap);
+            }
+
+            grid = section.querySelector('.arenus-cpg__grid');
+            loadMoreWrap = section.querySelector('.arenus-cpg__load-more-wrap');
+            loadMoreBtn = section.querySelector('.arenus-cpg__load-more-btn');
+            totalPages = grid ? parseInt(grid.getAttribute('data-total-pages'), 10) : 1;
+            currentPage = 1;
+
+            bindLoadMore();
+            bindAddToCartButtons();
+          }
+          isFetching = false;
+          setRowLoading(activeRow, false);
+        })
+        .catch(function(err) {
+          console.error('Filter fetch error:', err);
+          isFetching = false;
+          setRowLoading(activeRow, false);
+        });
+    }
+
+    /* --- Category filter click --- */
+    if (categoryRow) {
+      categoryRow.addEventListener('click', function(e) {
+        var btn = e.target.closest('.arenus-cpg__filter-btn');
+        if (!btn || isFetching) return;
+
+        var tag = btn.getAttribute('data-tag') || '';
+        if (tag === currentCategoryTag) return;
+
+        /* Update active state within this row only */
+        categoryRow.querySelectorAll('.arenus-cpg__filter-btn').forEach(function(b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+
+        currentCategoryTag = tag;
+        fetchFiltered(categoryRow);
+      });
+    }
+
+    /* --- Animal filter click --- */
+    if (animalRow) {
+      animalRow.addEventListener('click', function(e) {
+        var btn = e.target.closest('.arenus-cpg__filter-btn');
+        if (!btn || isFetching) return;
+
+        var tag = btn.getAttribute('data-tag') || '';
+
+        /* Toggle: clicking the already-active animal deselects it */
+        if (tag === currentAnimalTag) {
+          btn.classList.remove('is-active');
+          currentAnimalTag = '';
+        } else {
+          animalRow.querySelectorAll('.arenus-cpg__filter-btn').forEach(function(b) { b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+          currentAnimalTag = tag;
+        }
+
+        fetchFiltered(animalRow);
+      });
+    }
+
+    /* --- Load More --- */
+    function bindLoadMore() {
+      loadMoreBtn = section.querySelector('.arenus-cpg__load-more-btn');
+      if (!loadMoreBtn) return;
+
+      loadMoreBtn.addEventListener('click', function handleLoadMore() {
+        if (isFetching) return;
+
+        var nextPage = currentPage + 1;
+        if (nextPage > totalPages) return;
+
+        isFetching = true;
+        loadMoreBtn.classList.add('is-loading');
+        loadMoreBtn.textContent = 'LOADING...';
+
+        fetch(buildUrl(buildCombinedTag(), nextPage))
+          .then(function(res) { return res.text(); })
+          .then(function(html) {
+            var extracted = extractGrid(html);
+            if (extracted.grid && grid) {
+              /* Append new cards to existing grid */
+              var newCards = extracted.grid.querySelectorAll('.arenus-cpg__card');
+              newCards.forEach(function(card) {
+                grid.appendChild(card);
+              });
+
+              currentPage = nextPage;
+
+              /* Update total pages from new data */
+              var newTotalPages = parseInt(extracted.grid.getAttribute('data-total-pages'), 10);
+              if (newTotalPages) totalPages = newTotalPages;
+
+              /* Hide load more if no more pages */
+              if (currentPage >= totalPages) {
+                if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+              } else {
+                loadMoreBtn.classList.remove('is-loading');
+                loadMoreBtn.textContent = 'LOAD MORE';
+              }
+
+              /* Re-bind add-to-cart for new cards */
+              bindAddToCartButtons();
+            }
+            isFetching = false;
+          })
+          .catch(function(err) {
+            console.error('Load more fetch error:', err);
+            loadMoreBtn.classList.remove('is-loading');
+            loadMoreBtn.textContent = 'LOAD MORE';
+            isFetching = false;
+          });
+      });
+    }
+
+    bindLoadMore();
+
+    /* ===== Quick Add-to-Cart (modal) ===== */
+    if (!dialog) return;
+
+    var currentProductData = null;
+    var selectedOptions = [];
+    var quantity = 1;
+    var isAdding = false;
+
+    var modalTitle = dialog.querySelector('.arenus-cpg-qam__title');
+    var modalPrice = dialog.querySelector('.arenus-cpg-qam__price');
+    var modalComparePrice = dialog.querySelector('.arenus-cpg-qam__compare-price');
+    var modalImage = dialog.querySelector('.arenus-cpg-qam__image img');
+    var modalOptions = dialog.querySelector('.arenus-cpg-qam__options');
+    var modalAddBtn = dialog.querySelector('.arenus-cpg-qam__add-btn');
+    var modalCloseBtn = dialog.querySelector('.arenus-cpg-qam__close');
+    var stepperValue = dialog.querySelector('.arenus-cpg-qam__stepper-value');
+    var stepperMinus = dialog.querySelector('.arenus-cpg-qam__stepper-minus');
+    var stepperPlus = dialog.querySelector('.arenus-cpg-qam__stepper-plus');
+
+    function formatPrice(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    function findVariant() {
+      if (!currentProductData) return null;
+      for (var i = 0; i < currentProductData.variants.length; i++) {
+        var v = currentProductData.variants[i];
+        var match = true;
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (v.options[j] !== selectedOptions[j]) { match = false; break; }
+        }
+        if (match) return v;
+      }
+      return null;
+    }
+
+    function isOptionAvailable(optionIndex, optionValue) {
+      if (!currentProductData) return false;
+      for (var i = 0; i < currentProductData.variants.length; i++) {
+        var v = currentProductData.variants[i];
+        if (v.options[optionIndex] !== optionValue) continue;
+        var compatible = true;
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (j === optionIndex) continue;
+          if (v.options[j] !== selectedOptions[j]) { compatible = false; break; }
+        }
+        if (compatible && v.available) return true;
+      }
+      return false;
+    }
+
+    function buildModalOptions() {
+      if (!currentProductData || !modalOptions) return;
+      modalOptions.innerHTML = '';
+      var options = currentProductData.options;
+      for (var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        var group = document.createElement('div');
+        group.className = 'arenus-cpg-qam__option-group';
+
+        var label = document.createElement('p');
+        label.className = 'arenus-cpg-qam__option-label';
+        label.textContent = opt.name + ':';
+        group.appendChild(label);
+
+        var valuesWrap = document.createElement('div');
+        valuesWrap.className = 'arenus-cpg-qam__option-values';
+
+        for (var j = 0; j < opt.values.length; j++) {
+          var val = opt.values[j];
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'arenus-cpg-qam__option-btn';
+          btn.textContent = val;
+          btn.setAttribute('data-option-index', i);
+          btn.setAttribute('data-option-value', val);
+          if (selectedOptions[i] === val) btn.classList.add('is-selected');
+          if (!isOptionAvailable(i, val)) btn.classList.add('is-unavailable');
+          valuesWrap.appendChild(btn);
+        }
+
+        group.appendChild(valuesWrap);
+        modalOptions.appendChild(group);
+      }
+    }
+
+    function updateModalPrices(variant) {
+      if (modalPrice) {
+        modalPrice.textContent = variant ? formatPrice(variant.price) : '';
+      }
+      if (modalComparePrice) {
+        var hasCompare = variant && variant.compare_at_price && variant.compare_at_price > variant.price;
+        modalComparePrice.textContent = hasCompare ? formatPrice(variant.compare_at_price) : '';
+      }
+    }
+
+    function updateModalState() {
+      var variant = findVariant();
+      buildModalOptions();
+      updateModalPrices(variant);
+      if (modalAddBtn) {
+        modalAddBtn.disabled = !variant || !variant.available;
+      }
+    }
+
+    if (modalOptions) {
+      modalOptions.addEventListener('click', function(e) {
+        var btn = e.target.closest('.arenus-cpg-qam__option-btn');
+        if (!btn) return;
+        var idx = parseInt(btn.getAttribute('data-option-index'), 10);
+        var val = btn.getAttribute('data-option-value');
+        selectedOptions[idx] = val;
+        updateModalState();
+      });
+    }
+
+    if (stepperMinus) {
+      stepperMinus.addEventListener('click', function() {
+        if (quantity > 1) { quantity--; stepperValue.textContent = quantity; }
+      });
+    }
+
+    if (stepperPlus) {
+      stepperPlus.addEventListener('click', function() {
+        quantity++;
+        stepperValue.textContent = quantity;
+      });
+    }
+
+    function openModal(productData) {
+      currentProductData = productData;
+      quantity = 1;
+      selectedOptions = [];
+      for (var i = 0; i < productData.options.length; i++) {
+        selectedOptions.push(productData.options[i].values[0]);
+      }
+      if (modalTitle) modalTitle.textContent = productData.title;
+      if (modalImage) { modalImage.src = productData.image; modalImage.alt = productData.title; }
+      if (stepperValue) stepperValue.textContent = '1';
+      buildModalOptions();
+      var variant = findVariant();
+      updateModalPrices(variant);
+      if (modalAddBtn) modalAddBtn.disabled = !variant || !variant.available;
+      dialog.classList.remove('is-closing');
+      dialog.showModal();
+      var scrollY = window.scrollY;
+      dialog._previousScrollY = scrollY;
+      document.body.style.width = '100%';
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + scrollY + 'px';
+    }
+
+    function closeModal() {
+      dialog.classList.add('is-closing');
+      function onEnd() {
+        dialog.removeEventListener('animationend', onEnd);
+        dialog.close();
+        dialog.classList.remove('is-closing');
+        document.body.style.width = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        if (dialog._previousScrollY !== undefined) {
+          window.scrollTo({ top: dialog._previousScrollY, behavior: 'instant' });
+        }
+        currentProductData = null;
+        selectedOptions = [];
+        quantity = 1;
+      }
+      dialog.addEventListener('animationend', onEnd);
+    }
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', function() { closeModal(); });
+    }
+
+    dialog.addEventListener('click', function(e) {
+      if (e.target === dialog) closeModal();
+    });
+
+    dialog.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+    });
+
+    dialog.addEventListener('cancel', function(e) {
+      e.preventDefault();
+      closeModal();
+    });
+
+    function setButtonLoading(btn, loading) {
+      if (!btn) return;
+      if (loading) {
+        btn._prevHTML = btn.innerHTML;
+        btn.classList.add('is-loading');
+        btn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+                </svg>
+                ADDING...`;
+      } else {
+        btn.classList.remove('is-loading');
+        if (btn._prevHTML !== undefined) btn.innerHTML = btn._prevHTML;
+      }
+    }
+
+    function addToCart(variantId, qty, triggerBtn, onDone) {
+      if (isAdding) return;
+      isAdding = true;
+      setButtonLoading(triggerBtn, true);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: qty })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.status) {
+          console.error('Add to cart error:', data.description);
+          isAdding = false;
+          setButtonLoading(triggerBtn, false);
+          return;
+        }
+        document.dispatchEvent(new CustomEvent('cart:update', {
+          bubbles: true,
+          detail: { resource: {}, sourceId: '', data: { source: 'arenus-quick-add', itemCount: qty } }
+        }));
+        var cartDrawer = document.querySelector('cart-drawer-component');
+        if (cartDrawer) {
+          if (typeof cartDrawer.open === 'function') cartDrawer.open();
+          else if (typeof cartDrawer.showDialog === 'function') cartDrawer.showDialog();
+        }
+        isAdding = false;
+        setButtonLoading(triggerBtn, false);
+        if (typeof onDone === 'function') onDone();
+      })
+      .catch(function(err) {
+        console.error('Add to cart fetch error:', err);
+        isAdding = false;
+        setButtonLoading(triggerBtn, false);
+      });
+    }
+
+    if (modalAddBtn) {
+      modalAddBtn.addEventListener('click', function() {
+        var variant = findVariant();
+        if (!variant || !variant.available) return;
+        addToCart(variant.id, quantity, modalAddBtn, function() { closeModal(); });
+      });
+    }
+
+    /* --- Card add-to-cart button handlers (delegated to grid wrapper for AJAX support) --- */
+    function bindAddToCartButtons() {
+      /* Use event delegation on the grid wrapper so newly loaded cards work */
+    }
+
+    /* Delegated click handler on grid wrapper */
+    if (gridWrapper) {
+      gridWrapper.addEventListener('click', function(e) {
+        var btn = e.target.closest('.arenus-cpg__add-btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var isSingleVariant = btn.hasAttribute('data-single-variant');
+        if (isSingleVariant) {
+          var variantId = parseInt(btn.getAttribute('data-variant-id'), 10);
+          addToCart(variantId, 1, btn);
+        } else {
+          var card = btn.closest('.arenus-cpg__card');
+          if (!card) return;
+          var scriptTag = card.querySelector('.arenus-cpg__card-data');
+          if (!scriptTag) return;
+          try {
+            var productData = JSON.parse(scriptTag.textContent);
+            openModal(productData);
+          } catch (err) {
+            console.error('Failed to parse product data:', err);
+          }
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Arenus Products Grid",
+  "tag": "section",
+  "class": "arenus-cpg-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 40,
+      "step": 4,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "image_background_color",
+      "label": "Image background color",
+      "default": "#fffcea"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "filter",
+      "name": "Category Filter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button label",
+          "default": "View All"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Product tag to filter by",
+          "info": "Leave empty for 'View All' (shows all products)."
+        }
+      ]
+    },
+    {
+      "type": "animal_filter",
+      "name": "Animal Filter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button label",
+          "default": "Horse"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Product tag to filter by",
+          "default": "Horse"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "horse",
+              "label": "Horse"
+            },
+            {
+              "value": "dog",
+              "label": "Dog"
+            },
+            {
+              "value": "none",
+              "label": "None"
+            }
+          ],
+          "default": "horse"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arenus Products Grid",
+      "category": "Products",
+      "blocks": [
+        {
+          "type": "filter",
+          "settings": {
+            "label": "View All",
+            "tag": ""
+          }
+        },
+        {
+          "type": "filter",
+          "settings": {
+            "label": "Gut Health",
+            "tag": "Gut Health"
+          }
+        },
+        {
+          "type": "filter",
+          "settings": {
+            "label": "Breathing",
+            "tag": "Breathing"
+          }
+        },
+        {
+          "type": "filter",
+          "settings": {
+            "label": "Joint & Mobility",
+            "tag": "Joint & Mobility"
+          }
+        },
+        {
+          "type": "filter",
+          "settings": {
+            "label": "Performance",
+            "tag": "Performance"
+          }
+        },
+        {
+          "type": "filter",
+          "settings": {
+            "label": "Brands We Trust",
+            "tag": "Brands We Trust"
+          }
+        },
+        {
+          "type": "animal_filter",
+          "settings": {
+            "label": "Horse",
+            "tag": "Horse",
+            "icon": "horse"
+          }
+        },
+        {
+          "type": "animal_filter",
+          "settings": {
+            "label": "Dog",
+            "tag": "Dog",
+            "icon": "dog"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

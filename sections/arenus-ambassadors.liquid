@@ -1,0 +1,415 @@
+<div
+  id="ArenusAmbassadors-{{ section.id }}"
+  class="arenus-ambassadors"
+  style="
+    --arenus-ambassadors-bg: {{ section.settings.background_color }};
+    --arenus-ambassadors-text: {{ section.settings.text_color }};
+    --arenus-ambassadors-subtitle: {{ section.settings.subtitle_color }};
+    --arenus-ambassadors-border: {{ section.settings.card_border_color }};
+    padding-block-start: {{ section.settings.padding-block-start }}px;
+    padding-block-end: {{ section.settings.padding-block-end }}px;
+  "
+>
+  <div class="c-page-width">
+    {%- comment -%} Heading + subtitle {%- endcomment -%}
+    <div class="arenus-ambassadors__intro">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="arenus-ambassadors__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="arenus-ambassadors__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Ambassador cards carousel {%- endcomment -%}
+    {%- assign ambassadors = shop.metaobjects.ambassador.values| sort: 'card_order' -%}
+    {%- assign ambassadors_sorted = ambassadors | sort: 'order' -%}
+    {%- assign ambassadors_sorted_first_ten = ambassadors_sorted | slice: 0, section.settings.ambassadors_count -%}
+    {%- if ambassadors_sorted_first_ten != blank and ambassadors_sorted_first_ten.size > 0 -%}
+      <div class="arenus-ambassadors__carousel">
+        <div class="arenus-ambassadors__track">
+          {%- for ambassador in ambassadors_sorted_first_ten -%}
+            <a
+              href="{{ section.settings.url }}?ambassador={{ ambassador.system.handle }}"
+              class="arenus-ambassadors__card"
+            >
+              <div class="arenus-ambassadors__photo-ring">
+                {%- if ambassador.card_photo != blank -%}
+                  {{ ambassador.card_photo | image_url: width: 400 | image_tag: loading: 'lazy', class: 'arenus-ambassadors__photo' }}
+                {%- endif -%}
+              </div>
+              <div class="arenus-ambassadors__info">
+                {%- if ambassador.name != blank -%}
+                  <span class="arenus-ambassadors__name">{{ ambassador.name }}</span>
+                {%- endif -%}
+                {%- if ambassador.discipline != blank -%}
+                  <span class="arenus-ambassadors__discipline">{{ ambassador.discipline }}</span>
+                {%- endif -%}
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} View all button {%- endcomment -%}
+    {%- if section.settings.view_all_label != blank and section.settings.view_all_url != blank -%}
+      <div class="arenus-ambassadors__cta">
+        <a href="{{ section.settings.view_all_url }}" class="arenus-ambassadors__btn">
+          {{ section.settings.view_all_label }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Ambassadors — Mobile-first ===== */
+
+  .arenus-ambassadors {
+    background-color: var(--arenus-ambassadors-bg, #191919);
+    color: var(--arenus-ambassadors-text, #ffffff);
+  }
+
+  .arenus-ambassadors .c-page-width {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+
+  /* Intro: heading + subtitle */
+  .arenus-ambassadors__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+    padding-inline: 20px;
+  }
+
+  .arenus-ambassadors__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+  }
+
+  .arenus-ambassadors__subtitle {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: var(--arenus-ambassadors-subtitle, #dddddd);
+    margin: 0;
+  }
+
+  /* Carousel container */
+  .arenus-ambassadors__carousel {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  /* Scrollable track */
+  .arenus-ambassadors__track {
+    display: flex;
+    gap: 32px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .arenus-ambassadors__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ambassador card */
+  .arenus-ambassadors__card {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .arenus-ambassadors__card:first-child {
+    margin-left: 20px;
+  }
+
+  .arenus-ambassadors__card:last-child {
+    margin-right: 20px;
+  }
+
+  /* Photo ring — circular border around photo */
+  .arenus-ambassadors__photo-ring {
+    width: 188px;
+    height: 188px;
+    border-radius: 100px;
+    border: 2px solid var(--arenus-ambassadors-border, #135b9f);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .arenus-ambassadors__photo {
+    width: 180px;
+    height: 180px;
+    border-radius: 100px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Info: name + discipline */
+  .arenus-ambassadors__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .arenus-ambassadors__name {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .arenus-ambassadors__discipline {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: var(--arenus-ambassadors-subtitle, #eeeeef);
+  }
+
+  /* CTA button */
+  .arenus-ambassadors__cta {
+    display: flex;
+    justify-content: center;
+  }
+
+  .arenus-ambassadors__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 24px;
+    border: 1px solid var(--arenus-ambassadors-text, #ffffff);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--arenus-ambassadors-text, #ffffff);
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-ambassadors__btn:hover {
+    opacity: 0.7;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-ambassadors {
+      padding-inline: 40px;
+    }
+
+     .arenus-ambassadors__heading {
+      font-size: 40px;
+    }
+    
+    .arenus-ambassadors__intro {
+      max-width: 900px;
+      padding-inline: 0;
+    }
+
+    .arenus-ambassadors__subtitle {
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: -0.32px;
+      max-width: 582px;
+    }
+
+    /* Grid layout instead of carousel */
+    .arenus-ambassadors__carousel {
+      overflow: visible;
+    }
+
+    .arenus-ambassadors__track {
+      flex-wrap: wrap;
+      justify-content: center;
+      overflow-x: visible;
+      scroll-snap-type: none;
+      max-width: 1130px;
+      margin: 0 auto;
+    }
+
+    .arenus-ambassadors__card {
+      scroll-snap-align: unset;
+    }
+
+    .arenus-ambassadors__card:first-child {
+      margin-left: 0;
+    }
+
+    .arenus-ambassadors__card:last-child {
+      margin-right: 0;
+    }
+
+    /* Button wider padding on desktop */
+    .arenus-ambassadors__btn {
+      padding: 12px 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Arenus Ambassadors",
+  "tag": "section",
+  "class": "arenus-ambassadors-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section uses a metaobject called 'Ambassador' to create a carousel of ambassador cards. To add ambassadors, go to the Metaobjects section in the Shopify admin, create a new Ambassador metaobject, and add the relevant fields (name, discipline, card photo)."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Arenus Ambassadors"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "At Arenus, we value the health and performance of competitive equine athletes and proudly support the riders who care for them."
+    },
+    {
+      "type": "range",
+      "id": "ambassadors_count",
+      "label": "Number of ambassadors to show",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Ambassador detail page URL"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all button label",
+      "default": "VIEW ALL"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "View all button URL"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Photo border color",
+      "default": "#135b9f"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arenus Ambassadors",
+      "category": "Social proof",
+      "settings": {
+        "heading": "Arenus Ambassadors",
+        "subtitle": "At Arenus, we value the health and performance of competitive equine athletes and proudly support the riders who care for them.",
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "subtitle_color": "#dddddd",
+        "card_border_color": "#135b9f",
+        "view_all_label": "VIEW ALL"
+      }
+    }
+  ]
+}
+{% endschema %}

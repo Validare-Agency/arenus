@@ -1,0 +1,382 @@
+{%- comment -%}
+  Contact Us — Content section (block-based)
+  Block types: richtext, heading, info_card, divider
+{%- endcomment -%}
+
+<div
+  id="ArenusContactContent-{{ section.id }}"
+  class="arenus-cc"
+  style="
+    --arenus-cc-bg: {{ section.settings.background_color }};
+    --arenus-cc-text: {{ section.settings.text_color }};
+    --arenus-cc-link: {{ section.settings.link_color }};
+    --arenus-cc-pt: {{ section.settings.padding_top }}px;
+    --arenus-cc-pb: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="arenus-cc__inner">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+
+        {%- comment -%} ── Rich text block ── {%- endcomment -%}
+        {%- when 'richtext' -%}
+          {%- if block.settings.content != blank -%}
+            <div class="arenus-cc__richtext" {{ block.shopify_attributes }}>
+              {{ block.settings.content }}
+            </div>
+          {%- endif -%}
+
+        {%- comment -%} ── Heading block ── {%- endcomment -%}
+        {%- when 'heading' -%}
+          {%- if block.settings.text != blank -%}
+            <h2 class="arenus-cc__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+          {%- endif -%}
+
+        {%- comment -%} ── Info card block ── {%- endcomment -%}
+        {%- when 'info_card' -%}
+          <div
+            class="arenus-cc__info-card"
+            style="--card-bg: {{ block.settings.background_color }};"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.heading != blank -%}
+              <p class="arenus-cc__info-card-heading">{{ block.settings.heading }}</p>
+            {%- endif -%}
+            {%- if block.settings.content != blank -%}
+              <div class="arenus-cc__info-card-body">{{ block.settings.content }}</div>
+            {%- endif -%}
+          </div>
+
+        {%- comment -%} ── Two-column block (richtext + info card side by side on desktop) ── {%- endcomment -%}
+        {%- when 'two_column' -%}
+          <div class="arenus-cc__two-col" {{ block.shopify_attributes }}>
+            {%- if block.settings.left_content != blank -%}
+              <div class="arenus-cc__two-col-left arenus-cc__richtext">
+                {{ block.settings.left_content }}
+              </div>
+            {%- endif -%}
+            <div
+              class="arenus-cc__info-card"
+              style="--card-bg: {{ block.settings.card_background_color }};"
+            >
+              {%- if block.settings.card_heading != blank -%}
+                <p class="arenus-cc__info-card-heading">{{ block.settings.card_heading }}</p>
+              {%- endif -%}
+              {%- if block.settings.card_content != blank -%}
+                <div class="arenus-cc__info-card-body">{{ block.settings.card_content }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+
+        {%- comment -%} ── Divider block ── {%- endcomment -%}
+        {%- when 'divider' -%}
+          <hr
+            class="arenus-cc__divider"
+            style="--divider-color: {{ block.settings.color }};"
+            {{ block.shopify_attributes }}
+          >
+
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Contact Content — Mobile-first ===== */
+
+  .arenus-cc {
+    background-color: var(--arenus-cc-bg, #fff);
+    color: var(--arenus-cc-text, #000);
+    padding: var(--arenus-cc-pt, 40px) 20px var(--arenus-cc-pb, 72px);
+  }
+
+  .arenus-cc__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── Rich text ── */
+  .arenus-cc__richtext {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+  }
+
+  .arenus-cc__richtext p {
+    margin: 0 0 0.25em;
+  }
+
+  .arenus-cc__richtext p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arenus-cc__richtext a {
+    color: var(--arenus-cc-link, currentColor);
+    text-decoration: underline;
+  }
+
+  .arenus-cc__richtext strong,
+  .arenus-cc__richtext b {
+    font-weight: 700;
+  }
+
+  /* ── Heading ── */
+  .arenus-cc__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.48px;
+    margin: 0;
+  }
+
+  /* ── Info card ── */
+  .arenus-cc__info-card {
+    background-color: var(--card-bg, #fff3d3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .arenus-cc__info-card-heading {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    margin: 0;
+  }
+
+  .arenus-cc__info-card-body {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #424242;
+  }
+
+  .arenus-cc__info-card-body p {
+    margin: 0;
+  }
+
+  .arenus-cc__info-card-body strong,
+  .arenus-cc__info-card-body b {
+    font-weight: 700;
+  }
+
+  /* ── Two-column (richtext + info card) ── */
+  .arenus-cc__two-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── Divider ── */
+  .arenus-cc__divider {
+    border: none;
+    border-top: 1px solid var(--divider-color, #e0e0e0);
+    margin: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-cc {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
+    .arenus-cc__inner {
+      max-width: 905px;
+      margin: 0 auto;
+    }
+
+    .arenus-cc__richtext {
+      font-size: 20px;
+    }
+
+    .arenus-cc__heading {
+      font-size: 32px;
+    }
+
+    .arenus-cc__two-col {
+      flex-direction: row;
+    }
+
+    .arenus-cc__two-col-left {
+      flex: 1;
+    }
+
+    .arenus-cc__two-col .arenus-cc__info-card {
+      flex: 1;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact Content",
+  "tag": "section",
+  "class": "arenus-cc-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "richtext",
+      "name": "Rich text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Heading text"
+        }
+      ]
+    },
+    {
+      "type": "info_card",
+      "name": "Info card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#fff3d3"
+        }
+      ]
+    },
+    {
+      "type": "two_column",
+      "name": "Two column (text + card)",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Left column"
+        },
+        {
+          "type": "richtext",
+          "id": "left_content",
+          "label": "Text content"
+        },
+        {
+          "type": "header",
+          "content": "Right column (info card)"
+        },
+        {
+          "type": "text",
+          "id": "card_heading",
+          "label": "Card heading"
+        },
+        {
+          "type": "richtext",
+          "id": "card_content",
+          "label": "Card content"
+        },
+        {
+          "type": "color",
+          "id": "card_background_color",
+          "label": "Card background",
+          "default": "#fff3d3"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "name": "Divider",
+      "settings": [
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Line color",
+          "default": "#e0e0e0"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Content",
+      "category": "Text",
+      "settings": {
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "link_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 72
+      }
+    }
+  ]
+}
+{% endschema %}

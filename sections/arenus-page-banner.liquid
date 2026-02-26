@@ -1,0 +1,369 @@
+{%- liquid
+  assign has_image = false
+
+  if section.settings.image != blank
+    assign has_image = true
+  endif
+
+  assign fetch_priority = 'auto'
+  if section.index == 1
+    assign fetch_priority = 'high'
+  endif
+-%}
+
+<div
+  id="ArenusPageBanner-{{ section.id }}"
+  class="arenus-pb{% if section.settings.desktop_alignment == 'center' %} arenus-pb--desktop-center{% endif %}"
+  style="
+    --pb-bg: {{ section.settings.background_color }};
+    --pb-text: {{ section.settings.text_color }};
+    --pb-media-opacity: {{ section.settings.media_opacity | divided_by: 100.0 }};
+    --pb-heading-size: {{ section.settings.heading_size_mobile }}px;
+    --pb-heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
+    --pb-min-height: {{ section.settings.min_height_mobile }}px;
+    --pb-min-height-desktop: {{ section.settings.min_height_desktop }}px;
+    --pb-content-max-width: {{ section.settings.content_max_width_desktop }}px;
+  "
+>
+  {%- comment -%} Background image {%- endcomment -%}
+  <div class="arenus-pb__media">
+    {%- if has_image -%}
+      {{
+        section.settings.image
+        | image_url: width: 3840
+        | image_tag:
+          width: section.settings.image.width,
+          widths: '416, 600, 800, 1200, 1600, 1920, 2560, 3840',
+          height: section.settings.image.height,
+          alt: section.settings.image.alt,
+          class: 'arenus-pb__image',
+          sizes: '100vw',
+          fetchpriority: fetch_priority
+      }}
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Overlay {%- endcomment -%}
+  {%- if section.settings.show_overlay -%}
+    {% render 'overlay', settings: section.settings %}
+  {%- endif -%}
+
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="arenus-pb__content">
+    <div class="arenus-pb__text-group">
+      {%- if section.settings.heading != blank -%}
+        <h1 class="arenus-pb__heading">{{ section.settings.heading }}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.description != blank -%}
+        <div class="arenus-pb__body">{{ section.settings.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Page Banner — Mobile-first ===== */
+
+  .arenus-pb {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--pb-bg, #191919);
+    color: var(--pb-text, #fff);
+  }
+
+  /* Background image */
+  .arenus-pb__media {
+    position: absolute;
+    inset: 0;
+    opacity: var(--pb-media-opacity, 0.3);
+    z-index: 0;
+  }
+
+  .arenus-pb__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  /* Content */
+  .arenus-pb__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    min-height: var(--pb-min-height, 332px);
+  }
+
+  /* ── Text group ── */
+  .arenus-pb__text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .arenus-pb__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: var(--pb-heading-size, 32px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .arenus-pb__body {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+  }
+
+  .arenus-pb__body p {
+    margin: 0;
+  }
+
+  .arenus-pb__body strong,
+  .arenus-pb__body b {
+    font-weight: 700;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-pb__content {
+      align-items: center;
+      padding: 102px 40px 40px;
+      min-height: var(--pb-min-height-desktop, 480px);
+    }
+
+    /* Center-aligned variant (e.g. ambassadors page) */
+    .arenus-pb--desktop-center .arenus-pb__content {
+      justify-content: center;
+    }
+
+    .arenus-pb__text-group {
+      width: 100%;
+      max-width: var(--pb-content-max-width, 902px);
+      gap: 8px;
+    }
+
+    .arenus-pb__heading {
+      font-size: 56px;
+    }
+
+    .arenus-pb__body {
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: -0.32px;
+      max-width: 850px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page Banner",
+  "tag": "section",
+  "class": "arenus-pb-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Page title"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "media_opacity",
+      "label": "Image opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size (desktop)",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "label": "Min height (mobile)",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "default": 330
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "label": "Min height (desktop)",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "select",
+      "id": "desktop_alignment",
+      "label": "Desktop content position",
+      "options": [
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width_desktop",
+      "label": "Content max width (desktop)",
+      "min": 600,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 900
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "alpha": true,
+      "default": "#00000033",
+      "visible_if": "{{ section.settings.show_overlay }}"
+    },
+    {
+      "type": "select",
+      "id": "overlay_style",
+      "label": "Overlay style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "gradient",
+          "label": "Gradient"
+        }
+      ],
+      "default": "gradient",
+      "visible_if": "{{ section.settings.show_overlay }}"
+    },
+    {
+      "type": "select",
+      "id": "gradient_direction",
+      "label": "Gradient direction",
+      "options": [
+        {
+          "value": "to top",
+          "label": "Up"
+        },
+        {
+          "value": "to bottom",
+          "label": "Down"
+        }
+      ],
+      "default": "to top",
+      "visible_if": "{{ section.settings.show_overlay and section.settings.overlay_style == 'gradient' }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page Banner",
+      "category": "Banners",
+      "settings": {
+        "heading": "Page title",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "min_height_mobile": 330,
+        "min_height_desktop": 480,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 900,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    }
+  ]
+}
+{% endschema %}

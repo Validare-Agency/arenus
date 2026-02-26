@@ -57,6 +57,79 @@
     ]
   },
   {
+    "name": "Brand colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Bahia"
+      },
+      {
+        "type": "color",
+        "id": "brand_bahia_darker",
+        "label": "Bahia darker",
+        "default": "#213300"
+      },
+      {
+        "type": "color",
+        "id": "brand_bahia_dark",
+        "label": "Bahia dark",
+        "default": "#4e6c08"
+      },
+      {
+        "type": "color",
+        "id": "brand_bahia_default",
+        "label": "Bahia default",
+        "default": "#7aa50d"
+      },
+      {
+        "type": "color",
+        "id": "brand_bahia_light",
+        "label": "Bahia light",
+        "default": "#dcff53"
+      },
+      {
+        "type": "color",
+        "id": "brand_bahia_lighter",
+        "label": "Bahia lighter",
+        "default": "#f6ffc5"
+      },
+      {
+        "type": "header",
+        "content": "Congress Blue"
+      },
+      {
+        "type": "color",
+        "id": "brand_congress_blue_darker",
+        "label": "Congress Blue darker",
+        "default": "#94610e"
+      },
+      {
+        "type": "color",
+        "id": "brand_congress_blue_dark",
+        "label": "Congress Blue dark",
+        "default": "#c88821"
+      },
+      {
+        "type": "color",
+        "id": "brand_congress_blue_default",
+        "label": "Congress Blue default",
+        "default": "#e6b236"
+      },
+      {
+        "type": "color",
+        "id": "brand_congress_blue_light",
+        "label": "Congress Blue light",
+        "default": "#fee08f"
+      },
+      {
+        "type": "color",
+        "id": "brand_congress_blue_lighter",
+        "label": "Congress Blue lighter",
+        "default": "#fff3d3"
+      }
+    ]
+  },
+  {
     "name": "t:names.colors",
     "settings": [
       {
@@ -529,6 +602,34 @@
       },
       {
         "type": "select",
+        "id": "type_size_h1_mobile",
+        "label": "Mobile size",
+        "options": [
+          {
+            "value": "32",
+            "label": "32px"
+          },
+          {
+            "value": "40",
+            "label": "40px"
+          },
+          {
+            "value": "48",
+            "label": "48px"
+          },
+          {
+            "value": "56",
+            "label": "56px"
+          },
+          {
+            "value": "72",
+            "label": "72px"
+          }
+        ],
+        "default": "48"
+      },
+      {
+        "type": "select",
         "id": "type_line_height_h1",
         "label": "t:settings.line_height",
         "options": [
@@ -673,7 +774,35 @@
             "label": "184px"
           }
         ],
-        "default": "48"
+        "default": "56"
+      },
+      {
+        "type": "select",
+        "id": "type_size_h2_mobile",
+        "label": "Mobile size",
+        "options": [
+          {
+            "value": "24",
+            "label": "24px"
+          },
+          {
+            "value": "32",
+            "label": "32px"
+          },
+          {
+            "value": "40",
+            "label": "40px"
+          },
+          {
+            "value": "48",
+            "label": "48px"
+          },
+          {
+            "value": "56",
+            "label": "56px"
+          }
+        ],
+        "default": "40"
       },
       {
         "type": "select",
@@ -827,6 +956,34 @@
           {
             "value": "184",
             "label": "184px"
+          }
+        ],
+        "default": "40"
+      },
+      {
+        "type": "select",
+        "id": "type_size_h3_mobile",
+        "label": "Mobile size",
+        "options": [
+          {
+            "value": "20",
+            "label": "20px"
+          },
+          {
+            "value": "24",
+            "label": "24px"
+          },
+          {
+            "value": "32",
+            "label": "32px"
+          },
+          {
+            "value": "40",
+            "label": "40px"
+          },
+          {
+            "value": "48",
+            "label": "48px"
           }
         ],
         "default": "32"
@@ -985,6 +1142,34 @@
             "label": "184px"
           }
         ],
+        "default": "32"
+      },
+      {
+        "type": "select",
+        "id": "type_size_h4_mobile",
+        "label": "Mobile size",
+        "options": [
+          {
+            "value": "18",
+            "label": "18px"
+          },
+          {
+            "value": "20",
+            "label": "20px"
+          },
+          {
+            "value": "24",
+            "label": "24px"
+          },
+          {
+            "value": "32",
+            "label": "32px"
+          },
+          {
+            "value": "40",
+            "label": "40px"
+          }
+        ],
         "default": "24"
       },
       {
@@ -1141,7 +1326,35 @@
             "label": "184px"
           }
         ],
-        "default": "18"
+        "default": "24"
+      },
+      {
+        "type": "select",
+        "id": "type_size_h5_mobile",
+        "label": "Mobile size",
+        "options": [
+          {
+            "value": "16",
+            "label": "16px"
+          },
+          {
+            "value": "18",
+            "label": "18px"
+          },
+          {
+            "value": "20",
+            "label": "20px"
+          },
+          {
+            "value": "24",
+            "label": "24px"
+          },
+          {
+            "value": "32",
+            "label": "32px"
+          }
+        ],
+        "default": "20"
       },
       {
         "type": "select",
@@ -1297,7 +1510,35 @@
             "label": "184px"
           }
         ],
-        "default": "16"
+        "default": "20"
+      },
+      {
+        "type": "select",
+        "id": "type_size_h6_mobile",
+        "label": "Mobile size",
+        "options": [
+          {
+            "value": "14",
+            "label": "14px"
+          },
+          {
+            "value": "16",
+            "label": "16px"
+          },
+          {
+            "value": "18",
+            "label": "18px"
+          },
+          {
+            "value": "20",
+            "label": "20px"
+          },
+          {
+            "value": "24",
+            "label": "24px"
+          }
+        ],
+        "default": "18"
       },
       {
         "type": "select",

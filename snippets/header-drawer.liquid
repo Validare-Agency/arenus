@@ -43,6 +43,15 @@
   fetchpriority="low"
 ></script>
 
+{%- comment -%}
+  Fix: Remove on:click="/toggle" from the summary and let only native
+  <details>/<summary> manage the `open` attribute. We then listen for the
+  native `toggle` event to call the component's open()/close() methods,
+  which manage menu-open class, aria-expanded, focus trap, and animations.
+  This eliminates the race condition where JS toggle() and native toggle
+  both tried to manage `open` simultaneously.
+{%- endcomment -%}
+
 <header-drawer
   class="header-drawer {{ class }}"
   style="--menu-image-border-radius: {{ image_border_radius }}px; --resource-card-corner-radius: {{ image_border_radius }}px;"
@@ -57,7 +66,6 @@
     <summary
       class="header__icon header__icon--menu header__icon--summary"
       aria-label="{{ 'accessibility.menu' | t }}"
-      on:click="/toggle"
     >
       <span class="svg-wrapper header-drawer-icon header-drawer-icon--open">
         {{- 'icon-menu.svg' | inline_asset_content -}}
@@ -84,6 +92,24 @@
           {{- 'icon-close.svg' | inline_asset_content -}}
         </span>
       </button>
+      <div class="menu-drawer__pills">
+        {% if section.settings.pill_1_text != blank %}
+          <a href="{{ section.settings.pill_1_url | default: '/' }}" class="menu-drawer__pill">
+            <span class="menu-drawer__pill-icon svg-wrapper" aria-hidden="true">
+              {{- 'icon-medal.svg' | inline_asset_content -}}
+            </span>
+            <span>{{ section.settings.pill_1_text }}</span>
+          </a>
+        {% endif %}
+        {% if section.settings.pill_2_text != blank %}
+          <a href="{{ section.settings.pill_2_url | default: '/' }}" class="menu-drawer__pill">
+            <span class="menu-drawer__pill-icon svg-wrapper" aria-hidden="true">
+              {{- 'icon-newspaper.svg' | inline_asset_content -}}
+            </span>
+            <span>{{ section.settings.pill_2_text }}</span>
+          </a>
+        {% endif %}
+      </div>
       <nav
         class="menu-drawer__navigation"
         style="
@@ -690,6 +716,15 @@
         {%- endif -%}
       </div>
 
+      <div class="menu-drawer__login">
+        <a href="{{ routes.account_login_url }}" class="menu-drawer__login-button">
+          <span class="menu-drawer__login-icon svg-wrapper" aria-hidden="true">
+            {{- 'icon-account.svg' | inline_asset_content -}}
+          </span>
+          <span>LOG IN / REGISTER</span>
+        </a>
+      </div>
+
       {% liquid
         if block_settings.menu_style == 'featured_collections'
           assign top_level_featured_collections = linklist.links | where: 'type', 'collection_link'
@@ -750,6 +785,44 @@
     ></div>
   </details>
 </header-drawer>
+
+<script>
+  (function() {
+    var details = document.getElementById('Details-menu-drawer-container');
+    if (!details) return;
+
+    /*
+     * Guard against stale reset() callbacks from header-drawer.js.
+     * When close() runs, it schedules reset() after animation end.
+     * reset() calls removeAttribute('open'), which fires another
+     * toggle event. If the user has already re-opened the drawer by
+     * then, that stale toggle would incorrectly call close().
+     *
+     * We ignore toggle events caused by JS (reset removing 'open')
+     * by only reacting when the toggle was caused by a recent user
+     * click on the summary.
+     */
+    var clickedSummary = false;
+
+    details.querySelector(':scope > summary').addEventListener('click', function() {
+      clickedSummary = true;
+    });
+
+    details.addEventListener('toggle', function() {
+      if (!clickedSummary) return;
+      clickedSummary = false;
+
+      var drawer = details.closest('header-drawer');
+      if (!drawer) return;
+
+      if (details.open) {
+        drawer.open();
+      } else {
+        drawer.close();
+      }
+    });
+  })();
+</script>
 
 {% stylesheet %}
   .header__icon--menu {
@@ -1269,5 +1342,221 @@
       opacity: 0;
       transform: translateX(-1rem);
     }
+  }
+
+  /* ── Arenus: Full-screen mobile drawer override (slides from right) ── */
+  @media screen and (max-width: 749px) {
+    .menu-drawer {
+      width: 100%;
+      max-width: 100%;
+      left: auto;
+      right: 0;
+      top: var(--header-height, 60px);
+      height: calc(100dvh - var(--header-height, 60px));
+      transform: translateX(100%);
+      background-color: #191919;
+      border-right: none;
+      box-shadow: none;
+      color: #fff;
+      z-index: var(--layer-menu-drawer, 100);
+    }
+
+    .menu-drawer__close-button {
+      display: none;
+    }
+
+    .menu-drawer__navigation {
+      padding: 0;
+    }
+
+    .menu-drawer__menu.has-submenu {
+      padding-inline: 20px;
+      margin-block-end: 0;
+    }
+
+    .menu-drawer__menu > .menu-drawer__list-item {
+      min-height: auto;
+    }
+
+    .menu-drawer__menu-item--mainlist {
+      min-height: auto;
+      font-size: 18px;
+      line-height: 1.4;
+      letter-spacing: -0.36px;
+      color: #fff;
+      padding: 0;
+      font-family: inherit;
+      font-weight: 400;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    .menu-drawer__menu-item {
+      padding: 0;
+      color: #fff;
+    }
+
+    .menu-drawer__menu > .menu-drawer__list-item + .menu-drawer__list-item {
+      margin-top: 20px;
+    }
+
+    .menu-drawer__menu-item > .svg-wrapper {
+      padding-block: 0;
+      padding-inline-start: 12px;
+    }
+
+    .menu-drawer svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .menu-drawer__submenu {
+      height: 100%;
+      left: auto;
+      right: 0;
+      transform: translateX(5%);
+    }
+
+    .menu-drawer-container[open] .menu-drawer__animated-element {
+      animation-name: menu-drawer-nav-open-right;
+    }
+
+    .menu-drawer__utility-links {
+      display: none;
+    }
+
+    .menu-drawer__featured-content {
+      display: none;
+    }
+
+    .menu-drawer__backdrop {
+      display: none;
+    }
+  }
+
+  /* ── Arenus: Right-slide animation for mobile menu items ── */
+  @keyframes menu-drawer-nav-open-right {
+    0% {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateX(0.5rem);
+    }
+
+    100% {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* ── Arenus: Pill buttons in drawer ── */
+  .menu-drawer__pills {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .menu-drawer__pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(51, 61, 66, 0.4);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    border-radius: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    width: 100%;
+  }
+
+  .menu-drawer__pill:hover {
+    background: rgba(51, 61, 66, 0.6);
+  }
+
+  .menu-drawer__pill-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .menu-drawer__pill-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #fff;
+  }
+
+  /* ── Arenus: Login/register button in drawer ── */
+  .menu-drawer__login {
+    padding: 20px;
+    margin-top: auto;
+  }
+
+  .menu-drawer__login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 16px 24px;
+    background-color: #e6b236;
+    border-radius: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .menu-drawer__login-button:hover {
+    opacity: 0.9;
+  }
+
+  .menu-drawer__login-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .menu-drawer__login-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #fff;
+  }
+
+  /* ── Arenus: Hamburger/X toggle styling ── */
+  .header__mobile-menu-toggle .header__icon--summary {
+    padding: 8px;
+  }
+
+  .header__mobile-menu-toggle .header-drawer-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header__mobile-menu-toggle .header-drawer-icon svg {
+    width: 24px;
+    height: 24px;
+    color: #fff;
+  }
+
+  /* When drawer is open, show dark bg on the toggle button */
+  .header__mobile-menu-toggle .menu-open .header__icon--summary {
+    background-color: #24252a;
+    border-radius: 100px;
   }
 {% endstylesheet %}

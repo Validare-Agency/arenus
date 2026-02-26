@@ -1,0 +1,38 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_ambassador_detail": {
+      "type": "arenus-ambassador-detail",
+      "settings": {
+        "ambassadors_page_url": "",
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "muted_text_color": "#b0b0b0",
+        "border_color": "#373b3e"
+      }
+    },
+    "arenus_ambassador_products": {
+      "type": "arenus-ambassador-products",
+      "settings": {
+        "max_products": 8,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "image_background_color": "#fffcea",
+        "padding-block-start": 40,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "arenus_ambassador_detail",
+    "arenus_ambassador_products"
+  ]
+}

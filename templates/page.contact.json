@@ -6,146 +6,113 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
-    "main": {
-      "type": "main-page",
-      "blocks": {
-        "title": {
-          "type": "text",
-          "name": "t:names.title",
-          "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "h2",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "text",
-          "name": "t:names.content",
-          "settings": {
-            "text": "{{ closest.page.content }}",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "center",
-            "type_preset": "rte",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "title",
-        "content"
-      ],
+    "arenus_contact_banner": {
+      "type": "arenus-page-banner",
       "settings": {
-        "content_direction": "column",
-        "gap": 32,
-        "color_scheme": "",
-        "padding-block-start": 40,
-        "padding-block-end": 0
+        "heading": "Contact us",
+        "description": "",
+        "image": "shopify://shop_images/contact_us_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "min_height_mobile": 330,
+        "min_height_desktop": 480,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 900,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
       }
     },
-    "form": {
-      "type": "section",
+    "arenus_contact_content": {
+      "type": "arenus-contact-content",
       "blocks": {
-        "contact_form_UwiCkQ": {
-          "type": "contact-form",
+        "intro": {
+          "type": "richtext",
           "settings": {
-            "width": "custom",
-            "custom_width": 50,
-            "width_mobile": "custom",
-            "custom_width_mobile": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "submit-button": {
-              "type": "contact-form-submit-button",
-              "static": true,
-              "settings": {
-                "label": "Submit",
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": []
+            "content": "<p>We welcome your questions, and our Customer Solutions Specialists look forward to helping you!</p>"
+          }
+        },
+        "ways_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "You can reach out to us in several ways:"
+          }
+        },
+        "contact_row": {
+          "type": "two_column",
+          "settings": {
+            "left_content": "<p>By phone: (866) 791-3344<br/>By email: customer.service@arenus.com<br/>Live Chat: <a href=\"#\">Click here to chat!</a></p>",
+            "card_heading": "Hours",
+            "card_content": "<p>Monday to Friday: 8:00am - 5:00pm<br/>Saturday and Sunday: Closed</p>",
+            "card_background_color": "#fff3d3"
+          }
+        },
+        "divider_1": {
+          "type": "divider",
+          "settings": {
+            "color": "#e0e0e0"
+          }
+        },
+        "donations_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Donations"
+          }
+        },
+        "donations_text": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>If your company or organization is seeking support for through donations, marketing material, etc., please complete this form to initiate the process. Requests are reviewed at the end of each quarter, four times per year. Please make sure you plan accordingly and submit your request well ahead of your event.</p><p><strong>We are suspending review of donation applications at this time. Check back with us soon.</strong></p>"
+          }
+        },
+        "divider_2": {
+          "type": "divider",
+          "settings": {
+            "color": "#e0e0e0"
+          }
+        },
+        "ambassadorship_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Ambassadorship"
+          }
+        },
+        "ambassadorship_text": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>If you are interested in becoming part of our Arenus Ambassador team, please complete this form and your application will be reviewed.</p><p><strong>Due to the high volume of applications please check back soon!</strong></p>"
+          }
         }
       },
       "block_order": [
-        "contact_form_UwiCkQ"
+        "intro",
+        "ways_heading",
+        "contact_row",
+        "divider_1",
+        "donations_heading",
+        "donations_text",
+        "divider_2",
+        "ambassadorship_heading",
+        "ambassadorship_text"
       ],
-      "name": "t:names.contact_form",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 32,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "color_scheme": "scheme-1",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 32,
-        "padding-block-end": 84
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "link_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 72
       }
     }
   },
   "order": [
-    "main",
-    "form"
+    "arenus_contact_banner",
+    "arenus_contact_content"
   ]
 }

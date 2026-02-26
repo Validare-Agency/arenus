@@ -6,285 +6,142 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero",
+    "arenus_hero": {
+      "type": "arenus-hero",
+      "settings": {
+        "media_type": "video",
+        "video": "shopify://files/videos/desktop hero.mp4",
+        "media_opacity": 50,
+        "heading": "Nutrition Engineered for Peak Wellness and Performance.",
+        "body_text": "<p>Browse our complete line of supplements and liniments. We make finding advanced solutions for Breathing, Digestion, and Soreness simple and effective.</p>",
+        "button_label": "EXPLORE PRODUCTS",
+        "button_link": "",
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000066",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top",
+        "section_height": "full-screen",
+        "section_height_custom": 80,
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "arenus_testimonials": {
+      "type": "arenus-testimonials",
       "blocks": {
-        "text_YLPk4p": {
-          "type": "text",
-          "name": "t:names.heading",
+        "testimonial_1": {
+          "type": "testimonial",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground-heading)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "review_text": "My vet suggested this for my horse when her bloodwork came back with a slightly low red blood count. I absolutely love the change in her personality. She acts like she did 20 years ago and she is presently 28...",
+            "author_name": "Partrica C."
+          }
         },
-        "button_H9gpTf": {
-          "type": "button",
-          "name": "t:names.button",
+        "testimonial_2": {
+          "type": "testimonial",
           "settings": {
-            "label": "Shop all",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button-secondary",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
+            "review_text": "My mare is 8 years old and she has been on AssureGuard Gold for over a year and doing so well SO I decided to try Eq-Well. She had been on another vitamin supplement. She has been on EQ-well for...",
+            "author_name": "Kathy M."
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "My 26yo retired mare would colic after her spring and fall injections, even though my veterinarian took care to give only 2 at a time. As she is a cribber, it is not easy to pass the NG tube. Dr....",
+            "author_name": "Dana K."
+          }
+        },
+        "testimonial_4": {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "I noticed one of my horses acting lethargic and disinterested and mentioned it to a friend. As I was new to Florida, she recommended a sand-clearing supplement. After research and reading reviews, I chose Assure. I put the whole herd...",
+            "author_name": "Carla K."
+          }
         }
       },
       "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3",
+        "testimonial_4"
       ],
-      "name": "t:names.hero",
       "settings": {
-        "media_type_1": "image",
-        "media_type_2": "image",
-        "stack_media_on_mobile": false,
-        "custom_mobile_media": false,
-        "media_type_1_mobile": "image",
-        "media_type_2_mobile": "image",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "space-between",
-        "vertical_alignment": "flex-end",
-        "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
-        "color_scheme": "scheme-6",
-        "toggle_overlay": true,
-        "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": false,
-        "reflection_opacity": 75,
-        "padding-block-start": 100,
+        "heading": "Real Reviews from our Customers",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "card_border_color": "#dddddd",
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "arenus_products": {
+      "type": "arenus-products",
+      "settings": {
+        "heading": "Best Sellers",
+        "collection": "all",
+        "max_products": 8,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "image_background_color": "#fffcea",
+        "padding-block-start": 24,
         "padding-block-end": 72
       }
     },
-    "product_list_fa6P9H": {
-      "type": "product-list",
-      "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "static": true,
-          "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-end",
-            "align_baseline": true,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_list_text_YFtzcL": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_list_button_MWeP9V": {
-              "type": "_product-list-button",
-              "name": "t:names.product_list_button",
-              "settings": {
-                "label": "View all",
-                "open_in_new_tab": false,
-                "style_class": "link",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
-          ]
-        },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 4,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_677WP3": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_YXxMTj": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_JQzVV4": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "color": "var(--color-foreground)",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
-          ]
-        }
-      },
-      "name": "Featured collection",
+    "arenus_products_a6tzzb": {
+      "type": "arenus-products",
       "settings": {
+        "heading": "Brands We Trust",
         "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
         "max_products": 8,
-        "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "image_background_color": "#fffcea",
+        "padding-block-start": 24,
+        "padding-block-end": 72
+      }
+    },
+    "arenus_ambassadors": {
+      "type": "arenus-ambassadors",
+      "settings": {
+        "heading": "Arenus Ambassadors",
+        "subtitle": "At Arenus, we value the health and performance of competitive equine athletes and proudly support the riders who care for them.",
+        "ambassadors_count": 10,
+        "url": "shopify://pages/ambassador",
+        "view_all_label": "VIEW ALL",
+        "view_all_url": "shopify://pages/ambassadors",
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "subtitle_color": "#dddddd",
+        "card_border_color": "#135b9f",
+        "padding-block-start": 72,
+        "padding-block-end": 72
+      }
+    },
+    "arenus_blog": {
+      "type": "arenus-blog",
+      "settings": {
+        "heading": "Our Blog",
+        "blog": "blog",
+        "max_posts": 3,
+        "button_label": "LEARN MORE",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "meta_color": "#808085",
+        "padding-block-start": 72,
+        "padding-block-end": 72
       }
     }
   },
   "order": [
-    "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "arenus_hero",
+    "arenus_testimonials",
+    "arenus_products",
+    "arenus_products_a6tzzb",
+    "arenus_ambassadors",
+    "arenus_blog"
   ]
 }
