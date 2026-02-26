@@ -1,0 +1,941 @@
+{%- comment -%}
+  Ambassador Detail — dynamically renders ambassador profile based on
+  ?ambassador=[handle] URL parameter. Reads from the Ambassador metaobject.
+{%- endcomment -%}
+
+{%- assign amb_handle = '' -%}
+
+{%- comment -%} Extract the ambassador handle from the URL query string {%- endcomment -%}
+{%- assign full_url = content_for_header | split: '"pageurl":"' | last | split: '"' | first -%}
+{%- if full_url contains 'ambassador=' -%}
+  {%- assign amb_handle = full_url | split: 'ambassador=' | last | split: '&' | first | url_decode -%}
+{%- endif -%}
+
+{%- comment -%} Look up the ambassador metaobject by handle {%- endcomment -%}
+{%- assign ambassador = shop.metaobjects.ambassador[amb_handle] -%}
+
+{%- if ambassador != blank -%}
+<div
+  id="ArenusAmbassadorDetail-{{ section.id }}"
+  class="arenus-ad"
+  style="
+    --arenus-ad-bg: {{ section.settings.background_color }};
+    --arenus-ad-text: {{ section.settings.text_color }};
+    --arenus-ad-muted: {{ section.settings.muted_text_color }};
+    --arenus-ad-border: {{ section.settings.border_color }};
+  "
+>
+  <div class=" c-page-width">
+    {%- comment -%} ===== Breadcrumb ===== {%- endcomment -%}
+    <nav class="arenus-ad__breadcrumb" aria-label="Breadcrumb">
+      {%- comment -%} Mobile: back arrow + "Ambassadors" {%- endcomment -%}
+      <a href="{{ section.settings.ambassadors_page_url | default: '/pages/ambassadors' }}" class="arenus-ad__breadcrumb-back">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Ambassadors</span>
+      </a>
+      {%- comment -%} Desktop: Home > Ambassadors > Name {%- endcomment -%}
+      <ol class="arenus-ad__breadcrumb-trail">
+        <li><a href="/">Home</a></li>
+        <li>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <a href="{{ section.settings.ambassadors_page_url | default: '/pages/ambassadors' }}">Ambassadors</a>
+        </li>
+        <li>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>{{ ambassador.name }}</span>
+        </li>
+      </ol>
+    </nav>
+
+    {%- comment -%} ===== Main layout: images + content ===== {%- endcomment -%}
+    <div class="arenus-ad__layout">
+
+      {%- comment -%} ===== Image carousel ===== {%- endcomment -%}
+      {%- comment -%} Try .value first (list metafield), then fall back to direct access {%- endcomment -%}
+      {%- assign photos = ambassador.photos_carousel.value -%}
+      {%- unless photos -%}
+        {%- assign photos = ambassador.photos_carousel -%}
+      {%- endunless -%}
+      {%- if photos != blank and photos.size > 0 -%}
+        <div class="arenus-ad__gallery">
+          <div class="arenus-ad__gallery-track">
+            {%- for photo in photos -%}
+              {%- if photo != blank -%}
+                <div class="arenus-ad__gallery-slide">
+                  {{ photo | image_url: width: 1600 | image_tag: loading: 'lazy', class: 'arenus-ad__gallery-img' }}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- comment -%} Dots (mobile) {%- endcomment -%}
+          {%- if photos.size > 1 -%}
+            <div class="arenus-ad__gallery-dots">
+              {%- for photo in photos -%}
+                <button
+                  type="button"
+                  class="arenus-ad__gallery-dot{% if forloop.first %} is-active{% endif %}"
+                  aria-label="Go to image {{ forloop.index }}"
+                  data-slide-index="{{ forloop.index0 }}"
+                ></button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} Nav buttons (desktop) {%- endcomment -%}
+          {%- if photos.size > 1 -%}
+            <div class="arenus-ad__gallery-nav">
+              <button type="button" class="arenus-ad__gallery-nav-btn" aria-label="Previous image" data-direction="prev">
+                {% render 'icon-caret-left' %}
+              </button>
+              <button type="button" class="arenus-ad__gallery-nav-btn" aria-label="Next image" data-direction="next">
+                {% render 'icon-caret-right' %}
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ===== Content column ===== {%- endcomment -%}
+      <div class="arenus-ad__content">
+        <div class="arenus-ad__info">
+
+          {%- comment -%} Name + socials row {%- endcomment -%}
+          <div class="arenus-ad__name-row">
+            {%- if ambassador.name != blank or ambassador.last_name != blank -%}
+              <h1 class="arenus-ad__name">{{ ambassador.name }} {{ ambassador.last_name }}</h1>
+            {%- endif -%}
+
+            {%- if ambassador.instagram != blank or ambassador.facebook != blank or ambassador.twitter != blank -%}
+              <div class="arenus-ad__socials">
+                {%- if ambassador.instagram != blank -%}
+                  <a href="{{ ambassador.instagram }}" target="_blank" rel="noopener noreferrer" class="arenus-ad__social-link" aria-label="Instagram">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" fill="currentColor"/></svg>
+                  </a>
+                {%- endif -%}
+                {%- if ambassador.facebook != blank -%}
+                  <a href="{{ ambassador.facebook }}" target="_blank" rel="noopener noreferrer" class="arenus-ad__social-link" aria-label="Facebook">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill="currentColor"/></svg>
+                  </a>
+                {%- endif -%}
+                {%- if ambassador.twitter != blank -%}
+                  <a href="{{ ambassador.twitter }}" target="_blank" rel="noopener noreferrer" class="arenus-ad__social-link" aria-label="X (Twitter)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Discipline + Since {%- endcomment -%}
+          {%- if ambassador.discipline != blank -%}
+            <p class="arenus-ad__discipline">{{ ambassador.discipline }}</p>
+          {%- endif -%}
+
+          {%- if ambassador.since != blank -%}
+            <p class="arenus-ad__since">Arenus Ambassador Since {{ ambassador.since }}</p>
+          {%- endif -%}
+
+          {%- comment -%} Website {%- endcomment -%}
+          {%- if ambassador.website != blank -%}
+            <a href="{{ ambassador.website }}" target="_blank" rel="noopener noreferrer" class="arenus-ad__website">
+              {{ ambassador.website | remove: 'https://' | remove: 'http://' | remove: 'www.' | split: '/' | first }}
+            </a>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Favorite Products button {%- endcomment -%}
+        <button type="button" class="arenus-ad__fav-btn" id="arenus-ad-fav-btn-{{ section.id }}">
+          FAVORITE PRODUCTS
+        </button>
+
+        {%- comment -%} Description {%- endcomment -%}
+        {%- if ambassador.description != blank -%}
+          <div class="arenus-ad__description">
+            {{ ambassador.description | metafield_tag }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Accordions {%- endcomment -%}
+        <div class="arenus-ad__accordions">
+          {%- if ambassador.accomplishments != blank -%}
+            <div class="arenus-ad__accordion" data-accordion>
+              <button type="button" class="arenus-ad__accordion-trigger" aria-expanded="false">
+                <span>Accomplishments</span>
+                <svg class="arenus-ad__accordion-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="arenus-ad__accordion-panel" hidden>
+                <div class="arenus-ad__accordion-content arenus-ad__accordion-content--clamped" data-accomplishments>
+                  {{ ambassador.accomplishments | metafield_tag }}
+                </div>
+                <button type="button" class="arenus-ad__show-all-btn" data-show-all hidden>
+                  Show all
+                </button>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if ambassador.testimonials != blank -%}
+            <div class="arenus-ad__accordion" data-accordion>
+              <button type="button" class="arenus-ad__accordion-trigger" aria-expanded="false">
+                <span>Testimonials</span>
+                <svg class="arenus-ad__accordion-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="arenus-ad__accordion-panel" hidden>
+                <div class="arenus-ad__accordion-content">
+                  {{ ambassador.testimonials | metafield_tag }}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- else -%}
+  {%- comment -%} No ambassador found — show fallback {%- endcomment -%}
+  <div class="arenus-ad arenus-ad--empty" style="--arenus-ad-bg: {{ section.settings.background_color }}; --arenus-ad-text: {{ section.settings.text_color }};">
+    <div class="arenus-ad__empty">
+      <p>Ambassador not found.</p>
+      <a href="{{ section.settings.ambassadors_page_url | default: '/pages/ambassadors' }}">View all ambassadors</a>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  /* ===== Ambassador Detail — Mobile-first ===== */
+
+  .arenus-ad {
+    background-color: var(--arenus-ad-bg, #191919);
+    color: var(--arenus-ad-text, #ffffff);
+  }
+
+  .arenus-ad--empty {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-ad__empty {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .arenus-ad__empty a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  /* ===== Breadcrumb ===== */
+  .arenus-ad__breadcrumb {
+    padding: 8px 20px;
+  }
+
+  /* Mobile: back link */
+  .arenus-ad__breadcrumb-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+  }
+
+  .arenus-ad__breadcrumb-back svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Desktop: trail — hidden on mobile */
+  .arenus-ad__breadcrumb-trail {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+  }
+
+  .arenus-ad__breadcrumb-trail li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-ad__breadcrumb-trail a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .arenus-ad__breadcrumb-trail a:hover {
+    text-decoration: underline;
+  }
+
+  .arenus-ad__breadcrumb-trail svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  /* ===== Layout ===== */
+  .arenus-ad__layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Gallery ===== */
+  .arenus-ad__gallery {
+    position: relative;
+  }
+
+  .arenus-ad__gallery-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .arenus-ad__gallery-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arenus-ad__gallery-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 12px 20px;
+  }
+
+  .arenus-ad__gallery-img {
+    width: 100%;
+    height: 284px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+  }
+
+  /* Dots */
+  .arenus-ad__gallery-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .arenus-ad__gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50px;
+    background-color: var(--arenus-ad-text, #ffffff);
+    opacity: 0.3;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-ad__gallery-dot.is-active {
+    opacity: 1;
+  }
+
+  /* Nav buttons — hidden on mobile */
+  .arenus-ad__gallery-nav {
+    display: none;
+  }
+
+  /* ===== Content ===== */
+  .arenus-ad__content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px 20px 40px;
+  }
+
+  .arenus-ad__info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+  }
+
+  /* Name + socials row */
+  .arenus-ad__name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .arenus-ad__name {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.56px;
+    margin: 0;
+  }
+
+  .arenus-ad__socials {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .arenus-ad__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-ad__social-link:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-ad__social-link svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Discipline */
+  .arenus-ad__discipline {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    margin: 0;
+  }
+
+  /* Since */
+  .arenus-ad__since {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: var(--arenus-ad-muted, #b0b0b0);
+    margin: 0;
+  }
+
+  /* Website */
+  .arenus-ad__website {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .arenus-ad__website:hover {
+    opacity: 0.7;
+  }
+
+  /* Favorite Products button */
+  .arenus-ad__fav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 16px 32px;
+    border: 1px solid var(--arenus-ad-text, #ffffff);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--arenus-ad-text, #ffffff);
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-ad__fav-btn:hover {
+    opacity: 0.7;
+  }
+
+  /* Description */
+  .arenus-ad__description {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.7;
+    letter-spacing: -0.14px;
+    color: var(--arenus-ad-muted, #b0b0b0);
+  }
+
+  .arenus-ad__description p {
+    margin: 0 0 1em;
+  }
+
+  .arenus-ad__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ===== Accordions ===== */
+  .arenus-ad__accordions {
+    display: flex;
+    flex-direction: column;
+    padding-top: 16px;
+  }
+
+  .arenus-ad__accordion {
+    border-bottom: 1px solid var(--arenus-ad-border, #373B3E);
+  }
+
+  .arenus-ad__accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 0 16px;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    text-align: left;
+  }
+
+  .arenus-ad__accordion-trigger:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-ad__accordion-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+
+  .arenus-ad__accordion-trigger[aria-expanded="true"] .arenus-ad__accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .arenus-ad__accordion-panel {
+    overflow: hidden;
+    padding-bottom: 16px;
+    padding-bottom: 16px;
+  }
+
+  .arenus-ad__accordion-panel[hidden] {
+    display: none;
+  }
+
+  .arenus-ad__accordion-content {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.7;
+    letter-spacing: -0.14px;
+    color: var(--arenus-ad-muted, #b0b0b0);
+  }
+
+  .arenus-ad__accordion-content p {
+    margin: 0 0 1em;
+  }
+
+  .arenus-ad__accordion-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Accomplishments: clamped to 200px height */
+  .arenus-ad__accordion-content--clamped {
+    max-height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .arenus-ad__accordion-content--clamped::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--arenus-ad-bg, #191919));
+    pointer-events: none;
+  }
+
+  .arenus-ad__accordion-content--clamped.is-expanded {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .arenus-ad__accordion-content--clamped.is-expanded::after {
+    display: none;
+  }
+
+  /* Show all button */
+  .arenus-ad__show-all-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 12px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--arenus-ad-text, #ffffff);
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-ad__show-all-btn:hover {
+    opacity: 0.7;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-ad__breadcrumb {
+      padding: 8px 40px;
+    }
+
+    /* Hide mobile back, show desktop trail */
+    .arenus-ad__breadcrumb-back {
+      display: none;
+    }
+
+    .arenus-ad__breadcrumb-trail {
+      display: flex;
+    }
+
+    /* Two-column layout */
+    .arenus-ad__layout {
+      flex-direction: row;
+      padding: 0 0 0 40px;
+    }
+
+    /* Gallery: left column */
+    .arenus-ad__gallery {
+      flex: 0 0 55%;
+      max-width: 55%;
+      position: relative;
+      height: fit-content;
+      border-radius: 24px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .arenus-ad__gallery-slide {
+      padding: 0;
+    }
+
+    .arenus-ad__gallery-img {
+      height: 640px;
+      border-radius: 0;
+    }
+
+    /* Hide dots on desktop */
+    .arenus-ad__gallery-dots {
+      display: none;
+    }
+
+    /* Show nav buttons on desktop */
+    .arenus-ad__gallery-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: absolute;
+      bottom: 25px;
+      right: 25px;
+    }
+
+    .arenus-ad__gallery-nav-btn {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #EEEEEF;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 0;
+      transition: border-color 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .arenus-ad__gallery-nav-btn:hover {
+      border-color:#000000;
+    }
+
+    .arenus-ad__gallery-nav-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Content: right column */
+    .arenus-ad__content {
+      flex: 1;
+      min-width: 0;
+      padding: 20px 40px 40px;
+    }
+
+    .arenus-ad__info {
+      padding-top: 0;
+    }
+
+    .arenus-ad__name {
+      font-size: 40px;
+      line-height: 1.1;
+      letter-spacing: -0.8px;
+    }
+
+    .arenus-ad__description {
+      font-size: 14px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  /* ===== Ambassador Detail — Carousel + Accordions ===== */
+  (function() {
+    var section = document.getElementById('ArenusAmbassadorDetail-{{ section.id }}');
+    if (!section) return;
+
+    /* --- Image carousel --- */
+    var track = section.querySelector('.arenus-ad__gallery-track');
+    var dots = section.querySelectorAll('.arenus-ad__gallery-dot');
+    var prevBtn = section.querySelector('[data-direction="prev"]');
+    var nextBtn = section.querySelector('[data-direction="next"]');
+    var currentSlide = 0;
+
+    function getSlideCount() {
+      return track ? track.children.length : 0;
+    }
+
+    function goToSlide(index) {
+      if (!track) return;
+      var total = getSlideCount();
+      if (index < 0) index = total - 1;
+      if (index >= total) index = 0;
+      currentSlide = index;
+
+      var slide = track.children[index];
+      if (slide) {
+        track.scrollTo({ left: slide.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+      }
+
+      /* Update dots */
+      dots.forEach(function(dot, i) {
+        dot.classList.toggle('is-active', i === currentSlide);
+      });
+    }
+
+    /* Dot clicks */
+    dots.forEach(function(dot) {
+      dot.addEventListener('click', function() {
+        var idx = parseInt(dot.getAttribute('data-slide-index'), 10);
+        goToSlide(idx);
+      });
+    });
+
+    /* Nav button clicks */
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        goToSlide(currentSlide - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        goToSlide(currentSlide + 1);
+      });
+    }
+
+    /* Scroll-based dot sync (for swipe on mobile) */
+    if (track) {
+      var scrollTimeout;
+      track.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+          var slideWidth = track.children[0] ? track.children[0].offsetWidth : 1;
+          var newIndex = Math.round(track.scrollLeft / slideWidth);
+          if (newIndex !== currentSlide) {
+            currentSlide = newIndex;
+            dots.forEach(function(dot, i) {
+              dot.classList.toggle('is-active', i === currentSlide);
+            });
+          }
+        }, 50);
+      });
+    }
+
+    /* --- Accordions --- */
+    var accordions = section.querySelectorAll('[data-accordion]');
+    accordions.forEach(function(accordion) {
+      var trigger = accordion.querySelector('.arenus-ad__accordion-trigger');
+      var panel = accordion.querySelector('.arenus-ad__accordion-panel');
+      if (!trigger || !panel) return;
+
+      trigger.addEventListener('click', function() {
+        var expanded = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', !expanded);
+        panel.hidden = expanded;
+
+        /* Check if accomplishments panel needs "show all" button */
+        if (!expanded) {
+          var clampedContent = panel.querySelector('.arenus-ad__accordion-content--clamped');
+          var showAllBtn = panel.querySelector('[data-show-all]');
+          if (clampedContent && showAllBtn) {
+            /* Show button only if content exceeds 200px */
+            if (clampedContent.scrollHeight > 200) {
+              showAllBtn.hidden = false;
+            } else {
+              showAllBtn.hidden = true;
+              clampedContent.classList.add('is-expanded');
+            }
+          }
+        }
+      });
+    });
+
+    /* --- Show all / Hide toggle for accomplishments --- */
+    var showAllBtns = section.querySelectorAll('[data-show-all]');
+    showAllBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var content = btn.previousElementSibling;
+        if (!content || !content.classList.contains('arenus-ad__accordion-content--clamped')) return;
+
+        var isExpanded = content.classList.contains('is-expanded');
+        if (isExpanded) {
+          /* Collapse */
+          content.classList.remove('is-expanded');
+          btn.textContent = 'Show all';
+        } else {
+          /* Expand */
+          content.classList.add('is-expanded');
+          btn.textContent = 'Hide';
+        }
+      });
+    });
+
+    /* --- Favorite Products button (scroll to products section) --- */
+    var favBtn = section.querySelector('.arenus-ad__fav-btn');
+    if (favBtn) {
+      favBtn.addEventListener('click', function() {
+        var productsSection = document.querySelector('.arenus-ambassador-products-wrapper');
+        if (productsSection) {
+          var header = document.querySelector('.shopify-section-group-header-group');
+          var headerOffset = header ? header.offsetHeight : 60;
+          var top = productsSection.getBoundingClientRect().top + window.pageYOffset - headerOffset - 16;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Ambassador Detail",
+  "tag": "section",
+  "class": "arenus-ad-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section dynamically displays an ambassador's profile based on the ?ambassador=[handle] URL parameter. Assign this section to a page at /pages/ambassador."
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "url",
+      "id": "ambassadors_page_url",
+      "label": "Ambassadors page URL",
+      "info": "Link to the main ambassadors listing page."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "muted_text_color",
+      "label": "Muted text color",
+      "default": "#b0b0b0"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Accordion border color",
+      "default": "#373B3E"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ambassador Detail",
+      "category": "Social proof",
+      "settings": {
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "muted_text_color": "#b0b0b0",
+        "border_color": "#dddddd"
+      }
+    }
+  ]
+}
+{% endschema %}

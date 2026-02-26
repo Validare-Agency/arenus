@@ -1,0 +1,85 @@
+{%- doc -%}
+  Renders pill-shaped quick link buttons next to the logo.
+
+  @param {object} section - The section object with settings
+{%- enddoc -%}
+
+<div class="header-pills">
+  {% if section.settings.pill_1_text != blank %}
+    <a
+      href="{{ section.settings.pill_1_url | default: '/' }}"
+      class="header-pill"
+    >
+      <span class="header-pill__icon svg-wrapper" aria-hidden="true">
+        {{- 'icon-medal.svg' | inline_asset_content -}}
+      </span>
+      <span class="header-pill__label">{{ section.settings.pill_1_text }}</span>
+    </a>
+  {% endif %}
+
+  {% if section.settings.pill_2_text != blank %}
+    <a
+      href="{{ section.settings.pill_2_url | default: '/' }}"
+      class="header-pill"
+    >
+      <span class="header-pill__icon svg-wrapper" aria-hidden="true">
+        {{- 'icon-newspaper.svg' | inline_asset_content -}}
+      </span>
+      <span class="header-pill__label">{{ section.settings.pill_2_text }}</span>
+    </a>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .header-pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgba(51, 61, 66, 0.4);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    border-radius: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+
+  .header-pill:hover {
+    background: rgba(51, 61, 66, 0.6);
+  }
+
+  .header-pill__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .header-pill__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-pill__label {
+    font-family: inherit;
+  }
+
+  @media screen and (max-width: 749px) {
+    .header-pills {
+      display: none;
+    }
+  }
+{% endstylesheet %}

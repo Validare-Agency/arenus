@@ -1,0 +1,207 @@
+{%- comment -%}
+  Ambassadors Grid — shows all ambassadors as a wrapped grid of circular photo cards.
+  Uses the Ambassador metaobject for data.
+{%- endcomment -%}
+
+<div
+  id="ArenusAmbassadorsGrid-{{ section.id }}"
+  class="arenus-ag"
+  style="
+    --arenus-ag-bg: {{ section.settings.background_color }};
+    --arenus-ag-text: {{ section.settings.text_color }};
+    --arenus-ag-subtitle: {{ section.settings.subtitle_color }};
+    --arenus-ag-border: {{ section.settings.card_border_color }};
+  "
+>
+  {%- assign ambassadors = shop.metaobjects.ambassador.values | sort: 'card_order' -%}
+  {%- assign ambassadors_sorted = ambassadors | sort: 'order' -%}
+
+  {%- if ambassadors_sorted != blank and ambassadors_sorted.size > 0 -%}
+    <div class="arenus-ag__grid">
+      {%- for ambassador in ambassadors_sorted -%}
+        <a
+          href="{{ section.settings.detail_url }}?ambassador={{ ambassador.system.handle }}"
+          class="arenus-ag__card"
+        >
+          <div class="arenus-ag__photo-ring">
+            {%- if ambassador.card_photo != blank -%}
+              {{ ambassador.card_photo | image_url: width: 400 | image_tag: loading: 'lazy', class: 'arenus-ag__photo' }}
+            {%- endif -%}
+          </div>
+          <div class="arenus-ag__info">
+            {%- if ambassador.name != blank -%}
+              <span class="arenus-ag__name">{{ ambassador.name }}</span>
+            {%- endif -%}
+            {%- if ambassador.discipline != blank -%}
+              <span class="arenus-ag__discipline">{{ ambassador.discipline }}</span>
+            {%- endif -%}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Ambassadors Grid — Mobile-first ===== */
+
+  .arenus-ag {
+    background-color: var(--arenus-ag-bg, #191919);
+    color: var(--arenus-ag-text, #ffffff);
+    padding: 40px 20px;
+  }
+
+  /* Grid — 2 columns on mobile, flex-wrap centered */
+  .arenus-ag__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 20px;
+    justify-content: center;
+  }
+
+  /* Card */
+  .arenus-ag__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Photo ring — circular border */
+  .arenus-ag__photo-ring {
+    width: 164px;
+    height: 164px;
+    border-radius: 100px;
+    border: 2px solid var(--arenus-ag-border, #135b9f);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .arenus-ag__photo {
+    width: 156px;
+    height: 156px;
+    border-radius: 100px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Info: name + discipline */
+  .arenus-ag__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .arenus-ag__name {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .arenus-ag__discipline {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: var(--arenus-ag-subtitle, #eeeeef);
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-ag {
+      padding: 64px 40px;
+    }
+
+    .arenus-ag__grid {
+      gap: 32px;
+      max-width: 1130px;
+      margin: 0 auto;
+    }
+
+    /* Larger photo ring on desktop */
+    .arenus-ag__photo-ring {
+      width: 188px;
+      height: 188px;
+    }
+
+    .arenus-ag__photo {
+      width: 180px;
+      height: 180px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Ambassadors Grid",
+  "tag": "section",
+  "class": "arenus-ag-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section displays all ambassadors in a grid layout. Ambassador data comes from the 'Ambassador' metaobject."
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "url",
+      "id": "detail_url",
+      "label": "Ambassador detail page URL"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Discipline text color",
+      "default": "#eeeeef"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Photo border color",
+      "default": "#135b9f"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ambassadors Grid",
+      "category": "Social proof",
+      "settings": {
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "subtitle_color": "#eeeeef",
+        "card_border_color": "#135b9f"
+      }
+    }
+  ]
+}
+{% endschema %}

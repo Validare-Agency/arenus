@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_about_banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Who we are",
+        "image": "shopify://shop_images/about_us_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "min_height_mobile": 330,
+        "min_height_desktop": 480,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 900,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "arenus_about_content": {
+      "type": "arenus-about-content",
+      "settings": {
+        "content": "<p>The happiness of our animals depends on our care. As owners, trainers, and veterinarians we innately want the best for the animals in our care. When they're suffering, we desperately seek the best solutions - just as we treat the health and well being of our families and ourselves. Good solutions give us more than results; they give us comfort. But the best solutions go beyond solving problems by preventing future issues.<br/><br/>Yet most animal supplement companies are built without research, or on the grounds of others' research about ingredients. Their ingredients and quality claims don't often match the contents. Formulas are guesses or non-exact variations of existing products. Consequently, it's difficult to tell exactly how well you're supporting your animal's health.<br/><br/>Whether you've tried everything else, or don't even know where to start, Arenus Animal Health redefines the level of support you can provide for your horse or dog.<br/><br/>Developed by veterinarians and nutritionists and supported by a team of animal health specialists, our products deliver more than what you think your animal could be receiving; they provide exactly what your animal needs, whether healthy or ill. This is because Arenus Animal Health is centered on the core belief of supporting complete animal health care solutions, with deep passion and exact science.<br/><br/>Empirical evidence and peer-reviewed publications form the foundation of our research into the exact ingredients and formulations that make up our dog and horse supplements and liniments. With Arenus Animal Health, your animal receives the finest, consistent, and quality non-pharmaceutical solutions.<br/><br/>To learn more about our research, <a href=\"https://arenus.com/research/\" target=\"_blank\">click here</a>.<br/>To learn more about our exclusive ingredients, <a href=\"https://arenus.com/our-ingredients/\" target=\"_blank\">click here</a>.<br/><br/>Treating animals well is a great responsibility. Every product, as with every effort of Arenus Animal Health, serves the singularly pure purpose of supporting better and more complete health and wellness through nutritional science. </p>",
+        "sub_heading": "Ride for a Green World",
+        "sub_content": "<p>At Arenus Animal Health, we believe in doing our part to reduce our environmental impact. Our team sources recyclable, sustainable packaging options whenever possible and we offer refillable packaging options for many of our horse supplements. To learn more about our Ride For a Green World initiative, <a href=\"https://arenus.com/ride-for-a-green-world/\" target=\"_blank\">click here</a> or watch the video below!</p>",
+        "video_url_1": "https://www.youtube.com/watch?v=2L4SurtGGjg",
+        "video_url_2": "https://www.youtube.com/watch?v=3ssoIIRv6Hc",
+        "hashtag_text": "#SHAREYOURLEGACY",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "link_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+
+    "arenus_ambassadors": {
+      "type": "arenus-ambassadors",
+      "settings": {
+        "heading": "Arenus Ambassadors",
+        "subtitle": "At Arenus, we value the health and performance of competitive equine athletes and proudly support the riders who care for them.",
+        "ambassadors_count": 10,
+        "url": "shopify://pages/ambassador",
+        "view_all_label": "VIEW ALL",
+        "view_all_url": "shopify://pages/ambassadors",
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "subtitle_color": "#dddddd",
+        "card_border_color": "#135b9f",
+        "padding-block-start": 72,
+        "padding-block-end": 72
+      }
+    },
+    "arenus_blog": {
+      "type": "arenus-blog",
+      "settings": {
+        "heading": "Our Blog",
+        "blog": "blog",
+        "max_posts": 3,
+        "button_label": "LEARN MORE",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "meta_color": "#808085",
+        "padding-block-start": 72,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "arenus_about_banner",
+    "arenus_about_content",
+    "arenus_ambassadors",
+    "arenus_blog"
+  ]
+}

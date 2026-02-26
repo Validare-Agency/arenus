@@ -1,0 +1,1366 @@
+<div
+  id="ArenusProducts-{{ section.id }}"
+  class="arenus-products c-page-width"
+  style="
+    --arenus-products-bg: {{ section.settings.background_color }};
+    --arenus-products-text: {{ section.settings.text_color }};
+    --arenus-products-image-bg: {{ section.settings.image_background_color }};
+    padding-block-start: {{ section.settings.padding-block-start }}px;
+    padding-block-end: {{ section.settings.padding-block-end }}px;
+  "
+>
+  <div class="arenus-products__header">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="arenus-products__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.collection != blank and section.settings.collection.products.size > 1 -%}
+      <div class="arenus-products__nav">
+        <button
+          type="button"
+          class="arenus-products__nav-btn arenus-products__nav-btn--prev"
+          aria-label="Previous products"
+          data-direction="prev"
+        >
+          {% render 'icon-caret-left' %}
+        </button>
+        <button
+          type="button"
+          class="arenus-products__nav-btn arenus-products__nav-btn--next"
+          aria-label="Next products"
+          data-direction="next"
+        >
+          {% render 'icon-caret-right' %}
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.collection != blank and section.settings.collection.products.size > 0 -%}
+    <div class="arenus-products__carousel">
+      <div class="arenus-products__track">
+        {%- for product in section.settings.collection.products limit: section.settings.max_products -%}
+          <div class="arenus-products__card">
+            {%- comment -%} Product image {%- endcomment -%}
+            <a href="{{ product.url }}" class="arenus-products__card-link" aria-label="{{ product.title | escape }}" tabindex="-1"></a>
+            <div class="arenus-products__card-image">
+              {%- if product.featured_image != blank -%}
+                {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+              {%- endif -%}
+
+              {%- comment -%} Quick add-to-cart button (inside image for desktop overlay) {%- endcomment -%}
+              <button
+                type="button"
+                class="arenus-products__add-btn{% unless product.available %} is-sold-out{% endunless %}"
+                data-product-id="{{ product.id }}"
+                data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                {% if product.has_only_default_variant %}
+                  data-single-variant="true"
+                {% endif %}
+                {% unless product.available %}disabled{% endunless %}
+                aria-label="{% if product.available %}Add {{ product.title | escape }} to cart{% else %}{{ product.title | escape }} is sold out{% endif %}"
+              >
+                {%- if product.available -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+                  </svg>
+                  ADD TO CART
+                {%- else -%}
+                  SOLD OUT
+                {%- endif -%}
+              </button>
+            </div>
+
+            {%- comment -%} Product info {%- endcomment -%}
+            <div class="arenus-products__card-info">
+              {%- comment -%} Star rating — placeholder {%- endcomment -%}
+              <div class="arenus-products__rating">
+                <div class="arenus-products__stars" aria-label="5 out of 5 stars">
+                  {%- for i in (1..5) -%}
+                    {% render 'icon-star', width: 16, height: 16 %}
+                  {%- endfor -%}
+                </div>
+                <span class="arenus-products__review-count">0 reviews</span>
+              </div>
+
+              {%- comment -%} Title + price row {%- endcomment -%}
+              <div class="arenus-products__title-price">
+                <span class="arenus-products__title">{{ product.title }}</span>
+                <span class="arenus-products__price">
+                  {%- render 'format-price', price: product.selected_or_first_available_variant.price -%}
+                </span>
+              </div>
+
+              {%- comment -%} Tag badges from metafield {%- endcomment -%}
+              {%- assign badges = product.metafields.custom.product_card_badges.value -%}
+              {%- if badges != blank and badges.size > 0 -%}
+                <div class="arenus-products__tags">
+                  {%- for badge in badges -%}
+                    <span class="arenus-products__tag">{{ badge }}</span>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Variant data for quick-add modal (JSON) {%- endcomment -%}
+            {%- unless product.has_only_default_variant -%}
+              <script type="application/json" class="arenus-products__card-data">
+                {
+                  "id": {{ product.id }},
+                  "title": {{ product.title | json }},
+                  "url": {{ product.url | json }},
+                  "image": {{ product.featured_image | image_url: width: 400 | json }},
+                  "options": {{ product.options_with_values | json }},
+                  "variants": [
+                    {%- for variant in product.variants -%}
+                      {
+                        "id": {{ variant.id }},
+                        "available": {{ variant.available }},
+                        "price": {{ variant.price }},
+                        "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+                        "options": {{ variant.options | json }}
+                      }{%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                  ]
+                }
+              </script>
+            {%- endunless -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Quick-add modal (shared, single instance per section) {%- endcomment -%}
+  <dialog class="arenus-qam__dialog" id="arenus-qam-{{ section.id }}">
+    <div class="arenus-qam">
+      <button type="button" class="arenus-qam__close" aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 12L2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      {%- comment -%} Product header: image + stars + title {%- endcomment -%}
+      <div class="arenus-qam__header">
+        <div class="arenus-qam__image">
+          <img src="" alt="" width="80" height="80" loading="lazy" />
+        </div>
+        <div class="arenus-qam__meta">
+          <div class="arenus-qam__rating">
+            <div class="arenus-qam__stars">
+              {%- for i in (1..5) -%}
+                {% render 'icon-star', width: 16, height: 16 %}
+              {%- endfor -%}
+            </div>
+            <span class="arenus-qam__review-count">0 reviews</span>
+          </div>
+          <h3 class="arenus-qam__title"></h3>
+          <div class="arenus-qam__price-wrap">
+            <span class="arenus-qam__price"></span>
+            <span class="arenus-qam__compare-price"></span>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Variant option groups (built dynamically by JS) {%- endcomment -%}
+      <div class="arenus-qam__options"></div>
+
+      {%- comment -%} Footer: quantity stepper + add to cart {%- endcomment -%}
+      <div class="arenus-qam__footer">
+        <div class="arenus-qam__stepper">
+          <button type="button" class="arenus-qam__stepper-btn arenus-qam__stepper-minus" aria-label="Decrease quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <span class="arenus-qam__stepper-value">1</span>
+          <button type="button" class="arenus-qam__stepper-btn arenus-qam__stepper-plus" aria-label="Increase quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7 2.75L7 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button type="button" class="arenus-qam__add-btn" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+          </svg>
+          ADD TO CART
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Products — Mobile-first ===== */
+
+  .arenus-products {
+    background-color: var(--arenus-products-bg, #ffffff);
+    color: var(--arenus-products-text, #000000);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 1440px;
+  }
+
+  /* Header row */
+  .arenus-products__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 20px;
+  }
+
+  /* Section heading */
+  .arenus-products__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+  }
+
+  /* Navigation buttons — hidden on mobile */
+  .arenus-products__nav {
+    display: none;
+  }
+
+  /* Carousel container */
+  .arenus-products__carousel {
+    overflow: hidden;
+  }
+
+  /* Scrollable track */
+  .arenus-products__track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .arenus-products__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Product card */
+  .arenus-products__card {
+    position: relative;
+    flex: 0 0 320px;
+    max-width: 320px;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* Invisible overlay link — makes entire card clickable */
+  .arenus-products__card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    text-decoration: none;
+  }
+
+  .arenus-products__card:first-child {
+    margin-left: 20px;
+  }
+
+  .arenus-products__card:last-child {
+    margin-right: 20px;
+  }
+
+  /* Image area */
+  .arenus-products__card-image {
+    aspect-ratio: 1;
+    background-color: var(--arenus-products-image-bg, #fffcea);
+    border-radius: 12px;
+    padding: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-products__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Info area */
+  .arenus-products__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  /* Star rating row */
+  .arenus-products__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-products__stars {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .arenus-products__stars svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .arenus-products__review-count {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1;
+    color: #808085;
+  }
+
+  /* Title + price row */
+  .arenus-products__title-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .arenus-products__title {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 20px;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .arenus-products__price {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    white-space: nowrap;
+  }
+
+  /* Tag badges */
+  .arenus-products__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .arenus-products__tag {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  /* ===== Card Add-to-Cart Button ===== */
+  /* Mobile: button is positioned at the very bottom of the card */
+  .arenus-products__add-btn {
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #e6b236;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+
+  .arenus-products__add-btn.is-sold-out {
+    background-color: #d4d4d4;
+    cursor: not-allowed;
+  }
+
+  .arenus-products__add-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .arenus-products__add-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* Reserve space at the bottom of the card for the button */
+  .arenus-products__card-info {
+    padding-bottom: 56px;
+  }
+
+  /* ===== Quick-Add Modal (centered) ===== */
+  .arenus-qam__dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    max-width: calc(100% - 32px);
+    width: 100%;
+    max-height: 85vh;
+    max-height: 85dvh;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  .arenus-qam__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .arenus-qam__dialog[open] {
+    animation: arenusQamFadeIn 0.25s ease forwards;
+  }
+
+  .arenus-qam__dialog.is-closing {
+    animation: arenusQamFadeOut 0.2s ease forwards;
+  }
+
+  .arenus-qam__dialog.is-closing::backdrop {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  @keyframes arenusQamFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes arenusQamFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.95); }
+  }
+
+  /* Modal inner container */
+  .arenus-qam {
+    padding: 16px;
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+  }
+
+  /* Close button */
+  .arenus-qam__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1;
+    color: #000;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-qam__close:hover {
+    opacity: 0.7;
+  }
+
+  /* Modal header: image + meta */
+  .arenus-qam__header {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .arenus-qam__image {
+    flex-shrink: 0;
+    width: 112px;
+    height: 112px;
+    background: #fffcea;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .arenus-qam__image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  .arenus-qam__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    padding-right: 40px;
+  }
+
+  .arenus-qam__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-qam__stars {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .arenus-qam__stars svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .arenus-qam__review-count {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #808085;
+  }
+
+  .arenus-qam__title {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+    color: #000000;
+  }
+
+  .arenus-qam__price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-qam__price {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.16px;
+    color: #000000;
+  }
+
+  .arenus-qam__compare-price {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: -0.14px;
+    color: #808085;
+    text-decoration: line-through;
+  }
+
+  .arenus-qam__compare-price:empty {
+    display: none;
+  }
+
+  /* Variant option groups */
+  .arenus-qam__options {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .arenus-qam__option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .arenus-qam__option-label {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000000;
+    margin: 0;
+  }
+
+  .arenus-qam__option-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .arenus-qam__option-btn {
+    padding: 12px 16px;
+    border: 1px solid #eeeeef;
+    border-radius: 6px;
+    background: #ffffff;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000000;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .arenus-qam__option-btn:hover {
+    border-color: #c0c0c0;
+  }
+
+  .arenus-qam__option-btn.is-selected {
+    border-color: #191919;
+  }
+
+  .arenus-qam__option-btn.is-unavailable {
+    opacity: 0.4;
+    text-decoration: line-through;
+  }
+
+  /* Modal footer: stepper + add-to-cart */
+  .arenus-qam__footer {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  /* Quantity stepper */
+  .arenus-qam__stepper {
+    flex-shrink: 0;
+    width: 125px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e3e4e5;
+    border-radius: 6px;
+    padding: 4px;
+  }
+
+  .arenus-qam__stepper-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    padding: 0;
+    color: #000;
+    transition: opacity 0.15s ease;
+  }
+
+  .arenus-qam__stepper-btn:hover {
+    opacity: 0.6;
+  }
+
+  .arenus-qam__stepper-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .arenus-qam__stepper-value {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    text-align: center;
+    width: 32px;
+    color: #1e2122;
+    user-select: none;
+  }
+
+  /* Modal add-to-cart button */
+  .arenus-qam__add-btn {
+    flex: 1;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: #e6b236;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-qam__add-btn:hover {
+    opacity: 0.85;
+  }
+
+  .arenus-qam__add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .arenus-qam__add-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .arenus-qam__add-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-products {
+      gap: 32px;
+      padding-inline: 40px;
+    }
+
+    .arenus-products__header {
+      padding-inline: 0;
+    }
+
+    .arenus-products__nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .arenus-products__nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border: none;
+      border-radius: 100px;
+      background: transparent;
+      cursor: pointer;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+
+    .arenus-products__nav-btn:hover {
+      opacity: 0.6;
+    }
+
+    .arenus-products__nav-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .arenus-products__track {
+      gap: 20px;
+    }
+
+    .arenus-products__card {
+      flex: 0 0 325px;
+      max-width: 325px;
+    }
+
+    .arenus-products__card:first-child {
+      margin-left: 0;
+    }
+
+    .arenus-products__card:last-child {
+      margin-right: 0;
+    }
+
+    /* Desktop: image is containing block for the button */
+    .arenus-products__card-image {
+      position: relative;
+      overflow: visible;
+    }
+
+    /* Desktop: button overlays the image, hidden by default, fade in on hover */
+    .arenus-products__add-btn {
+      bottom: 26px;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 225px;
+      padding: 16px 32px;
+      font-size: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .arenus-products__card:hover .arenus-products__add-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .arenus-products__add-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* Desktop: remove bottom padding reservation */
+    .arenus-products__card-info {
+      padding-bottom: 0;
+    }
+
+    /* Desktop modal */
+    .arenus-qam__dialog {
+      max-width: 588px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  /* ===== Arenus Products — Carousel Nav + Quick Add ===== */
+  (function() {
+    var section = document.getElementById('ArenusProducts-{{ section.id }}');
+    if (!section) return;
+
+    var track = section.querySelector('.arenus-products__track');
+    var prevBtn = section.querySelector('.arenus-products__nav-btn--prev');
+    var nextBtn = section.querySelector('.arenus-products__nav-btn--next');
+    var dialog = section.querySelector('.arenus-qam__dialog');
+
+    /* --- Carousel nav --- */
+    if (track && prevBtn && nextBtn) {
+      function getCardWidth() {
+        var card = track.querySelector('.arenus-products__card');
+        if (!card) return 0;
+        var style = window.getComputedStyle(track);
+        var gap = parseFloat(style.columnGap) || 0;
+        return card.offsetWidth + gap;
+      }
+
+      prevBtn.addEventListener('click', function() {
+        track.scrollBy({ left: -getCardWidth(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', function() {
+        track.scrollBy({ left: getCardWidth(), behavior: 'smooth' });
+      });
+    }
+
+    if (!dialog) return;
+
+    /* --- Modal state --- */
+    var currentProductData = null;
+    var selectedOptions = [];
+    var quantity = 1;
+    var isAdding = false;
+
+    var modalTitle = dialog.querySelector('.arenus-qam__title');
+    var modalPrice = dialog.querySelector('.arenus-qam__price');
+    var modalComparePrice = dialog.querySelector('.arenus-qam__compare-price');
+    var modalImage = dialog.querySelector('.arenus-qam__image img');
+    var modalOptions = dialog.querySelector('.arenus-qam__options');
+    var modalAddBtn = dialog.querySelector('.arenus-qam__add-btn');
+    var modalCloseBtn = dialog.querySelector('.arenus-qam__close');
+    var stepperValue = dialog.querySelector('.arenus-qam__stepper-value');
+    var stepperMinus = dialog.querySelector('.arenus-qam__stepper-minus');
+    var stepperPlus = dialog.querySelector('.arenus-qam__stepper-plus');
+
+    /* --- Format price (cents to dollars) --- */
+    function formatPrice(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    /* --- Find matching variant from selected options --- */
+    function findVariant() {
+      if (!currentProductData) return null;
+      for (var i = 0; i < currentProductData.variants.length; i++) {
+        var v = currentProductData.variants[i];
+        var match = true;
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (v.options[j] !== selectedOptions[j]) {
+            match = false;
+            break;
+          }
+        }
+        if (match) return v;
+      }
+      return null;
+    }
+
+    /* --- Check if a specific option value leads to any available variant --- */
+    function isOptionAvailable(optionIndex, optionValue) {
+      if (!currentProductData) return false;
+      for (var i = 0; i < currentProductData.variants.length; i++) {
+        var v = currentProductData.variants[i];
+        if (v.options[optionIndex] !== optionValue) continue;
+        /* Check that all OTHER selected options also match */
+        var compatible = true;
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (j === optionIndex) continue;
+          if (v.options[j] !== selectedOptions[j]) {
+            compatible = false;
+            break;
+          }
+        }
+        if (compatible && v.available) return true;
+      }
+      return false;
+    }
+
+    /* --- Build option group HTML --- */
+    function buildOptions() {
+      if (!currentProductData || !modalOptions) return;
+      modalOptions.innerHTML = '';
+
+      var options = currentProductData.options;
+      for (var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        var group = document.createElement('div');
+        group.className = 'arenus-qam__option-group';
+
+        var label = document.createElement('p');
+        label.className = 'arenus-qam__option-label';
+        label.textContent = opt.name + ':';
+        group.appendChild(label);
+
+        var valuesWrap = document.createElement('div');
+        valuesWrap.className = 'arenus-qam__option-values';
+
+        for (var j = 0; j < opt.values.length; j++) {
+          var val = opt.values[j];
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'arenus-qam__option-btn';
+          btn.textContent = val;
+          btn.setAttribute('data-option-index', i);
+          btn.setAttribute('data-option-value', val);
+
+          if (selectedOptions[i] === val) {
+            btn.classList.add('is-selected');
+          }
+
+          if (!isOptionAvailable(i, val)) {
+            btn.classList.add('is-unavailable');
+          }
+
+          valuesWrap.appendChild(btn);
+        }
+
+        group.appendChild(valuesWrap);
+        modalOptions.appendChild(group);
+      }
+    }
+
+    /* --- Update modal prices --- */
+    function updateModalPrices(variant) {
+      if (modalPrice) {
+        modalPrice.textContent = variant ? formatPrice(variant.price) : '';
+      }
+      if (modalComparePrice) {
+        var hasCompare = variant && variant.compare_at_price && variant.compare_at_price > variant.price;
+        modalComparePrice.textContent = hasCompare ? formatPrice(variant.compare_at_price) : '';
+      }
+    }
+
+    /* --- Update modal state after option change --- */
+    function updateModalState() {
+      var variant = findVariant();
+
+      /* Rebuild option pills to update unavailable states */
+      buildOptions();
+      updateModalPrices(variant);
+
+      if (variant) {
+        modalAddBtn.disabled = !variant.available;
+      } else {
+        modalAddBtn.disabled = true;
+      }
+    }
+
+    /* --- Option pill click handler (delegated) --- */
+    if (modalOptions) {
+      modalOptions.addEventListener('click', function(e) {
+        var btn = e.target.closest('.arenus-qam__option-btn');
+        if (!btn) return;
+
+        var optionIndex = parseInt(btn.getAttribute('data-option-index'), 10);
+        var optionValue = btn.getAttribute('data-option-value');
+
+        selectedOptions[optionIndex] = optionValue;
+        updateModalState();
+      });
+    }
+
+    /* --- Quantity stepper --- */
+    if (stepperMinus) {
+      stepperMinus.addEventListener('click', function() {
+        if (quantity > 1) {
+          quantity--;
+          stepperValue.textContent = quantity;
+        }
+      });
+    }
+
+    if (stepperPlus) {
+      stepperPlus.addEventListener('click', function() {
+        quantity++;
+        stepperValue.textContent = quantity;
+      });
+    }
+
+    /* --- Open modal for a product --- */
+    function openModal(productData) {
+      currentProductData = productData;
+      quantity = 1;
+
+      /* Set default selected options (first value of each option) */
+      selectedOptions = [];
+      for (var i = 0; i < productData.options.length; i++) {
+        selectedOptions.push(productData.options[i].values[0]);
+      }
+
+      /* Populate modal */
+      if (modalTitle) modalTitle.textContent = productData.title;
+      if (modalImage) {
+        modalImage.src = productData.image;
+        modalImage.alt = productData.title;
+      }
+      if (stepperValue) stepperValue.textContent = '1';
+
+      /* Build option pills */
+      buildOptions();
+
+      /* Enable add button if default variant is valid */
+      var variant = findVariant();
+      updateModalPrices(variant);
+      if (modalAddBtn) {
+        modalAddBtn.disabled = !variant || !variant.available;
+      }
+
+      /* Show dialog */
+      dialog.classList.remove('is-closing');
+      dialog.showModal();
+
+      /* Lock body scroll */
+      var scrollY = window.scrollY;
+      dialog._previousScrollY = scrollY;
+      document.body.style.width = '100%';
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + scrollY + 'px';
+    }
+
+    /* --- Close modal --- */
+    function closeModal() {
+      dialog.classList.add('is-closing');
+
+      function onEnd() {
+        dialog.removeEventListener('animationend', onEnd);
+        dialog.close();
+        dialog.classList.remove('is-closing');
+
+        /* Restore body scroll */
+        document.body.style.width = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        if (dialog._previousScrollY !== undefined) {
+          window.scrollTo({ top: dialog._previousScrollY, behavior: 'instant' });
+        }
+
+        currentProductData = null;
+        selectedOptions = [];
+        quantity = 1;
+      }
+
+      dialog.addEventListener('animationend', onEnd);
+    }
+
+    /* Close button */
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', function() {
+        closeModal();
+      });
+    }
+
+    /* Backdrop click (click on dialog itself, not its children) */
+    dialog.addEventListener('click', function(e) {
+      if (e.target === dialog) {
+        closeModal();
+      }
+    });
+
+    /* Escape key */
+    dialog.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+      }
+    });
+
+    /* Prevent native dialog cancel (Escape fires cancel before close) */
+    dialog.addEventListener('cancel', function(e) {
+      e.preventDefault();
+      closeModal();
+    });
+
+    /* --- Button loading state --- */
+    function setButtonLoading(btn, loading) {
+      if (!btn) return;
+      if (loading) {
+        btn._prevHTML = btn.innerHTML;
+        btn.classList.add('is-loading');
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/></svg> ADDING...';
+      } else {
+        btn.classList.remove('is-loading');
+        if (btn._prevHTML !== undefined) btn.innerHTML = btn._prevHTML;
+      }
+    }
+
+    /* --- Add to cart (shared for both direct + modal) --- */
+    function addToCart(variantId, qty, triggerBtn, onDone) {
+      if (isAdding) return;
+      isAdding = true;
+      setButtonLoading(triggerBtn, true);
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: qty
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.status) {
+          /* Error from Shopify (e.g., out of stock) */
+          console.error('Add to cart error:', data.description);
+          isAdding = false;
+          setButtonLoading(triggerBtn, false);
+          return;
+        }
+
+        /* Dispatch cart:update event so cart drawer auto-opens + icon updates */
+        document.dispatchEvent(new CustomEvent('cart:update', {
+          bubbles: true,
+          detail: {
+            resource: {},
+            sourceId: '',
+            data: {
+              source: 'arenus-quick-add',
+              itemCount: qty
+            }
+          }
+        }));
+
+        /* Also explicitly open the cart drawer in case auto-open is disabled */
+        var cartDrawer = document.querySelector('cart-drawer-component');
+        if (cartDrawer) {
+          if (typeof cartDrawer.open === 'function') {
+            cartDrawer.open();
+          } else if (typeof cartDrawer.showDialog === 'function') {
+            cartDrawer.showDialog();
+          }
+        }
+
+        isAdding = false;
+        setButtonLoading(triggerBtn, false);
+        if (typeof onDone === 'function') onDone();
+      })
+      .catch(function(err) {
+        console.error('Add to cart fetch error:', err);
+        isAdding = false;
+        setButtonLoading(triggerBtn, false);
+      });
+    }
+
+    /* --- Modal add-to-cart button --- */
+    if (modalAddBtn) {
+      modalAddBtn.addEventListener('click', function() {
+        var variant = findVariant();
+        if (!variant || !variant.available) return;
+
+        addToCart(variant.id, quantity, modalAddBtn, function() {
+          closeModal();
+        });
+      });
+    }
+
+    /* --- Card button click handlers --- */
+    var addBtns = section.querySelectorAll('.arenus-products__add-btn');
+
+    addBtns.forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var isSingleVariant = btn.hasAttribute('data-single-variant');
+
+        if (isSingleVariant) {
+          /* Direct add to cart — no modal */
+          var variantId = parseInt(btn.getAttribute('data-variant-id'), 10);
+          addToCart(variantId, 1, btn);
+        } else {
+          /* Open modal with product data */
+          var card = btn.closest('.arenus-products__card');
+          if (!card) return;
+
+          var scriptTag = card.querySelector('.arenus-products__card-data');
+          if (!scriptTag) return;
+
+          try {
+            var productData = JSON.parse(scriptTag.textContent);
+            openModal(productData);
+          } catch (err) {
+            console.error('Failed to parse product data:', err);
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Arenus Products",
+  "tag": "section",
+  "class": "arenus-products-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum products",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "image_background_color",
+      "label": "Image background color",
+      "default": "#fffcea"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arenus Products",
+      "category": "Products",
+      "settings": {
+        "heading": "Best Sellers",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "image_background_color": "#fffcea"
+      }
+    }
+  ]
+}
+{% endschema %}

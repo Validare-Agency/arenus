@@ -1,0 +1,62 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_ambassadors_banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Arenus Ambassadors",
+        "description": "<p><strong>We value the health and performance of competitive equine athletes and proudly support the riders who care for them. </strong>Each of these riders chose Arenus from the vast array of animal health products available prior to becoming an Ambassador because they simply work. Read more about these athletes in their profiles below!</p>",
+        "image": "shopify://shop_images/ambassadors_banner.png",
+        "media_opacity": 80,
+        "heading_size_mobile": 40,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 400,
+        "min_height_desktop": 480,
+        "desktop_alignment": "center",
+        "content_max_width_desktop": 1130,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "arenus_ambassadors_grid": {
+      "type": "arenus-ambassadors-grid",
+      "settings": {
+        "detail_url": "shopify://pages/ambassador",
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "subtitle_color": "#eeeeef",
+        "card_border_color": "#135b9f"
+      }
+    },
+    "arenus_products": {
+      "type": "arenus-products",
+      "settings": {
+        "heading": "Ambassadors Favorite Products",
+        "collection": "shop-all",
+        "max_products": 8,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "image_background_color": "#fffcea",
+        "padding-block-start": 24,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "arenus_ambassadors_banner",
+    "arenus_ambassadors_grid",
+    "arenus_products"
+  ]
+}

@@ -1,0 +1,318 @@
+<div
+  id="ArenusBlog-{{ section.id }}"
+  class="arenus-blog"
+  style="
+    --arenus-blog-bg: {{ section.settings.background_color }};
+    --arenus-blog-text: {{ section.settings.text_color }};
+    --arenus-blog-meta: {{ section.settings.meta_color }};
+    padding-block-start: {{ section.settings.padding-block-start }}px;
+    padding-block-end: {{ section.settings.padding-block-end }}px;
+  "
+>
+  {%- comment -%} Header row: heading + learn more button {%- endcomment -%}
+  <div class="arenus-blog__header">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="arenus-blog__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.blog != blank -%}
+      <a href="{{ section.settings.blog.url }}" class="arenus-blog__btn">
+        {{ section.settings.button_label }}
+      </a>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Blog post cards {%- endcomment -%}
+  {%- if section.settings.blog != blank and section.settings.blog.articles.size > 0 -%}
+    <div class="arenus-blog__grid">
+      {%- for article in section.settings.blog.articles limit: section.settings.max_posts -%}
+        <a href="{{ article.url }}" class="arenus-blog__card">
+          {%- comment -%} Featured image {%- endcomment -%}
+          <div class="arenus-blog__card-image">
+            {%- if article.image != blank -%}
+              {{ article.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Card info {%- endcomment -%}
+          <div class="arenus-blog__card-info">
+            {%- comment -%} Meta row: date + tag {%- endcomment -%}
+            <div class="arenus-blog__meta">
+              <span class="arenus-blog__date">{{ article.published_at | date: "%b %d, %Y" }}</span>
+              {%- if article.tags.size > 0 -%}
+                <span class="arenus-blog__dot" aria-hidden="true"></span>
+                <span class="arenus-blog__tag">{{ article.tags.first }}</span>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Title {%- endcomment -%}
+            <h3 class="arenus-blog__title">{{ article.title }}</h3>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Blog — Mobile-first ===== */
+
+  .arenus-blog {
+    background-color: var(--arenus-blog-bg, #ffffff);
+    color: var(--arenus-blog-text, #000000);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-inline: 20px;
+    margin: 0 auto;
+    max-width: 1440px;
+  }
+
+  /* Header row */
+  .arenus-blog__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .arenus-blog__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+  }
+
+  .arenus-blog__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    border: 1px solid var(--arenus-blog-text, #000000);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--arenus-blog-text, #000000);
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .arenus-blog__btn:hover {
+    opacity: 0.7;
+  }
+
+  /* Blog cards grid — vertical stack on mobile */
+  .arenus-blog__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Blog card */
+  .arenus-blog__card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Card image */
+  .arenus-blog__card-image {
+    height: 232px;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    flex-shrink: 0;
+  }
+
+  .arenus-blog__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Card info */
+  .arenus-blog__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Meta row */
+  .arenus-blog__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-blog__date,
+  .arenus-blog__tag {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: var(--arenus-blog-meta, #808085);
+  }
+
+  .arenus-blog__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--arenus-blog-meta, #808085);
+    flex-shrink: 0;
+  }
+
+  /* Title */
+  .arenus-blog__title {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 20px;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+    margin: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-blog {
+      gap: 32px;
+      padding-inline: 40px;
+    }
+
+    .arenus-blog__heading {
+      font-size: 40px;
+    }
+
+    .arenus-blog__btn {
+      padding: 12px 24px;
+    }
+
+    /* Horizontal 3-column grid */
+    .arenus-blog__grid {
+      flex-direction: row;
+    }
+
+    .arenus-blog__card {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .arenus-blog__card-image {
+      height: 292px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Arenus Blog",
+  "tag": "section",
+  "class": "arenus-blog-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Blog"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "range",
+      "id": "max_posts",
+      "label": "Maximum posts",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta text color",
+      "default": "#808085"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arenus Blog",
+      "category": "Blog",
+      "settings": {
+        "heading": "Our Blog",
+        "button_label": "LEARN MORE",
+        "max_posts": 3,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "meta_color": "#808085"
+      }
+    }
+  ]
+}
+{% endschema %}

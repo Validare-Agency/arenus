@@ -1,0 +1,146 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Arenus Employees",
+        "description": "",
+        "image": "shopify://shop_images/contact_us_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "min_height_mobile": 330,
+        "min_height_desktop": 480,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 900,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "employees": {
+      "type": "arenus-employees",
+      "blocks": {
+        "emp_jay": {
+          "type": "employee",
+          "settings": {
+            "image": "shopify://shop_images/employee_01.png",
+            "name": "Dr. Jay Altman DVM",
+            "title": "President",
+            "bio": "<p>After moving to Colorado at the age of 16, Dr. Altman first received his Bachelor's in Animal Science followed by a Doctor of Veterinary Medicine from Colorado State University. After spending much of his life as a researcher and field veterinarian for horses in northern Colorado and seeing many horses plagued with digestive upset, he began working diligently to develop an equine digestive aid to meet his patient's need and, as he says, \"to reduce the number of severe digestive upset calls\" he was receiving. The development was a great success and the beginning products within the Assure line launched shortly thereafter. The Assure System has grown by leaps and bounds and, with the help of a team of dedicated veterinarians, nutritionists and researchers, Arenus has grown to offer two, distinct brands. In 2013, Dr. Altman became the CEO of Arenus which relocated to Fort Collins, CO where he now resides with his family. When not travelling, Dr. Altman enjoys spending time with his family or in the saddle honing his roping skills (which he begrudgingly admits should probably not be referred to as a skill set of his at all).</p>"
+          }
+        },
+        "emp_brady": {
+          "type": "employee",
+          "settings": {
+            "image": "shopify://shop_images/employee_02.png",
+            "name": "Brady Karren",
+            "title": "Vice President of Global Sales and Nutrition",
+            "bio": "<p>Growing up on the backs of reining, cutting and working cow horses in the mountains of Utah, it's safe to say Brady's life passion has been horses. While studying at Brigham Young University he worked closely with Biology and Animal Nutrition professors before graduating with a degree in Animal Science. This focus led to a keen interest in nutrition, specifically equine nutrition, and he traveled to Texas A&M University for his Masters in Animal Science, specializing in equine nutrition. He currently lives in Utah with his wife, two daughters, four horses, two rabbits and Basset Hound and closely supports our veterinary, retail dealer and ambassador clientele with product and nutritional expertise.</p>"
+          }
+        },
+        "emp_zeke": {
+          "type": "employee",
+          "settings": {
+            "name": "Zeke Altman",
+            "title": "V.P. of Operations",
+            "bio": "<p>Spending much of his young life on the east coast before moving to Colorado, Zeke began his professional career with Mister Money pawn stores and acted as a manager and district manager within the organization for many years. In 2013, when Arenus relocated to Fort Collins, Zeke joined the team as Vice President of Operations. An avid motorsports enthusiast, Zeke enjoys all things BMW and working on his cars and motorcycles in his spare time. Growing up, he enjoyed riding both for pleasure and competitively and spending time around the many types of animals that graced his family's farm. Today, he and his wife have a large animal family consisting of several fish tanks, 3 cats and 2 Great Danes who both take Steadfast Canine daily.</p>"
+          }
+        },
+        "emp_julia": {
+          "type": "employee",
+          "settings": {
+            "name": "Julia McClellan",
+            "title": "Veterinary Solutions Specialist",
+            "bio": "<p>Julia grew up in South Texas where horses were a central part of her life from a young age. She earned a degree in Equine Science from Tarleton State University in 2016. She spent 6 years in the equine veterinary industry working with some of the top veterinary clinics and facilities in Texas. During that time her passion and interest in equine nutrition grew. Julia joined Arenus Animal Health in 2022 and is currently located in the North Texas area. She enjoys working with veterinary professionals throughout Texas and around the United States.</p>"
+          }
+        },
+        "emp_melissa": {
+          "type": "employee",
+          "settings": {
+            "name": "Melissa Wigen",
+            "title": "Veterinary Solutions Specialist",
+            "bio": "<p>Originally from Oregon, Melissa is married to Arenus Ambassador and professional reining trainer, Travis Wigen, and began working for the Arenus team in 2012. As a Veterinary Solutions Specialist, she works closely with our existing veterinary clientele to find product solutions for their patients. Melissa began showing horses at an early age and currently shows in reining alongside her husband and two daughters. When she's not working with Arenus, she keeps things moving in her husband's training business and acts as the breeding manager for their stud, Banjo Whiz.</p>"
+          }
+        },
+        "emp_meranie": {
+          "type": "employee",
+          "settings": {
+            "name": "Meranie Karren",
+            "title": "Account Coordinator",
+            "bio": "<p>While growing up working on her family's farm in Utah, Meranie found a love for animals at an early age. Her father purchased her first horse for her at age 6 and she's been hooked ever since! She attended Southern Utah University and graduated with a degree in Elementary Education which she put to use as a teacher prior to joining Arenus. Meranie joined the Arenus team in early 2016 and works closely with our retail dealers by assisting, educating and troubleshooting. She currently works remotely from her Utah office where she lives with her husband, children and a variety of animals.</p>"
+          }
+        },
+        "emp_emma": {
+          "type": "employee",
+          "settings": {
+            "name": "Emma Oyer",
+            "title": "Solutions Specialist",
+            "bio": "<p>Emma grew up in St. Louis Missouri but would travel to Buena Vista, Colorado every summer for horse camp. Colorado quickly became her second home so in highschool, she moved to Buena Vista Colorado. While in Buena Vista Emma lived the mountain lifestyle and learned how to snowboard, mountain bike, rock climb, and raft. However, her passion was riding and training horses. In her free time Emma rides and competes in Cowboy Mounted Shooting with her three horses Loretta, Sage, and Ginger. She also has two other pets, a miniature Australian shepherd named Robin and a cat name Lavender. Emma has always had a passion for working with and helping animals. After graduating from Colorado State University with a degree in Agricultural Business, Emma decided she wanted to take this passion and turn it into a career. She worked at a small animal veterinary clinic as a receptionist and veterinary technician until 2022 where she then found a job in the Equine Field at Arenus Animal Health.</p>"
+          }
+        },
+        "emp_krystal": {
+          "type": "employee",
+          "settings": {
+            "name": "Krystal Lyter",
+            "title": "Solutions Specialist",
+            "bio": "<p>Originally from Minnesota, Krystal graduated from North Dakota State University with a degree in Veterinary Technology and a minor in Animal Science. She joined Arenus Animal Health in 2022 after relocating to Colorado. Krystal has always had a passion for horses and grew up riding with her friends and cousins. In her spare time, Krystal enjoys spending time at her family's cabin, trying new things, and running with her dog Sandy. She currently works remotely in North Dakota with her family, three dogs, one cat, and newest family member, a horse named Rocky.</p>"
+          }
+        },
+        "emp_brenna": {
+          "type": "employee",
+          "settings": {
+            "name": "Brenna Martin",
+            "title": "Solutions Specialist",
+            "bio": "<p>A native Kansan, Brenna moved to Colorado in 2015 to pursue a master's degree in music performance at the University of Northern Colorado. However, she realized her true passion lay in the equine world, and transferred to Colorado State to pursue a degree in Equine Science and she hasn't looked back. After graduating in the Spring of 2020, she continued working in the equine community of Northern Colorado as a sales associate at a local tack shop. In 2022, she started her Solutions Specialist position at Arenus Animal Health and is excited to work in a role that combines her love of horses and equine nutrition. In her spare time Brenna enjoys riding and competing with her horse, Captain, on the local hunter/jumper circuit and spending time with her opinionated cat, Reverend.</p>"
+          }
+        },
+        "emp_marah": {
+          "type": "employee",
+          "settings": {
+            "name": "Marah Whiteaker",
+            "title": "Solutions Specialist",
+            "bio": "<p>Marah was born and raised in Northern California where her love of horses began at a young age. She grew up riding Western Pleasure, Equitation and Gymkhana and her summers were spent teaching kids to ride and care for horses. Graduating from Oregon State University with a degree in Broadcast Media Communication, Marah later earned her MBA from Willamette University with a focus on Organizational Theory and Marketing. While at Oregon State she began riding Hunter/Jumpers and Dressage. Her professional experience ranges from privately held to fortune 500 companies, from consumer-packaged goods to internet start-ups. Marah lives in Fort Collins with her husband, three boys, and two Yellow Labs, Finn and Faith. In her spare time, she is involved in volunteering for her son's lacrosse team and is currently teaching her nieces to care for and ride their Quarter Horse, Eddie.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "emp_jay",
+        "emp_brady",
+        "emp_zeke",
+        "emp_julia",
+        "emp_melissa",
+        "emp_meranie",
+        "emp_emma",
+        "emp_krystal",
+        "emp_brenna",
+        "emp_marah"
+      ],
+      "settings": {
+        "intro_text": "<p>Just as you care for your animals, the Arenus family is comprised of animal lovers who care deeply about the health and well-being of their animals, too. Meet the people who develop, produce and work with you daily to provide solid solutions to your animal care needs...Team Arenus!</p>",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "title_color": "#424242",
+        "bio_color": "#808085",
+        "padding_top": 40,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "employees"
+  ]
+}
