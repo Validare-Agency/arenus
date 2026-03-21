@@ -1,0 +1,293 @@
+{%- comment -%}
+  Arenus Customer Order Detail.
+  Shows a single order with line items, addresses, and totals.
+{%- endcomment -%}
+
+<div class="arenus-account">
+  <div class="arenus-account__layout">
+
+    {%- render 'arenus-account-sidebar', active_page: 'orders' -%}
+
+    <div class="arenus-account__content">
+      <h1 class="arenus-account__greeting">
+        {{ order.name }}
+      </h1>
+
+      <p class="arenus-order__meta">
+        {{ order.created_at | date: '%B %e, %Y' }}
+        &middot;
+        {{ order.financial_status_label }}
+        &middot;
+        {{ order.fulfillment_status_label }}
+      </p>
+
+      {%- comment -%} Line items {%- endcomment -%}
+      <div class="arenus-account__card" style="margin-bottom: 24px;">
+        <table class="arenus-order__items-table">
+          <thead>
+            <tr>
+              <th colspan="2">Product</th>
+              <th>SKU</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td class="arenus-order__item-image-cell">
+                  {%- if line_item.image -%}
+                    <img
+                      src="{{ line_item.image | image_url: width: 80 }}"
+                      alt="{{ line_item.title | escape }}"
+                      width="60"
+                      height="60"
+                      class="arenus-order__item-image"
+                      loading="lazy"
+                    />
+                  {%- endif -%}
+                </td>
+                <td>
+                  <span class="arenus-order__item-title">{{ line_item.title }}</span>
+                  {%- if line_item.variant_title != blank -%}
+                    <span class="arenus-order__item-variant">{{ line_item.variant_title }}</span>
+                  {%- endif -%}
+                </td>
+                <td>{{ line_item.sku }}</td>
+                <td>{{ line_item.price | money }}</td>
+                <td>{{ line_item.quantity }}</td>
+                <td class="arenus-account__order-total">{{ line_item.line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+
+        {%- comment -%} Mobile line items {%- endcomment -%}
+        <div class="arenus-order__items-mobile">
+          {%- for line_item in order.line_items -%}
+            <div class="arenus-order__item-card">
+              {%- if line_item.image -%}
+                <img
+                  src="{{ line_item.image | image_url: width: 120 }}"
+                  alt="{{ line_item.title | escape }}"
+                  width="60"
+                  height="60"
+                  class="arenus-order__item-image"
+                  loading="lazy"
+                />
+              {%- endif -%}
+              <div class="arenus-order__item-info">
+                <span class="arenus-order__item-title">{{ line_item.title }}</span>
+                {%- if line_item.variant_title != blank -%}
+                  <span class="arenus-order__item-variant">{{ line_item.variant_title }}</span>
+                {%- endif -%}
+                <span class="arenus-order__item-qty">Qty: {{ line_item.quantity }}</span>
+                <span class="arenus-account__order-total">{{ line_item.line_price | money }}</span>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- comment -%} Totals {%- endcomment -%}
+      <div class="arenus-account__card" style="margin-bottom: 24px;">
+        <div class="arenus-order__totals">
+          <div class="arenus-order__total-row">
+            <span>Subtotal</span>
+            <span>{{ order.subtotal_price | money }}</span>
+          </div>
+          {%- for discount in order.discounts -%}
+            <div class="arenus-order__total-row">
+              <span>Discount ({{ discount.code }})</span>
+              <span>-{{ discount.savings | money }}</span>
+            </div>
+          {%- endfor -%}
+          {%- for shipping_method in order.shipping_methods -%}
+            <div class="arenus-order__total-row">
+              <span>Shipping ({{ shipping_method.title }})</span>
+              <span>{{ shipping_method.price | money }}</span>
+            </div>
+          {%- endfor -%}
+          <div class="arenus-order__total-row">
+            <span>Tax</span>
+            <span>{{ order.tax_price | money }}</span>
+          </div>
+          <div class="arenus-order__total-row arenus-order__total-row--grand">
+            <span>Total</span>
+            <span class="arenus-account__order-total">{{ order.total_price | money }}</span>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Addresses {%- endcomment -%}
+      <div class="arenus-order__addresses">
+        {%- if order.billing_address -%}
+          <div class="arenus-account__card arenus-order__address-card">
+            <h2 class="arenus-account__section-heading">Billing address</h2>
+            <p>{{ order.billing_address | format_address }}</p>
+          </div>
+        {%- endif -%}
+        {%- if order.shipping_address -%}
+          <div class="arenus-account__card arenus-order__address-card">
+            <h2 class="arenus-account__section-heading">Shipping address</h2>
+            <p>{{ order.shipping_address | format_address }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Order Detail ===== */
+
+  .arenus-order__meta {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #808085;
+    margin: -12px 0 24px;
+  }
+
+  /* ── Line items table (desktop) ── */
+  .arenus-order__items-table {
+    display: none;
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+  }
+
+  .arenus-order__items-table thead th {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: left;
+    padding: 12px 16px 12px 0;
+    border-bottom: 1px solid #DDDDDD;
+  }
+
+  .arenus-order__items-table tbody td {
+    padding: 12px 16px 12px 0;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+  }
+
+  .arenus-order__item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #f5f5f5;
+  }
+
+  .arenus-order__item-title {
+    display: block;
+    font-weight: 500;
+  }
+
+  .arenus-order__item-variant {
+    display: block;
+    font-size: 13px;
+    color: #808085;
+    margin-top: 2px;
+  }
+
+  /* ── Line items mobile ── */
+  .arenus-order__items-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .arenus-order__item-card {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .arenus-order__item-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .arenus-order__item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+  }
+
+  .arenus-order__item-qty {
+    font-size: 13px;
+    color: #808085;
+    margin-top: 4px;
+  }
+
+  /* ── Totals ── */
+  .arenus-order__totals {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .arenus-order__total-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #333;
+    padding: 4px 0;
+  }
+
+  .arenus-order__total-row--grand {
+    border-top: 1px solid #DDDDDD;
+    padding-top: 12px;
+    margin-top: 4px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #000;
+  }
+
+  /* ── Addresses ── */
+  .arenus-order__addresses {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .arenus-order__address-card p {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-order__items-table {
+      display: table;
+    }
+
+    .arenus-order__items-mobile {
+      display: none;
+    }
+
+    .arenus-order__addresses {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Customer Order",
+  "tag": "section",
+  "class": "arenus-account-wrapper section-wrapper"
+}
+{% endschema %}

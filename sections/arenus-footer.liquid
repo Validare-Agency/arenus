@@ -1,0 +1,892 @@
+{%- comment -%}
+  Arenus — Custom Footer
+  Replaces the generic Horizon footer with a branded layout:
+  Brand info | Nav menus | Newsletter | Bottom bar
+{%- endcomment -%}
+
+{%- liquid
+  assign brand_block = nil
+  assign nav_blocks = ''
+  assign newsletter_block = nil
+
+  for block in section.blocks
+    case block.type
+      when 'brand_info'
+        assign brand_block = block
+      when 'nav_menu'
+        if nav_blocks == ''
+          assign nav_blocks = block.id
+        else
+          assign nav_blocks = nav_blocks | append: ',' | append: block.id
+        endif
+      when 'newsletter'
+        assign newsletter_block = block
+    endcase
+  endfor
+
+  assign nav_block_ids = nav_blocks | split: ','
+-%}
+
+<footer
+  id="ArenusFooter-{{ section.id }}"
+  class="arenus-footer"
+  style="
+    --arenus-footer-bg: {{ section.settings.background_color }};
+    --arenus-footer-btn-color: {{ section.settings.button_color }};
+    padding-block-start: {{ section.settings.padding_top }}px;
+    padding-block-end: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="arenus-footer__inner">
+    {%- comment -%} ══════════ TOP ROW ══════════ {%- endcomment -%}
+    <div class="arenus-footer__top">
+
+      {%- comment -%} ── Brand info block ── {%- endcomment -%}
+      {%- if brand_block -%}
+        <div class="arenus-footer__brand" {{ brand_block.shopify_attributes }}>
+          {%- comment -%} Logo {%- endcomment -%}
+          {%- liquid
+            assign footer_logo = brand_block.settings.logo
+            if footer_logo == blank
+              assign footer_logo = settings.logo
+            endif
+          -%}
+          {%- if footer_logo != blank -%}
+            <a href="{{ routes.root_url }}" class="arenus-footer__logo-link" aria-label="{{ shop.name }}">
+              <img
+                class="arenus-footer__logo"
+                src="{{ footer_logo | image_url: width: 180 }}"
+                alt="{{ shop.name }}"
+                width="90"
+                height="23"
+                loading="lazy"
+              >
+            </a>
+          {%- endif -%}
+
+          {%- comment -%} Contact info {%- endcomment -%}
+          <div class="arenus-footer__contact">
+            {%- if brand_block.settings.address != blank -%}
+              <p class="arenus-footer__address">{{ brand_block.settings.address }}</p>
+            {%- endif -%}
+            {%- if brand_block.settings.phone != blank -%}
+              <p class="arenus-footer__phone">
+                <a href="tel:{{ brand_block.settings.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' }}">
+                  {{ brand_block.settings.phone }}
+                </a>
+              </p>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Social icons {%- endcomment -%}
+          <div class="arenus-footer__socials">
+            {%- if brand_block.settings.instagram_url != blank -%}
+              <a href="{{ brand_block.settings.instagram_url }}" class="arenus-footer__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.8045 8.2755C17.401 8.2755 17.8845 7.79197 17.8845 7.1955C17.8845 6.59903 17.401 6.1155 16.8045 6.1155C16.208 6.1155 15.7245 6.59903 15.7245 7.1955C15.7245 7.79197 16.208 8.2755 16.8045 8.2755Z" fill="black"/>
+                  <path d="M12 7.3785C11.086 7.3785 10.1924 7.64955 9.43243 8.15736C8.67243 8.66518 8.08008 9.38696 7.73029 10.2314C7.3805 11.0759 7.28898 12.0051 7.4673 12.9016C7.64562 13.7981 8.08578 14.6216 8.73211 15.2679C9.37843 15.9142 10.2019 16.3544 11.0984 16.5327C11.9949 16.711 12.9241 16.6195 13.7686 16.2697C14.613 15.9199 15.3348 15.3276 15.8426 14.5676C16.3505 13.8076 16.6215 12.914 16.6215 12C16.6215 10.7743 16.1346 9.5988 15.2679 8.73211C14.4012 7.86541 13.2257 7.3785 12 7.3785ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45542 13.6962 9.22836 13.148C9.0013 12.5999 8.94189 11.9967 9.05764 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7956 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7956 15 12 15Z" fill="black"/>
+                  <path d="M12 4.6215C14.403 4.6215 14.688 4.6305 15.6368 4.674C16.2074 4.68077 16.7726 4.78555 17.3077 4.98375C17.696 5.13352 18.0486 5.36291 18.3428 5.65716C18.6371 5.95141 18.8665 6.304 19.0163 6.69225C19.2145 7.2274 19.3192 7.79262 19.326 8.36325C19.3695 9.312 19.3785 9.597 19.3785 12.0007C19.3785 14.4045 19.3695 14.688 19.326 15.6368C19.3192 16.2074 19.2145 16.7726 19.0163 17.3077C18.8665 17.696 18.6371 18.0486 18.3428 18.3428C18.0486 18.6371 17.696 18.8665 17.3077 19.0163C16.7726 19.2145 16.2074 19.3192 15.6368 19.326C14.688 19.3695 14.403 19.3785 12 19.3785C9.597 19.3785 9.312 19.3695 8.36325 19.326C7.79262 19.3192 7.2274 19.2145 6.69225 19.0163C6.304 18.8665 5.95141 18.6371 5.65716 18.3428C5.36291 18.0486 5.13352 17.696 4.98375 17.3077C4.78555 16.7726 4.68077 16.2074 4.674 15.6368C4.6305 14.688 4.6215 14.403 4.6215 12C4.6215 9.597 4.6305 9.312 4.674 8.36325C4.68077 7.79262 4.78555 7.2274 4.98375 6.69225C5.13352 6.304 5.36291 5.95141 5.65716 5.65716C5.95141 5.36291 6.304 5.13352 6.69225 4.98375C7.2274 4.78555 7.79262 4.68077 8.36325 4.674C9.312 4.6305 9.597 4.6215 12 4.6215ZM12 3C9.55575 3 9.249 3.0105 8.289 3.054C7.54258 3.06907 6.80412 3.21058 6.105 3.4725C5.50704 3.70372 4.96399 4.05733 4.51066 4.51066C4.05733 4.96399 3.70372 5.50704 3.4725 6.105C3.21049 6.80435 3.06899 7.54308 3.054 8.28975C3.0105 9.24975 3 9.555 3 12C3 14.445 3.0105 14.751 3.054 15.711C3.06907 16.4574 3.21058 17.1959 3.4725 17.895C3.70372 18.493 4.05733 19.036 4.51066 19.4893C4.96399 19.9427 5.50704 20.2963 6.105 20.5275C6.80435 20.7895 7.54308 20.931 8.28975 20.946C9.24975 20.9895 9.55575 21 12 21C14.4443 21 14.751 20.9895 15.711 20.946C16.4577 20.931 17.1964 20.7895 17.8958 20.5275C18.4937 20.2963 19.0368 19.9427 19.4901 19.4893C19.9434 19.036 20.297 18.493 20.5282 17.895C20.79 17.1956 20.9313 16.4569 20.946 15.7103C20.9895 14.7503 21 14.445 21 12C21 9.555 20.9895 9.249 20.946 8.289C20.9309 7.54258 20.7894 6.80412 20.5275 6.105C20.2963 5.50704 19.9427 4.96399 19.4893 4.51066C19.036 4.05733 18.493 3.70372 17.895 3.4725C17.1956 3.21075 16.4569 3.0695 15.7103 3.05475C14.7503 3.00975 14.445 3 12 3Z" fill="black"/>
+                </svg>
+              </a>
+            {%- endif -%}
+
+            {%- if brand_block.settings.twitter_url != blank -%}
+              <a href="{{ brand_block.settings.twitter_url }}" class="arenus-footer__social-link" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.133 19.8478L14.2643 10.6247L20.0552 4.25438C20.1862 4.10674 20.2537 3.91343 20.2431 3.71636C20.2325 3.51929 20.1446 3.33435 19.9986 3.20161C19.8525 3.06888 19.66 2.99907 19.4628 3.00731C19.2657 3.01555 19.0797 3.10117 18.9452 3.24562L13.4289 9.31312L9.633 3.34781C9.56531 3.24127 9.47183 3.15353 9.36121 3.09274C9.25059 3.03194 9.12642 3.00004 9.00019 3H4.50019C4.36571 2.99993 4.2337 3.03603 4.11796 3.10449C4.00222 3.17296 3.90702 3.27129 3.84232 3.38918C3.77763 3.50707 3.74582 3.64018 3.75023 3.77458C3.75463 3.90898 3.7951 4.03973 3.86738 4.15313L9.73613 13.3753L3.94519 19.7503C3.87756 19.823 3.82503 19.9083 3.79063 20.0014C3.75623 20.0945 3.74065 20.1935 3.74479 20.2927C3.74894 20.3918 3.77272 20.4892 3.81477 20.5791C3.85681 20.669 3.91628 20.7496 3.98973 20.8164C4.06318 20.8831 4.14915 20.9346 4.24265 20.9679C4.33615 21.0012 4.43533 21.0156 4.53443 21.0103C4.63354 21.0049 4.7306 20.98 4.81999 20.9369C4.90938 20.8937 4.98932 20.8333 5.05519 20.7591L10.5714 14.6916L14.3674 20.6569C14.4356 20.7625 14.5293 20.8494 14.6399 20.9093C14.7505 20.9693 14.8744 21.0005 15.0002 21H19.5002C19.6345 21 19.7664 20.9638 19.882 20.8954C19.9976 20.827 20.0927 20.7288 20.1573 20.611C20.222 20.4933 20.2539 20.3604 20.2496 20.2261C20.2453 20.0918 20.205 19.9612 20.133 19.8478ZM15.4118 19.5L5.86613 4.5H8.58488L18.1343 19.5H15.4118Z" fill="black"/>
+                </svg>
+              </a>
+            {%- endif -%}
+
+            {%- if brand_block.settings.youtube_url != blank -%}
+              <a href="{{ brand_block.settings.youtube_url }}" class="arenus-footer__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.0581 6.94539C21.9386 6.50142 21.7045 6.09662 21.3794 5.77152C21.0543 5.44641 20.6495 5.21239 20.2056 5.09289C18.5706 4.65039 12.0006 4.65039 12.0006 4.65039C12.0006 4.65039 5.43056 4.65039 3.79556 5.09289C3.35159 5.21239 2.9468 5.44641 2.62169 5.77152C2.29658 6.09662 2.06257 6.50142 1.94306 6.94539C1.63777 8.61284 1.48962 10.3053 1.50056 12.0004C1.48962 13.6955 1.63777 15.3879 1.94306 17.0554C2.06257 17.4994 2.29658 17.9042 2.62169 18.2293C2.9468 18.5544 3.35159 18.7884 3.79556 18.9079C5.43056 19.3504 12.0006 19.3504 12.0006 19.3504C12.0006 19.3504 18.5706 19.3504 20.2056 18.9079C20.6495 18.7884 21.0543 18.5544 21.3794 18.2293C21.7045 17.9042 21.9386 17.4994 22.0581 17.0554C22.3634 15.3879 22.5115 13.6955 22.5006 12.0004C22.5115 10.3053 22.3634 8.61284 22.0581 6.94539ZM9.90056 15.1504V8.85039L15.3531 12.0004L9.90056 15.1504Z" fill="black"/>
+                </svg>
+              </a>
+            {%- endif -%}
+
+            {%- if brand_block.settings.pinterest_url != blank -%}
+              <a href="{{ brand_block.settings.pinterest_url }}" class="arenus-footer__social-link" aria-label="Pinterest" target="_blank" rel="noopener noreferrer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12.0008 1.5C9.56647 1.51658 7.21355 2.37849 5.34454 3.93828C3.47553 5.49807 2.20657 7.65882 1.75473 10.0509C1.3029 12.443 1.69626 14.9177 2.86755 17.0518C4.03883 19.1858 5.91524 20.8466 8.17578 21.75C8.02385 20.7558 8.02385 19.7442 8.17578 18.75L9.41328 13.5C9.21744 13.0245 9.12047 12.5142 9.12828 12C9.12828 10.545 9.97578 9.45 11.0258 9.45C11.216 9.44714 11.4046 9.48543 11.5786 9.56224C11.7527 9.63906 11.908 9.75258 12.0341 9.89504C12.1602 10.0375 12.254 10.2055 12.3091 10.3876C12.3642 10.5697 12.3792 10.7615 12.3533 10.95C12.3533 11.85 11.7833 13.2 11.4833 14.445C11.4187 14.6772 11.411 14.9215 11.4609 15.1573C11.5108 15.3931 11.6167 15.6133 11.7697 15.7995C11.9228 15.9857 12.1184 16.1322 12.3401 16.2267C12.5618 16.3212 12.803 16.361 13.0433 16.3425C14.9033 16.3425 16.3433 14.37 16.3433 11.535C16.362 10.9589 16.2604 10.3853 16.045 9.85061C15.8296 9.31598 15.5052 8.8321 15.0924 8.42986C14.6795 8.02762 14.1874 7.71584 13.6473 7.51442C13.1073 7.31299 12.5312 7.22634 11.9558 7.26C11.3415 7.23361 10.7282 7.33216 10.153 7.54966C9.57788 7.76717 9.05286 8.09912 8.60973 8.52542C8.1666 8.95172 7.81459 9.46351 7.57498 10.0298C7.33538 10.5961 7.21318 11.2051 7.21578 11.82C7.20744 12.6766 7.46993 13.5139 7.96578 14.2125C8.00183 14.2526 8.02752 14.3009 8.04059 14.3532C8.05367 14.4055 8.05373 14.4602 8.04078 14.5125C7.95828 14.8425 7.77828 15.5625 7.74828 15.705C7.71828 15.8475 7.59078 15.9375 7.39578 15.8475C6.08328 15.2325 5.26578 13.32 5.26578 11.775C5.26578 8.4675 7.67328 5.4225 12.2033 5.4225C15.8408 5.4225 18.6758 8.0175 18.6758 11.49C18.6758 15.105 16.4258 18.015 13.2233 18.015C12.7538 18.0313 12.2877 17.9301 11.8672 17.7206C11.4468 17.511 11.0854 17.1997 10.8158 16.815L10.1633 19.3125C9.85049 20.2831 9.41175 21.2085 8.85828 22.065C9.87811 22.3664 10.9374 22.513 12.0008 22.5C14.7856 22.5 17.4563 21.3938 19.4254 19.4246C21.3945 17.4555 22.5008 14.7848 22.5008 12C22.5008 9.21523 21.3945 6.54451 19.4254 4.57538C17.4563 2.60625 14.7856 1.5 12.0008 1.5Z" fill="black"/>
+                </svg>
+              </a>
+            {%- endif -%}
+
+            {%- if brand_block.settings.facebook_url != blank -%}
+              <a href="{{ brand_block.settings.facebook_url }}" class="arenus-footer__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.0025 3H3.9975C3.73355 3.00196 3.48097 3.10769 3.29433 3.29433C3.10769 3.48097 3.00196 3.73355 3 3.9975V20.0025C3.00196 20.2664 3.10769 20.519 3.29433 20.7057C3.48097 20.8923 3.73355 20.998 3.9975 21H12.615V14.04H10.275V11.3175H12.615V9.315C12.615 6.99 14.0325 5.7225 16.1175 5.7225C16.815 5.7225 17.5125 5.7225 18.21 5.8275V8.25H16.7775C15.645 8.25 15.4275 8.79 15.4275 9.5775V11.31H18.1275L17.775 14.0325H15.4275V21H20.0025C20.2664 20.998 20.519 20.8923 20.7057 20.7057C20.8923 20.519 20.998 20.2664 21 20.0025V3.9975C20.998 3.73355 20.8923 3.48097 20.7057 3.29433C20.519 3.10769 20.2664 3.00196 20.0025 3Z" fill="black"/>
+                </svg>
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ── Navigation menus ── {%- endcomment -%}
+      {%- if nav_block_ids.size > 0 -%}
+        <div class="arenus-footer__menus">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'nav_menu' -%}
+              {%- liquid
+                assign menu_handle = block.settings.menu
+                assign menu_heading = block.settings.heading
+                assign has_heading = false
+                assign has_menu = false
+                if menu_heading != blank
+                  assign has_heading = true
+                endif
+                if menu_handle != blank and linklists[menu_handle].links.size > 0
+                  assign has_menu = true
+                endif
+              -%}
+
+              {%- if has_heading or has_menu -%}
+                <div class="arenus-footer__menu" {{ block.shopify_attributes }}>
+                  {%- comment -%} Desktop: heading + links {%- endcomment -%}
+                  {%- if has_heading -%}
+                    <p class="arenus-footer__menu-heading arenus-footer__desktop-only">{{ menu_heading }}</p>
+                  {%- endif -%}
+                  {%- if has_menu -%}
+                    <ul class="arenus-footer__menu-links arenus-footer__desktop-only">
+                      {%- for link in linklists[menu_handle].links -%}
+                        <li>
+                          <a href="{{ link.url }}" class="arenus-footer__menu-link">{{ link.title }}</a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+
+                  {%- comment -%} Mobile: accordion {%- endcomment -%}
+                  {%- if has_menu -%}
+                    <details class="arenus-footer__menu-accordion arenus-footer__mobile-only">
+                      <summary class="arenus-footer__menu-summary">
+                        <span>{{ menu_heading | default: 'Menu' }}</span>
+                        <span class="arenus-footer__menu-caret">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </span>
+                      </summary>
+                      <ul class="arenus-footer__menu-links arenus-footer__menu-links--accordion">
+                        {%- for link in linklists[menu_handle].links -%}
+                          <li>
+                            <a href="{{ link.url }}" class="arenus-footer__menu-link">{{ link.title }}</a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </details>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ── Newsletter block ── {%- endcomment -%}
+      {%- if newsletter_block -%}
+        <div class="arenus-footer__newsletter" {{ newsletter_block.shopify_attributes }}>
+          {%- if newsletter_block.settings.heading != blank -%}
+            <p class="arenus-footer__newsletter-heading">{{ newsletter_block.settings.heading }}</p>
+          {%- endif -%}
+          {%- if newsletter_block.settings.description != blank -%}
+            <p class="arenus-footer__newsletter-desc">{{ newsletter_block.settings.description }}</p>
+          {%- endif -%}
+
+          {%- form 'customer', id: 'ArenusFooterNewsletter', class: 'arenus-footer__newsletter-form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="arenus-footer__newsletter-fields">
+              <div class="arenus-footer__newsletter-input-wrap">
+                <input
+                  type="email"
+                  name="contact[email]"
+                  id="ArenusFooterEmail-{{ section.id }}"
+                  class="arenus-footer__newsletter-input"
+                  placeholder="{{ 'Email address' }}"
+                  autocomplete="email"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  required
+                  {%- if form.errors -%}
+                    aria-invalid="true"
+                    aria-describedby="arenus-footer-error-{{ section.id }}"
+                  {%- endif -%}
+                >
+              </div>
+              <button type="submit" class="arenus-footer__newsletter-btn">
+                {{ newsletter_block.settings.button_text | default: 'Subscribe' | upcase }}
+              </button>
+            </div>
+
+            {%- if form.errors -%}
+              <div id="arenus-footer-error-{{ section.id }}" class="arenus-footer__newsletter-error" role="alert">
+                {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+              </div>
+            {%- endif -%}
+
+            {%- if form.posted_successfully? -%}
+              <div class="arenus-footer__newsletter-success" role="status">
+                You've successfully subscribed!
+              </div>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ══════════ DIVIDER ══════════ {%- endcomment -%}
+    <hr class="arenus-footer__divider">
+
+    {%- comment -%} ══════════ BOTTOM BAR ══════════ {%- endcomment -%}
+    <div class="arenus-footer__bottom">
+      <span class="arenus-footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}
+      </span>
+      <div class="arenus-footer__policies">
+        {%- if section.settings.privacy_policy_url != blank -%}
+          <a href="{{ section.settings.privacy_policy_url }}" class="arenus-footer__policy-link">{{ section.settings.privacy_policy_text | default: 'Privacy Policy' }}</a>
+        {%- endif -%}
+        {%- if section.settings.terms_url != blank -%}
+          <a href="{{ section.settings.terms_url }}" class="arenus-footer__policy-link">{{ section.settings.terms_text | default: 'Terms and Conditions' }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  /* ===== Arenus Footer — Mobile-first ===== */
+
+  .arenus-footer {
+    background-color: var(--arenus-footer-bg, #FFFBE6);
+    padding-inline: 20px;
+  }
+
+  .arenus-footer__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-inline: 0;
+  }
+
+  /* ── Top row ── */
+  .arenus-footer__top {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* ── Brand block ── */
+  .arenus-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arenus-footer__logo-link {
+    display: inline-block;
+    line-height: 0;
+    width: fit-content;
+  }
+
+  .arenus-footer__logo {
+    width: 180px;
+    height: auto;
+  }
+
+  .arenus-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .arenus-footer__address,
+  .arenus-footer__phone {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000;
+    margin: 0;
+  }
+
+  .arenus-footer__phone a {
+    color: inherit;
+    text-decoration-color: transparent !important;
+    transition: text-decoration-color 0.2s ease;
+  }
+  
+  .arenus-footer__phone:hover a {
+    text-decoration-color: #000 !important;
+  }
+
+  .arenus-footer__phone {
+    margin-top: 14px;
+  }
+
+  .arenus-footer__socials {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .arenus-footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    fill: #FFF;
+  }
+  
+  .arenus-footer__social-link svg path {
+    /* fill: #FFF; */
+    transition: fill 0.2s ease;
+  }
+
+  .arenus-footer__social-link:hover svg path {
+    fill: #E6B236;
+  }
+
+  .arenus-footer__social-link svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* ── Desktop / Mobile visibility helpers ── */
+  .arenus-footer .arenus-footer__desktop-only {
+    display: none;
+  }
+
+  .arenus-footer .arenus-footer__mobile-only {
+    display: block;
+  }
+
+  /* ── Navigation menus ── */
+  .arenus-footer__menus {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .arenus-footer__menu-heading {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+    margin: 0 0 20px;
+    text-transform: none;
+  }
+
+  .arenus-footer__menu-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .arenus-footer__menu-link {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-footer__menu-link:hover {
+    opacity: 0.7;
+  }
+
+  /* ── Mobile accordion ── */
+  .arenus-footer__menu-accordion {
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+  }
+
+  .arenus-footer__menu-accordion[open] {
+    border-bottom-color: #191919;
+  }
+
+  .arenus-footer__menu-summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #000;
+  }
+
+  .arenus-footer__menu-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .arenus-footer__menu-summary::marker {
+    display: none;
+    content: '';
+  }
+
+  .arenus-footer__menu-caret {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  .arenus-footer__menu-accordion[open] .arenus-footer__menu-caret {
+    transform: rotate(180deg);
+  }
+
+  .arenus-footer__menu-links--accordion {
+    padding-bottom: 24px;
+    padding-top: 16px;
+  }
+
+  /* ── Newsletter ── */
+  .arenus-footer__newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 352px;
+  }
+
+  .arenus-footer__newsletter-heading {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+    margin: 0;
+  }
+
+  .arenus-footer__newsletter-desc {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000;
+    margin: 0;
+  }
+
+  .arenus-footer__newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .arenus-footer__newsletter-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .arenus-footer__newsletter-input-wrap {
+    width: 100%;
+  }
+
+  .arenus-footer__newsletter-input {
+    width: 100%;
+    height: 54px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.32px;
+    color: #000;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .arenus-footer__newsletter-input::placeholder {
+    color: #808085;
+  }
+
+  /* .arenus-footer__newsletter-input:focus {
+    border-color: #000;
+  } */
+
+  .arenus-footer__newsletter-input:hover {
+    background-color: #fff;
+  }
+
+  .arenus-footer__newsletter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--arenus-footer-btn-color, #E6B236);
+    color: #fff;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    width: 100%;
+  }
+
+  .arenus-footer__newsletter-btn:hover {
+    opacity: 0.9;
+  }
+
+  .arenus-footer__newsletter-error {
+    font-family: var(--font-body--family);
+    font-size: 13px;
+    line-height: 1.4;
+    color: #cc0000;
+  }
+
+  .arenus-footer__newsletter-success {
+    background-color: #D4EDDA;
+    color: #155724;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 8px 16px;
+    border-radius: 6px;
+  }
+
+  /* ── Divider ── */
+  .arenus-footer__divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 0;
+  }
+
+  /* ── Bottom bar ── */
+  .arenus-footer__bottom {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .arenus-footer__copyright {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+  }
+
+  .arenus-footer__policies {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .arenus-footer__policy-link {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .arenus-footer__policy-link:hover {
+    opacity: 0.7;
+  }
+
+  /* ===== Desktop (750px+) ===== */
+  @media screen and (min-width: 750px) {
+
+    .arenus-footer {
+      padding-inline: 40px;
+    }
+
+    .arenus-footer__logo {
+      width: 90px;
+    }
+
+    .arenus-footer__inner {
+      padding-inline: 40px;
+    }
+
+    .arenus-footer .arenus-footer__desktop-only {
+      display: flex;
+    }
+
+    .arenus-footer .arenus-footer__mobile-only {
+      display: none;
+    }
+
+    /* Top row: horizontal layout */
+    .arenus-footer__top {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    /* Brand block */
+    .arenus-footer__brand {
+      width: 221px;
+      flex-shrink: 0;
+    }
+
+    .arenus-footer__socials {
+      gap: 16px;
+    }
+
+    /* Nav menus: horizontal row */
+    .arenus-footer__menus {
+      flex-direction: row;
+      gap: 102px;
+    }
+
+    /* Newsletter */
+    .arenus-footer__newsletter {
+      flex-shrink: 0;
+    }
+
+    .arenus-footer__newsletter-btn {
+      width: fit-content;
+    }
+
+    /* Bottom bar: policy links gap */
+    .arenus-footer__policies {
+      gap: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Arenus Footer",
+  "tag": "section",
+  "class": "arenus-footer-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FFFBE6"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Subscribe button color",
+      "default": "#E6B236"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "url",
+      "id": "privacy_policy_url",
+      "label": "Privacy Policy link"
+    },
+    {
+      "type": "text",
+      "id": "privacy_policy_text",
+      "label": "Privacy Policy text",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "url",
+      "id": "terms_url",
+      "label": "Terms and Conditions link"
+    },
+    {
+      "type": "text",
+      "id": "terms_text",
+      "label": "Terms and Conditions text",
+      "default": "Terms and Conditions"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand_info",
+      "name": "Brand info",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "Falls back to the default theme logo if empty."
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "Address",
+          "default": "1700 Albany Place SE Orange City, IA 51041"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone number",
+          "default": "(866) 791-3344"
+        },
+        {
+          "type": "header",
+          "content": "Social media links"
+        },
+        {
+          "type": "url",
+          "id": "instagram_url",
+          "label": "Instagram"
+        },
+        {
+          "type": "url",
+          "id": "twitter_url",
+          "label": "X (Twitter)"
+        },
+        {
+          "type": "url",
+          "id": "youtube_url",
+          "label": "YouTube"
+        },
+        {
+          "type": "url",
+          "id": "pinterest_url",
+          "label": "Pinterest"
+        },
+        {
+          "type": "url",
+          "id": "facebook_url",
+          "label": "Facebook"
+        }
+      ]
+    },
+    {
+      "type": "nav_menu",
+      "name": "Navigation menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Stay in Touch"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Subscribe to get new product information, horse care tips, and more!"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Subscribe"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arenus Footer",
+      "blocks": [
+        {
+          "type": "brand_info"
+        },
+        {
+          "type": "nav_menu",
+          "settings": {
+            "heading": "Shop"
+          }
+        },
+        {
+          "type": "nav_menu",
+          "settings": {
+            "heading": "Information"
+          }
+        },
+        {
+          "type": "nav_menu",
+          "settings": {
+            "heading": "About Us"
+          }
+        },
+        {
+          "type": "newsletter"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

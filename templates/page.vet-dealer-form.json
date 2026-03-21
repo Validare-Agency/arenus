@@ -1,0 +1,48 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_vet_form_banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Veterinary Dealer Application",
+        "description": "<p>Complete the form below to apply. Once approved, you'll be contacted by a Veterinary Solutions Specialist who will serve as your liaison to our product lines.</p>",
+        "image": "shopify://shop_images/about_us_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "min_height_mobile": 330,
+        "min_height_desktop": 420,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 830,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "arenus_vet_form_embed": {
+      "type": "arenus-jotform-embed",
+      "settings": {
+        "form_id": "62496167496168",
+        "max_width": 900,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "background_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "arenus_vet_form_banner",
+    "arenus_vet_form_embed"
+  ]
+}

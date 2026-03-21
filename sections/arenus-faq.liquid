@@ -1,0 +1,454 @@
+{%- comment -%}
+  Arenus FAQ — tabbed section with nested theme blocks.
+  Tab panels are _faq-text-tab or _faq-products-tab blocks.
+  JS builds the tab nav dynamically from data-faq-label attributes.
+{%- endcomment -%}
+
+{%- capture panels %}
+  {% content_for 'blocks' %}
+{% endcapture -%}
+
+<div
+  id="ArenusFaq-{{ section.id }}"
+  class="arenus-faq"
+  style="
+    --faq-bg: {{ section.settings.background_color }};
+    --faq-text: {{ section.settings.text_color }};
+    --faq-padding-top: {{ section.settings.padding_top }}px;
+    --faq-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+  data-arenus-faq
+>
+  <div class="arenus-faq__inner">
+    {%- if section.settings.heading != blank -%}
+      <h1 class="arenus-faq__heading">{{ section.settings.heading }}</h1>
+    {%- endif -%}
+
+    {%- comment -%} Tab nav — populated by JS {%- endcomment -%}
+    <div class="arenus-faq__tabs" data-faq-tabs role="tablist"></div>
+
+    {%- comment -%} Tab panels {%- endcomment -%}
+    <div class="arenus-faq__panels" data-faq-panels>
+      {{ panels }}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var root = document.getElementById('ArenusFaq-{{ section.id }}');
+    if (!root) return;
+
+    var tabsContainer = root.querySelector('[data-faq-tabs]');
+    var panels = root.querySelectorAll('[data-faq-panel]');
+    if (!panels.length) return;
+
+    /* ── Build tab buttons ── */
+    panels.forEach(function(panel, i) {
+      var label = panel.getAttribute('data-faq-label') || 'Tab ' + (i + 1);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'arenus-faq__tab-btn';
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('data-faq-tab-index', i);
+      btn.textContent = label;
+      tabsContainer.appendChild(btn);
+    });
+
+    /* ── Tab switching ── */
+    function activateTab(index) {
+      var buttons = tabsContainer.querySelectorAll('.arenus-faq__tab-btn');
+      buttons.forEach(function(btn, i) {
+        btn.classList.toggle('arenus-faq__tab-btn--active', i === index);
+        btn.setAttribute('aria-selected', i === index ? 'true' : 'false');
+      });
+      panels.forEach(function(panel, i) {
+        panel.classList.toggle('arenus-faq__panel--active', i === index);
+      });
+    }
+
+    tabsContainer.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-faq-tab-index]');
+      if (btn) activateTab(parseInt(btn.getAttribute('data-faq-tab-index'), 10));
+    });
+
+    /* Activate first tab */
+    activateTab(0);
+
+    /* ── Product filter logic ── */
+    root.querySelectorAll('[data-faq-filters]').forEach(function(filtersWrap) {
+      var productList = filtersWrap.parentElement.querySelector('[data-faq-product-list]');
+      if (!productList) return;
+
+      var filterBtns = filtersWrap.querySelectorAll('[data-faq-filter-tag]');
+      var rows = productList.querySelectorAll('[data-product-tags]');
+
+      /* Activate first filter */
+      if (filterBtns.length) filterBtns[0].classList.add('arenus-faq__filter-btn--active');
+
+      filtersWrap.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-faq-filter-tag]');
+        if (!btn) return;
+
+        filterBtns.forEach(function(b) { b.classList.remove('arenus-faq__filter-btn--active'); });
+        btn.classList.add('arenus-faq__filter-btn--active');
+
+        var tag = btn.getAttribute('data-faq-filter-tag');
+        rows.forEach(function(row) {
+          if (!tag) {
+            row.style.display = '';
+            return;
+          }
+          var tags = row.getAttribute('data-product-tags') || '';
+          row.style.display = tags.indexOf(tag) !== -1 ? '' : 'none';
+        });
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ===== Arenus FAQ — Mobile-first ===== */
+
+  .arenus-faq {
+    background-color: var(--faq-bg, #ffffff);
+    color: var(--faq-text, #000000);
+    padding: var(--faq-padding-top, 40px) 20px var(--faq-padding-bottom, 72px);
+  }
+
+  .arenus-faq__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Heading */
+  .arenus-faq__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: -0.64px;
+    margin: 0 0 32px;
+  }
+
+  /* ── Tab nav ── */
+  .arenus-faq__tabs {
+    display: flex;
+    gap: 22px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+  }
+
+  .arenus-faq__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arenus-faq__tab-btn {
+    all: unset;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 20px;
+    line-height: 1.3;
+    letter-spacing: -0.4px;
+    color: #808085;
+    padding-bottom: 8px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .arenus-faq__tab-btn--active {
+    color: #000;
+    border-bottom-color: #000;
+  }
+
+  /* ── Panels ── */
+  .arenus-faq__panel {
+    display: none;
+  }
+
+  .arenus-faq__panel--active {
+    display: block;
+  }
+
+  /* ── Accordion items ── */
+  .arenus-faq__item {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .arenus-faq__item[open] {
+    border-color: #000;
+  }
+
+  .arenus-faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    padding: 16px 0;
+    list-style: none;
+  }
+
+  .arenus-faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .arenus-faq__question-text {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+    flex: 1;
+  }
+
+  .arenus-faq__chevron {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+
+  .arenus-faq__item[open] .arenus-faq__chevron {
+    transform: rotate(180deg);
+  }
+
+  .arenus-faq__answer {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #424242;
+    padding-bottom: 16px;
+  }
+
+  .arenus-faq__answer p {
+    margin: 0;
+  }
+
+  .arenus-faq__answer p + p {
+    margin-top: 12px;
+  }
+
+  /* ── Filter buttons ── */
+  .arenus-faq__filters {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .arenus-faq__filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arenus-faq__filter-btn {
+    all: unset;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 4px;
+    color: #000;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    background-color: #F9F9F9;
+    transition: border-color 0.2s, background-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .arenus-faq__filter-btn:hover {
+    border-color: #ddd;
+  }
+
+  .arenus-faq__filter-btn--active:hover {
+    border-color: #000;
+  }
+
+  .arenus-faq__filter-btn--active {
+    background-color: #FFF;
+    border-color: #000;
+  }
+
+  /* ── Product rows ── */
+  .arenus-faq__product-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .arenus-faq__product-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0 16px;
+    border-bottom: 1px solid #ddd;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.15s;
+  }
+
+  .arenus-faq__product-row:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-faq__product-img-wrap {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .arenus-faq__product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .arenus-faq__product-name {
+    flex: 1;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+  }
+
+  .arenus-faq__product-arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    color: #808085;
+  }
+
+  .arenus-faq__empty {
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    color: #808085;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-faq {
+      padding: var(--faq-padding-top, 40px) 40px 102px;
+    }
+
+    .arenus-faq__inner {
+      max-width: 670px;
+      margin: 0 auto;
+    }
+
+    .arenus-faq__heading {
+      font-size: 48px;
+      letter-spacing: -0.96px;
+      margin-bottom: 32px;
+    }
+
+    .arenus-faq__tab-btn {
+      font-size: 24px;
+      letter-spacing: -0.48px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "class": "arenus-faq-wrapper section-wrapper",
+  "blocks": [
+    {
+      "type": "_faq-text-tab"
+    },
+    {
+      "type": "_faq-products-tab"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "category": "Content",
+      "settings": {
+        "heading": "FAQ",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 72
+      }
+    }
+  ]
+}
+{% endschema %}

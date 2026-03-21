@@ -18,11 +18,24 @@ class HeaderDrawer extends Component {
 
     this.addEventListener('keyup', this.#onKeyUp);
     this.#setupAnimatedElementListeners();
+
+    // Intercept <summary> clicks to take full control of open/close.
+    // This prevents the native <details>/<summary> toggle from racing
+    // with our JS-managed open/close state.
+    const summary = this.refs.details.querySelector('summary');
+    if (summary) {
+      summary.addEventListener('click', this.#onSummaryClick);
+    }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('keyup', this.#onKeyUp);
+
+    const summary = this.refs.details.querySelector('summary');
+    if (summary) {
+      summary.removeEventListener('click', this.#onSummaryClick);
+    }
   }
 
   /**
@@ -33,6 +46,23 @@ class HeaderDrawer extends Component {
     if (event.key !== 'Escape') return;
 
     this.#close(this.#getDetailsElement(event));
+  };
+
+  /**
+   * Handle <summary> click — prevent native toggle and manage open/close via JS.
+   * This eliminates the race condition between native <details> toggle and
+   * our JS-managed reset() which also removes the open attribute.
+   */
+  #onSummaryClick = (event) => {
+    event.preventDefault();
+
+    const details = this.refs.details;
+    if (details.open) {
+      this.#close(details);
+    } else {
+      details.setAttribute('open', '');
+      this.open();
+    }
   };
 
   /**

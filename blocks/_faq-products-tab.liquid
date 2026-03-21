@@ -1,0 +1,97 @@
+{%- comment -%}
+  FAQ Products Tab — shows a collection of products with filter buttons.
+  Filter buttons are nested _faq-filter child blocks.
+  Clicking a product row navigates to the product page with #faq anchor.
+{%- endcomment -%}
+
+{%- capture filter_children %}
+  {% content_for 'blocks' %}
+{% endcapture -%}
+
+{%- assign collection = block.settings.collection -%}
+
+<div
+  class="arenus-faq__panel arenus-faq__panel--products"
+  data-faq-panel
+  data-faq-label="{{ block.settings.label }}"
+  {{ block.shopify_attributes }}
+>
+  {%- comment -%} Filter buttons {%- endcomment -%}
+  {%- if filter_children != blank -%}
+    <div class="arenus-faq__filters" data-faq-filters>
+      {{ filter_children }}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Product list {%- endcomment -%}
+  {%- if collection != blank and collection.products.size > 0 -%}
+    <div class="arenus-faq__product-list" data-faq-product-list>
+      {%- for product in collection.products -%}
+        <a
+          href="{{ product.url }}#faq"
+          class="arenus-faq__product-row"
+          data-product-tags="{{ product.tags | join: ',' | downcase }}"
+          data-product-type="{{ product.type | downcase }}"
+        >
+          <div class="arenus-faq__product-img-wrap">
+            {%- if product.featured_image != blank -%}
+              {{
+                product.featured_image
+                | image_url: width: 208
+                | image_tag:
+                  width: product.featured_image.width,
+                  widths: '52, 104, 156, 208',
+                  height: product.featured_image.height,
+                  alt: product.title,
+                  class: 'arenus-faq__product-img',
+                  sizes: '52px',
+                  loading: 'lazy'
+              }}
+            {%- endif -%}
+          </div>
+          <span class="arenus-faq__product-name">{{ product.title }}</span>
+          <span class="arenus-faq__product-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <p class="arenus-faq__empty">No products found.</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "FAQ Products Tab",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_faq-filter"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Tab label",
+      "default": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Products Tab",
+      "settings": {
+        "label": "Products"
+      }
+    }
+  ]
+}
+{% endschema %}

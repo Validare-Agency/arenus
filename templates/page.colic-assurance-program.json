@@ -1,0 +1,137 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_colic_banner": {
+      "type": "arenus-colic-banner",
+      "settings": {
+        "heading": "Colic Assurance Program",
+        "description": "<p>Routine wellness services with the right nutrition for a healthier horse, and your peace of mind. In the event your horse needs colic surgery, you can rest easy while this complimentary program reimburses you for the cost of the surgery up to $15,000.</p>",
+        "button_label": "ENROLL NOW",
+        "button_link": "shopify://pages/colic-assurance-program-form",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 540,
+        "min_height_desktop": 640,
+        "content_max_width_desktop": 860,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "arenus_colic_enroll": {
+      "type": "arenus-colic-enroll",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "Enroll",
+            "description": "Complete an enrollment form for each horse online."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "Order",
+            "description": "Place a qualifying auto-ship order of a wellness formula in Colic Assurance Program® or buckets."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "Maintain",
+            "description": "Continue with annual recommended veterinary wellness requirements."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
+      "settings": {
+        "heading": "Enrolling is Easy as 1-2-3!",
+        "button_label": "ENROLL NOW",
+        "button_link": "shopify://pages/colic-assurance-program-form"
+      }
+    },
+    "arenus_testimonials": {
+      "type": "arenus-testimonials",
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "My vet suggested this for my horse when her bloodwork came back with a slightly low red blood count. I absolutely love the change in her personality. She acts like she did 20 years ago and she is presently 28...",
+            "author_name": "Partrica C."
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "My mare is 8 years old and she has been on AssureGuard Gold for over a year and doing so well SO I decided to try Eq-Well. She had been on another vitamin supplement. She has been on EQ-well for...",
+            "author_name": "Kathy M."
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "My 26yo retired mare would colic after her spring and fall injections, even though my veterinarian took care to give only 2 at a time. As she is a cribber, it is not easy to pass the NG tube. Dr....",
+            "author_name": "Dana K."
+          }
+        },
+        "testimonial_4": {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "I noticed one of my horses acting lethargic and disinterested and mentioned it to a friend. As I was new to Florida, she recommended a sand-clearing supplement. After research and reading reviews, I chose Assure. I put the whole herd...",
+            "author_name": "Carla K."
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3",
+        "testimonial_4"
+      ],
+      "settings": {
+        "heading": "Real Clients. Real Results.",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "card_border_color": "#dddddd",
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "arenus_products": {
+      "type": "arenus-products",
+      "settings": {
+        "heading": "Qualifying Formulas for $15,000 Coverage",
+        "collection": "all",
+        "max_products": 8,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "image_background_color": "#fffcea",
+        "padding-block-start": 24,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "arenus_colic_banner",
+    "arenus_colic_enroll",
+    "arenus_testimonials",
+    "arenus_products"
+  ]
+}

@@ -1,0 +1,229 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "faq": {
+      "type": "arenus-faq",
+      "blocks": {
+        "general_tab": {
+          "type": "_faq-text-tab",
+          "settings": {
+            "label": "General"
+          },
+          "blocks": {
+            "q1": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "What Colic Assurance Program Cover?",
+                "answer": "<p>Routine wellness services with the right nutrition for a healthier horse, and your peace of mind. In the event your horse needs colic surgery, you can rest easy while this complimentary program reimburses you for the cost of the surgery up to $15,000.</p>",
+                "open_by_default": true
+              },
+              "blocks": {}
+            },
+            "q2": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "How can I become a dealer?",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "q3": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "How to subscribe to become an Ambassador?",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "q4": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Reasearch",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "q5": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Joint & Mobility",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "q6": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Supplements",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "q7": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Performance",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "q1",
+            "q2",
+            "q3",
+            "q4",
+            "q5",
+            "q6",
+            "q7"
+          ]
+        },
+        "shipping_tab": {
+          "type": "_faq-text-tab",
+          "settings": {
+            "label": "Shipping & Returns"
+          },
+          "blocks": {
+            "sq1": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Question 1?",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "sq2": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Question 2?",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "sq3": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Question 3?",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "sq4": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Question 4?",
+                "answer": "<p>Placeholder text.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            },
+            "sq5": {
+              "type": "_faq-item",
+              "settings": {
+                "question": "Question 5?",
+                "answer": "<p>If your order arrives damaged, please contact our customer support team within 48 hours of delivery with photos of the damage. We will arrange a replacement or refund promptly.</p>",
+                "open_by_default": false
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "sq1",
+            "sq2",
+            "sq3",
+            "sq4",
+            "sq5"
+          ]
+        },
+        "products_tab": {
+          "type": "_faq-products-tab",
+          "settings": {
+            "label": "Products",
+            "collection": "shop-all"
+          },
+          "blocks": {
+            "filter_all": {
+              "type": "_faq-filter",
+              "settings": {
+                "label": "ALL",
+                "tag": ""
+              },
+              "blocks": {}
+            },
+            "filter_gut": {
+              "type": "_faq-filter",
+              "settings": {
+                "label": "GUT HEALTH",
+                "tag": "gut health"
+              },
+              "blocks": {}
+            },
+            "filter_breathing": {
+              "type": "_faq-filter",
+              "settings": {
+                "label": "BREATHING",
+                "tag": "breathing"
+              },
+              "blocks": {}
+            },
+            "filter_joint": {
+              "type": "_faq-filter",
+              "settings": {
+                "label": "JOINT & MOBILITY",
+                "tag": "joint & mobility"
+              },
+              "blocks": {}
+            },
+            "filter_performance": {
+              "type": "_faq-filter",
+              "settings": {
+                "label": "PERFORMANCE",
+                "tag": "performance"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "filter_all",
+            "filter_gut",
+            "filter_breathing",
+            "filter_joint",
+            "filter_performance"
+          ]
+        }
+      },
+      "block_order": [
+        "general_tab",
+        "shipping_tab",
+        "products_tab"
+      ],
+      "settings": {
+        "heading": "FAQ",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": [
+    "faq"
+  ]
+}

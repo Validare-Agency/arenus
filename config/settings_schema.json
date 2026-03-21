@@ -2060,6 +2060,43 @@
         "step": 1,
         "unit": "px",
         "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Free shipping bar"
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold ($)",
+        "info": "Set to 0 to hide the free shipping bar",
+        "default": 99
+      },
+      {
+        "type": "header",
+        "content": "Cart recommendations"
+      },
+      {
+        "type": "select",
+        "id": "cart_recommendations_source",
+        "label": "Recommendations source",
+        "options": [
+          {
+            "value": "recommendations",
+            "label": "Product recommendations"
+          },
+          {
+            "value": "collection",
+            "label": "Specific collection"
+          }
+        ],
+        "default": "recommendations"
+      },
+      {
+        "type": "collection",
+        "id": "cart_recommendations_collection",
+        "label": "Recommendations collection",
+        "info": "Used when source is set to 'Specific collection'"
       }
     ]
   },
@@ -2309,6 +2346,21 @@
   {
     "name": "t:names.product_cards",
     "settings": [
+      {
+        "type": "header",
+        "content": "Card image"
+      },
+      {
+        "type": "color",
+        "id": "product_card_image_bg",
+        "label": "Image background color",
+        "default": "#fffcea",
+        "info": "Applied globally to all product card images across the site."
+      },
+      {
+        "type": "header",
+        "content": "Quick add"
+      },
       {
         "type": "checkbox",
         "id": "quick_add",

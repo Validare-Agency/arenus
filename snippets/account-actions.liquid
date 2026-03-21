@@ -23,29 +23,18 @@
     </header>
 
     {% unless customer %}
-      <div
-        class="account-actions__sign-ins"
-        data-skip-subtree-update="true"
-      >
-        <script
-          src="{{ 'account-login-actions.js' | asset_url }}"
-          type="module"
-          fetchpriority="low"
-        ></script>
-        <account-login-actions class="account-actions__shop-login">
-          {{ shop | login_button }}
-        </account-login-actions>
-
+      <div class="account-actions__sign-ins">
         <a
-          href="{% if request.design_mode %}{{ routes.account_url }}{% else %}{{ routes.storefront_login_url }}{% endif %}"
+          href="{{ routes.account_login_url }}"
           class="account-actions__link button"
         >
-          <span class="account-actions__sign-in-text">
-            {{ 'actions.sign_in_options' | t }}
-          </span>
-          <span class="account-actions__fallback-text">
-            {{ 'actions.log_in' | t }}
-          </span>
+          {{ 'actions.log_in' | t }}
+        </a>
+        <a
+          href="{{ routes.account_login_url }}#register"
+          class="account-actions__link button-secondary"
+        >
+          {{ 'actions.create_account' | t }}
         </a>
       </div>
     {% endunless %}
@@ -80,6 +69,16 @@
             {{ 'content.account_profile' | t }}
           </a>
         </li>
+        {% if customer %}
+          <li class="account-actions__list-item">
+            <a
+              href="{{ routes.account_logout_url }}"
+              class="account-actions__link button-secondary"
+            >
+              {{ 'actions.log_out' | t }}
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </nav>
   </div>
@@ -131,31 +130,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
-  }
-
-  .account-actions__sign-in-text {
-    display: inline;
-  }
-
-  .account-actions__fallback-text {
-    display: none;
-  }
-
-  .account-actions__sign-ins:not(:has(shop-login-button)) {
-    gap: 0;
-
-    .account-actions__sign-in-text {
-      display: none;
-    }
-
-    .account-actions__fallback-text {
-      display: block;
-    }
-  }
-
-  /* Makes the shop login button radius match the theme settings */
-  .account-actions__shop-login {
-    --buttons-radius: var(--style-border-radius-buttons-primary);
   }
 
   .account-actions__nav {

@@ -1,0 +1,88 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Research",
+        "description": "",
+        "image": "shopify://shop_images/research_banner_compressed.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 330,
+        "min_height_desktop": 480,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 900,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "content": {
+      "type": "arenus-research-content",
+      "blocks": {
+        "intro": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>At Arenus, we believe that your horse deserves the best health care possible and products that actually work. We have thoroughly researched the exact product formulations available to you, not just compiled other's research on ingredients and formulations. The Assure System products are all patented for use in common equine digestive problems, so you know you're providing the best solutions for your horse.</p>"
+          }
+        },
+        "images_1": {
+          "type": "image_pair",
+          "settings": {
+            "image_left": "shopify://shop_images/research_01.png",
+            "image_right": "shopify://shop_images/research_02.png"
+          }
+        },
+        "study_1": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p><strong>Landes AD, Hassel DM, Funk JD, Hill A. Fecal Sand Clearance Is Enhanced with a Product Combining Probiotics, Prebiotics, and Psyllium in Clinically Normal Horses. J Equine Vet Sci. 2008; 28(2):79-84.</strong></p><p><br/><br/>A university led research trial showed the effectiveness of Assure and Assure Plus in aiding in the removal of sand accumulations in clinically normal horses.</p><p><br/></p><ul><li>100% of horses saw an increase of up to 370% and no less than 250% the amount of sand excreted in feces in just 4 days!</li><li>100% of horses maintained high excretion levels for all 35 days of treatment.</li></ul>"
+          }
+        },
+        "images_2": {
+          "type": "image_pair",
+          "settings": {
+            "image_left": "shopify://shop_images/research_03.png",
+            "image_right": "shopify://shop_images/research_04.png"
+          }
+        },
+        "study_2": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p><strong>Brendemuehl JP, Altman J, Kopp K, Blikslager A. A multi-center clinical trial utilizing a combined probiotic, prebiotic and psyllium product for the management of chronic gastrointestinal disorders (diarrhea and colic) in clinically affected horses. 2010; Novus Nutritional Brands, LLC.</strong></p><p><br/>A multi-center clinical trial showed the effectiveness of Assure, Assure Guard, and Assure Plus in aiding in the resolution of recurrent colic and chronic colic.</p><p><br/></p><ul><li>100% of recurrent colic horses were decreased in frequency of episodes in 120 to 240 days with 90% of them being completely resolved!</li><li>Horses saw an average of 90% fewer colics within the initial treatment period.</li><li>80% of horses with chronic diarrhea were fully resolved or significantly improved in just 30 days!</li><li>Horses saw an average decrease of 71% in diarrhea scores and 56% were totally resolved in 30 days! Although not tracked and recorded for the study, many horses went on to complete resolution during the next 30 day period.</li><li>97% of veterinarians involved in the clinical trial said they would recommend Assure products to other veterinarians!</li></ul><p><br/><br/>The clinical trial also showed the ability of Assure, Assure Guard, and Assure Plus in aiding in the resolution of suspected gastric ulcers, sand accumulation and weight loss or poor body condition.</p><p><br/></p><ul><li>81% of horses suspected with gastric ulcers were resolved or significantly improved in just 60 days!</li><li>100% of horses with sand accumulation were resolved or significantly improved in just 45 days!</li><li>94% of horses with poor body condition or weight loss were resolved or significantly improved based on desired weight in just 60 days!</li></ul>"
+          }
+        }
+      },
+      "block_order": [
+        "intro",
+        "images_1",
+        "study_1",
+        "images_2",
+        "study_2"
+      ],
+      "settings": {
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "content"
+  ]
+}

@@ -246,6 +246,7 @@
     padding: 20px 40px;
     max-width: var(--page-width);
     margin: 0 auto;
+    gap: 12px;
   }
 
   .header__left {
@@ -355,6 +356,14 @@
     }
   }
 
+  /* ── Plain menu list (no overflow-list) — wrap naturally ── */
+  .arenus-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0 var(--menu-horizontal-gap, var(--gap-xl));
+  }
+
   /* ── Transparent header offset ── */
   .header-section:has(.header[transparent]) + .shopify-section {
     margin-top: var(--header-height);
@@ -450,25 +459,9 @@
     },
     {
       "type": "text",
-      "id": "top_bar_link_1_text",
-      "label": "Link 1 text",
-      "default": "Arenus Ambassadors"
-    },
-    {
-      "type": "url",
-      "id": "top_bar_link_1_url",
-      "label": "Link 1 URL"
-    },
-    {
-      "type": "text",
-      "id": "top_bar_link_2_text",
-      "label": "Link 2 text",
-      "default": "Become a Dealer"
-    },
-    {
-      "type": "url",
-      "id": "top_bar_link_2_url",
-      "label": "Link 2 URL"
+      "id": "top_bar_announcement",
+      "label": "Announcement text",
+      "default": "FREE SHIPPING OVER $149"
     },
     {
       "type": "checkbox",

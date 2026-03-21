@@ -1,0 +1,501 @@
+{%- comment -%}
+  Arenus — Product Tabs (Videos / Reviews / FAQs)
+  Sits below the "You May Also Like" section on PDP.
+{%- endcomment -%}
+
+{%- assign videos = product.metafields.custom.youtube_videos.value -%}
+{%- assign faqs = product.metafields.custom.faqs.value -%}
+{%- assign has_videos = false -%}
+{%- assign has_faqs = false -%}
+{%- if videos != blank and videos.size > 0 -%}
+  {%- assign has_videos = true -%}
+{%- endif -%}
+{%- if faqs != blank and faqs.size > 0 -%}
+  {%- assign has_faqs = true -%}
+{%- endif -%}
+
+<section
+  id="ArenusProductTabs-{{ section.id }}"
+  class="arenus-product-tabs c-page-width"
+  style="
+    padding-block-start: {{ section.settings.padding_top }}px;
+    padding-block-end: {{ section.settings.padding_bottom }}px;
+  "
+  data-default-tab="{{ section.settings.default_tab }}"
+>
+  {%- comment -%} ── Tab bar — only render when there's more than just Reviews ── {%- endcomment -%}
+  {%- if has_videos or has_faqs -%}
+    <div class="arenus-product-tabs__bar" role="tablist">
+      {%- if has_videos -%}
+        <button
+          type="button"
+          class="arenus-product-tabs__tab"
+          role="tab"
+          data-tab-target="videos"
+          aria-selected="false"
+        >
+          Videos
+        </button>
+      {%- endif -%}
+      <button
+        type="button"
+        class="arenus-product-tabs__tab"
+        role="tab"
+        data-tab-target="reviews"
+        aria-selected="false"
+      >
+        Reviews
+      </button>
+      {%- if has_faqs -%}
+        <button
+          type="button"
+          class="arenus-product-tabs__tab"
+          role="tab"
+          data-tab-target="faqs"
+          aria-selected="false"
+        >
+          FAQs
+        </button>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ══════════ VIDEOS PANEL ══════════ {%- endcomment -%}
+  {%- if has_videos -%}
+    <div class="arenus-product-tabs__panel" data-tab-panel="videos">
+      <div class="arenus-product-tabs__videos">
+        {%- for link_item in videos -%}
+          {%- assign video_url = link_item -%}
+
+          {%- comment -%} Extract YouTube video ID {%- endcomment -%}
+          {%- assign yt_id = '' -%}
+
+          {%- comment -%} Handle youtu.be/VIDEO_ID {%- endcomment -%}
+          {%- if video_url contains 'youtu.be/' -%}
+            {%- assign yt_id = video_url | split: 'youtu.be/' | last | split: '?' | first | split: '&' | first -%}
+
+          {%- comment -%} Handle youtube.com/watch?v=VIDEO_ID {%- endcomment -%}
+          {%- elsif video_url contains 'youtube.com/watch' -%}
+            {%- assign yt_id = video_url | split: 'v=' | last | split: '&' | first -%}
+
+          {%- comment -%} Handle youtube.com/embed/VIDEO_ID {%- endcomment -%}
+          {%- elsif video_url contains 'youtube.com/embed/' -%}
+            {%- assign yt_id = video_url | split: 'youtube.com/embed/' | last | split: '?' | first | split: '&' | first -%}
+          {%- endif -%}
+
+          {%- if yt_id != blank -%}
+            <div class="arenus-product-tabs__video-card">
+              <iframe
+                src="https://www.youtube.com/embed/{{ yt_id }}"
+                title="YouTube video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ══════════ REVIEWS PANEL ══════════ {%- endcomment -%}
+  <div class="arenus-product-tabs__panel{% unless has_videos or has_faqs %} arenus-product-tabs__panel--active{% endunless %}" data-tab-panel="reviews">
+    {%- comment -%} Stamped reviews widget placeholder — activate once app is installed {%- endcomment -%}
+    <div
+      id="stamped-main-widget"
+      data-product-id="{{ product.id }}"
+      data-name="{{ product.title | escape }}"
+      data-url="{{ product.url }}"
+      data-image-url="{{ product.featured_image | image_url: width: 200 }}"
+      data-description="{{ product.description | strip_html | truncate: 250 | escape }}"
+      data-product-sku="{{ product.selected_or_first_available_variant.sku | escape }}"
+    >
+      <p class="arenus-product-tabs__empty">Reviews will appear here once the reviews app is installed.</p>
+    </div>
+  </div>
+
+  {%- comment -%} ══════════ FAQS PANEL ══════════ {%- endcomment -%}
+  {%- if has_faqs -%}
+    <div class="arenus-product-tabs__panel" data-tab-panel="faqs">
+      <div class="arenus-product-tabs__faqs-layout">
+        {%- comment -%} Left column: rich text from theme editor {%- endcomment -%}
+        {%- if section.settings.faqs_richtext != blank -%}
+          <div class="arenus-product-tabs__faqs-text">
+            {{ section.settings.faqs_richtext }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Right column: FAQ accordions from metaobject list {%- endcomment -%}
+        <div class="arenus-product-tabs__faqs-accordions">
+          {%- for faq in faqs -%}
+            <details class="arenus-product-tabs__faq"{% if forloop.first %} open{% endif %}>
+              <summary class="arenus-product-tabs__faq-header">
+                <span class="arenus-product-tabs__faq-question">{{ faq.question }}</span>
+                <span class="arenus-product-tabs__faq-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </summary>
+              <div class="arenus-product-tabs__faq-answer">
+                {{ faq.answer | metafield_tag }}
+              </div>
+            </details>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  /* ===== Arenus Product Tabs — Mobile-first ===== */
+
+  .arenus-product-tabs {
+    margin: 0 auto;
+    max-width: 1440px;
+    display: flex;
+    flex-direction: column;
+    padding-inline: 20px;
+  }
+
+  /* ── Tab bar ── */
+  .arenus-product-tabs__bar {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .arenus-product-tabs__bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arenus-product-tabs__tab {
+    all: unset;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+    color: #808085;
+    padding: 8px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    text-align: center;
+    width: 100%;
+  }
+
+  .arenus-product-tabs__tab--active {
+    color: #000;
+    border-bottom-color: #000;
+  }
+
+  /* ── Panels ── */
+  .arenus-product-tabs__panel {
+    display: none;
+    padding-top: 32px;
+  }
+
+  .arenus-product-tabs__panel--active {
+    display: block;
+  }
+
+  .arenus-product-tabs__empty {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    color: #808085;
+    margin: 0;
+  }
+
+  /* ══════════ VIDEOS TAB ══════════ */
+  .arenus-product-tabs__videos {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arenus-product-tabs__video-card {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f9f9f9;
+  }
+
+  .arenus-product-tabs__video-card iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: none;
+  }
+
+  /* ══════════ FAQS TAB ══════════ */
+  .arenus-product-tabs__faqs-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Rich text column */
+  .arenus-product-tabs__faqs-text {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #000;
+  }
+
+  .arenus-product-tabs__faqs-text p {
+    margin: 0 0 16px;
+  }
+
+  .arenus-product-tabs__faqs-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* FAQ accordion items */
+  .arenus-product-tabs__faqs-accordions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .arenus-product-tabs__faq {
+    border-bottom: 1px solid #DDDDDD;
+  }
+
+  .arenus-product-tabs__faq[open] {
+    border-color: #191919;
+  }
+
+  .arenus-product-tabs__faq-header {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 0;
+    cursor: pointer;
+  }
+
+  .arenus-product-tabs__faq-header::-webkit-details-marker {
+    display: none;
+  }
+
+  .arenus-product-tabs__faq-header::marker {
+    display: none;
+    content: '';
+  }
+
+  .arenus-product-tabs__faq-question {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+    color: #000;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .arenus-product-tabs__faq-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+  }
+
+  .arenus-product-tabs__faq[open] .arenus-product-tabs__faq-icon {
+    transform: rotate(180deg);
+  }
+
+  .arenus-product-tabs__faq-answer {
+    padding: 0 0 16px;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #424242;
+  }
+
+  .arenus-product-tabs__faq-answer p {
+    margin: 0 0 16px;
+  }
+
+  .arenus-product-tabs__faq-answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arenus-product-tabs__faq-answer ul,
+  .arenus-product-tabs__faq-answer ol {
+    margin: 0 0 16px;
+    padding-left: 24px;
+  }
+
+  .arenus-product-tabs__faq-answer li {
+    margin-bottom: 4px;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+
+    .arenus-product-tabs {
+      padding: 0 40px;
+    }
+
+    .arenus-product-tabs__bar {
+      margin-inline: 0;
+      width: auto;
+      padding-inline: 0;
+    }
+
+
+    .arenus-product-tabs__tab {
+      padding: 8px 32px;
+      width: fit-content;
+    }
+
+    /* Videos: 3-column grid */
+    .arenus-product-tabs__videos {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .arenus-product-tabs__video-card {
+      flex: 0 0 calc((100% - 40px) / 3);
+      max-width: calc((100% - 40px) / 3);
+    }
+
+    /* FAQs: two-column layout */
+    .arenus-product-tabs__faqs-layout {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .arenus-product-tabs__faqs-text {
+      flex: 0 0 494px;
+      max-width: 494px;
+      font-size: 20px;
+      position: sticky;
+      top: 136px;
+      align-self: flex-start;
+    }
+
+    .arenus-product-tabs__faqs-accordions {
+      flex: 1;
+      min-width: 0;
+      margin-top: -16px;
+      max-width: 719px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  /* ===== Arenus Product Tabs — Tab switching ===== */
+  (function() {
+    var section = document.getElementById('ArenusProductTabs-{{ section.id }}');
+    if (!section) return;
+
+    var tabs = section.querySelectorAll('.arenus-product-tabs__tab');
+    var panels = section.querySelectorAll('.arenus-product-tabs__panel');
+    var defaultTab = section.getAttribute('data-default-tab') || 'videos';
+
+    function activateTab(tabName) {
+      tabs.forEach(function(tab) {
+        var target = tab.getAttribute('data-tab-target');
+        var isActive = target === tabName;
+        tab.classList.toggle('arenus-product-tabs__tab--active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      panels.forEach(function(panel) {
+        var panelName = panel.getAttribute('data-tab-panel');
+        panel.classList.toggle('arenus-product-tabs__panel--active', panelName === tabName);
+      });
+    }
+
+    /* Click handler (delegated on tab bar) */
+    var bar = section.querySelector('.arenus-product-tabs__bar');
+    if (bar) {
+      bar.addEventListener('click', function(e) {
+        var tab = e.target.closest('.arenus-product-tabs__tab');
+        if (!tab) return;
+        var target = tab.getAttribute('data-tab-target');
+        if (target) activateTab(target);
+      });
+    }
+
+    /* Activate default tab on page load — fall back to first available tab if configured default isn't present */
+    var defaultExists = section.querySelector('[data-tab-target="' + defaultTab + '"]');
+    if (defaultExists) {
+      activateTab(defaultTab);
+    } else if (tabs.length > 0) {
+      activateTab(tabs[0].getAttribute('data-tab-target'));
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Tabs",
+  "tag": "section",
+  "class": "arenus-product-tabs-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "default_tab",
+      "label": "Default active tab",
+      "options": [
+        { "value": "videos", "label": "Videos" },
+        { "value": "reviews", "label": "Reviews" },
+        { "value": "faqs", "label": "FAQs" }
+      ],
+      "default": "videos"
+    },
+    {
+      "type": "header",
+      "content": "FAQs"
+    },
+    {
+      "type": "richtext",
+      "id": "faqs_richtext",
+      "label": "FAQs description",
+      "info": "Displayed next to the FAQ accordions on desktop, or above them on mobile."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}

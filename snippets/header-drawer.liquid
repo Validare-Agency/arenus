@@ -717,12 +717,21 @@
       </div>
 
       <div class="menu-drawer__login">
-        <a href="{{ routes.account_login_url }}" class="menu-drawer__login-button">
-          <span class="menu-drawer__login-icon svg-wrapper" aria-hidden="true">
-            {{- 'icon-account.svg' | inline_asset_content -}}
-          </span>
-          <span>LOG IN / REGISTER</span>
-        </a>
+        {% if customer %}
+          <a href="{{ routes.account_url }}" class="menu-drawer__login-button">
+            <span class="menu-drawer__login-icon svg-wrapper" aria-hidden="true">
+              {{- 'icon-account.svg' | inline_asset_content -}}
+            </span>
+            <span>MY ACCOUNT</span>
+          </a>
+        {% else %}
+          <a href="{{ routes.account_login_url }}" class="menu-drawer__login-button">
+            <span class="menu-drawer__login-icon svg-wrapper" aria-hidden="true">
+              {{- 'icon-account.svg' | inline_asset_content -}}
+            </span>
+            <span>LOG IN / REGISTER</span>
+          </a>
+        {% endif %}
       </div>
 
       {% liquid

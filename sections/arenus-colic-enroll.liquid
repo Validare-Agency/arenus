@@ -1,0 +1,310 @@
+{%- comment -%}
+  Arenus CAP Enroll Section — "Enrolling is Easy as 1-2-3!"
+  Desktop: two-column (heading+button left, steps right).
+  Mobile: single-column stacked (heading, steps, button at bottom).
+  Steps are theme blocks for dynamic content.
+{%- endcomment -%}
+
+<div
+  id="ArenusColEnroll-{{ section.id }}"
+  class="arenus-cole"
+>
+  <div class="arenus-cole__grid">
+
+    {%- comment -%} Left column: heading + button {%- endcomment -%}
+    <div class="arenus-cole__left">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="arenus-cole__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <a
+          href="{{ section.settings.button_link }}"
+          class="arenus-cole__btn arenus-cole__btn--desktop"
+        >
+          {{ section.settings.button_label }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right column: steps {%- endcomment -%}
+    <div class="arenus-cole__steps">
+      {%- for block in section.blocks -%}
+        <div class="arenus-cole__step" {{ block.shopify_attributes }}>
+          <div class="arenus-cole__step-badge">
+            <span>{{ forloop.index }}</span>
+          </div>
+          <div class="arenus-cole__step-text">
+            {%- if block.settings.title != blank -%}
+              <h3 class="arenus-cole__step-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="arenus-cole__step-desc">{{ block.settings.description }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+  </div>
+
+  {%- comment -%} Mobile-only button (full width, below steps) {%- endcomment -%}
+  {%- if section.settings.button_label != blank -%}
+    <a
+      href="{{ section.settings.button_link }}"
+      class="arenus-cole__btn arenus-cole__btn--mobile"
+    >
+      {{ section.settings.button_label }}
+    </a>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus CAP Enroll — Mobile-first ===== */
+
+  .arenus-cole {
+    background-color: #ffffff;
+    padding: 40px 20px;
+  }
+
+  .arenus-cole__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── Left column (heading + button) ── */
+  .arenus-cole__left {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .arenus-cole__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    color: #000;
+    margin: 0;
+  }
+
+  /* ── Button ── */
+  .arenus-cole__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #fff;
+    background-color: #E6B236;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .arenus-cole__btn:hover {
+    opacity: 0.85;
+  }
+
+  /* Desktop button hidden on mobile */
+  .arenus-cole__btn--desktop {
+    display: none;
+  }
+
+  /* Mobile button full-width below steps */
+  .arenus-cole__btn--mobile {
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  /* ── Steps ── */
+  .arenus-cole__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arenus-cole__step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  /* Step badge (numbered circle) */
+  .arenus-cole__step-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 100px;
+    background-color: #E6B236;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #fff;
+  }
+
+  /* Step text */
+  .arenus-cole__step-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .arenus-cole__step-title {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.3;
+    letter-spacing: -0.4px;
+    color: #000;
+    margin: 0;
+  }
+
+  .arenus-cole__step-desc {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #424242;
+    margin: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-cole {
+      padding: 82px 40px;
+    }
+
+    .arenus-cole__grid {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 900px;
+      margin: 0 auto;
+      gap: 0;
+    }
+
+    .arenus-cole__left {
+      width: 250px;
+      flex-shrink: 0;
+    }
+
+     .arenus-cole__heading {
+      font-size: 40px;
+    }
+
+    .arenus-cole__btn--desktop {
+      display: inline-flex;
+      width: 253px;
+    }
+
+    .arenus-cole__btn--mobile {
+      display: none;
+    }
+
+    .arenus-cole__steps {
+      width: 556px;
+      flex-shrink: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "CAP Enroll",
+  "tag": "section",
+  "class": "arenus-cole-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Enrolling is Easy as 1-2-3!"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "ENROLL NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Step"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Step description goes here."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CAP Enroll",
+      "category": "Content",
+      "settings": {
+        "heading": "Enrolling is Easy as 1-2-3!",
+        "button_label": "ENROLL NOW"
+      },
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Enroll",
+            "description": "Complete an enrollment form for each horse online."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Order",
+            "description": "Place a qualifying auto-ship order of a wellness formula in Colic Assurance Program® or buckets."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Maintain",
+            "description": "Continue with annual recommended veterinary wellness requirements."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

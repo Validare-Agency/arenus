@@ -1,0 +1,321 @@
+{%- comment -%}
+  Arenus Blog Article — single article page with breadcrumb, tag, title,
+  featured image, and rich text body content. Uses the `article` global
+  object from the article template.
+{%- endcomment -%}
+
+{%- liquid
+  assign first_tag = article.tags | first
+-%}
+
+{%- comment -%} ═══ Breadcrumb ═══ {%- endcomment -%}
+<nav class="arenus-art__breadcrumb" aria-label="Breadcrumb">
+  <a href="{{ blog.url }}" class="arenus-art__breadcrumb-back">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Home</span>
+  </a>
+  <span class="arenus-art__breadcrumb-trail">
+    <a href="/" class="arenus-art__breadcrumb-link">Home</a>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <a href="{{ blog.url }}" class="arenus-art__breadcrumb-link">Blog</a>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="arenus-art__breadcrumb-current">{{ article.title }}</span>
+  </span>
+</nav>
+
+<article class="arenus-art">
+  <div class="arenus-art__container">
+
+    {%- comment -%} Tag + Title {%- endcomment -%}
+    <header class="arenus-art__header">
+      {%- if first_tag != blank -%}
+        <span class="arenus-art__tag">{{ first_tag }}</span>
+      {%- endif -%}
+      <h1 class="arenus-art__title">{{ article.title }}</h1>
+    </header>
+
+    {%- comment -%} Featured image {%- endcomment -%}
+    {%- if article.image -%}
+      <div class="arenus-art__hero">
+        {{
+          article.image
+          | image_url: width: 1800
+          | image_tag:
+            width: article.image.width,
+            widths: '353, 600, 900, 1200, 1800',
+            height: article.image.height,
+            alt: article.title,
+            class: 'arenus-art__hero-img',
+            sizes: '(min-width: 750px) 902px, calc(100vw - 40px)',
+            loading: 'eager',
+            fetchpriority: 'high'
+        }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Article body {%- endcomment -%}
+    <div class="arenus-art__body rte">
+      {{ article.content }}
+    </div>
+
+  </div>
+</article>
+
+{% stylesheet %}
+  /* ===== Arenus Article — Mobile-first ===== */
+
+  /* ── Breadcrumb ── */
+  .arenus-art__breadcrumb {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px 8px;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+  }
+
+  .arenus-art__breadcrumb-link {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .arenus-art__breadcrumb-link:hover {
+    text-decoration: underline;
+  }
+
+  .arenus-art__breadcrumb-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .arenus-art__breadcrumb-trail {
+    display: none;
+    align-items: center;
+    gap: 0;
+  }
+
+  .arenus-art__breadcrumb-trail svg {
+    margin: 0 8px;
+    flex-shrink: 0;
+  }
+
+  .arenus-art__breadcrumb-current {
+    color: #000;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* ── Article ── */
+  .arenus-art {
+    padding: 0 20px 60px;
+  }
+
+  .arenus-art__container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Header (tag + title) ── */
+  .arenus-art__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .arenus-art__tag {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #808085;
+  }
+
+  .arenus-art__title {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.8px;
+    color: #000;
+    margin: 0;
+  }
+
+  /* ── Featured image ── */
+  .arenus-art__hero {
+    width: 100%;
+    height: 212px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #F9F9F9;
+  }
+
+  .arenus-art__hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Article body content ── */
+  .arenus-art__body {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+    color: #000;
+  }
+
+  .arenus-art__body p {
+    margin: 0 0 1.4em;
+  }
+
+  .arenus-art__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arenus-art__body h2 {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.48px;
+    color: #000;
+    margin: 1.2em 0 0.4em;
+  }
+
+  .arenus-art__body h3 {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.3;
+    letter-spacing: -0.4px;
+    color: #000;
+    margin: 1.2em 0 0.4em;
+  }
+
+  .arenus-art__body h2:first-child,
+  .arenus-art__body h3:first-child {
+    margin-top: 0;
+  }
+
+  .arenus-art__body a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .arenus-art__body a:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-art__body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+    margin: 1.4em 0;
+  }
+
+  .arenus-art__body iframe,
+  .arenus-art__body video {
+    max-width: 100%;
+    border-radius: 12px;
+    display: block;
+    margin: 1.4em 0;
+  }
+
+  .arenus-art__body ul,
+  .arenus-art__body ol {
+    margin: 0 0 1.4em;
+    padding-left: 1.5em;
+  }
+
+  .arenus-art__body li {
+    margin-bottom: 0.3em;
+  }
+
+  .arenus-art__body blockquote {
+    margin: 1.4em 0;
+    padding-left: 1em;
+    border-left: 2px solid #DDDDDD;
+    font-style: italic;
+    color: #424242;
+  }
+
+  .arenus-art__body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.4em 0;
+    font-size: 16px;
+  }
+
+  .arenus-art__body th,
+  .arenus-art__body td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .arenus-art__body th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-art__breadcrumb {
+      padding: 16px 40px 8px;
+    }
+
+    .arenus-art__breadcrumb-back {
+      display: none;
+    }
+
+    .arenus-art__breadcrumb-trail {
+      display: inline-flex;
+    }
+
+    .arenus-art {
+      padding: 0 40px 80px;
+    }
+
+    .arenus-art__container {
+      max-width: 902px;
+      margin: 0 auto;
+    }
+
+    .arenus-art__hero {
+      height: 472px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog Article",
+  "tag": "section",
+  "class": "arenus-art-wrapper section-wrapper"
+}
+{% endschema %}

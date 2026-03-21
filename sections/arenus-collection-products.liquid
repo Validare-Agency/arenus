@@ -4,7 +4,7 @@
 
 {%- liquid
   assign products_per_page = section.settings.products_per_page
-  assign image_bg = section.settings.image_background_color
+  assign image_bg = settings.product_card_image_bg
 -%}
 
 <div
@@ -182,17 +182,19 @@
         {%- endfor -%}
       </div>
 
-      {%- comment -%} Load More button {%- endcomment -%}
-      <div class="arenus-cpg__load-more-wrap" {% if paginate.pages <= 1 %}style="display:none"{% endif %}>
-        <button
-          type="button"
-          class="arenus-cpg__load-more-btn"
-          data-next-page="2"
-          data-total-pages="{{ paginate.pages }}"
-        >
-          LOAD MORE
-        </button>
-      </div>
+      {%- comment -%} Infinite scroll sentinel {%- endcomment -%}
+      {%- if paginate.pages > 1 -%}
+        <div class="arenus-cpg__sentinel" data-cpg-sentinel>
+          <div class="arenus-cpg__spinner" data-cpg-spinner hidden>
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="#ddd" stroke-width="3" fill="none" />
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="#E6B236" stroke-width="3" fill="none" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+              </path>
+            </svg>
+          </div>
+        </div>
+      {%- endif -%}
     {% endpaginate %}
   </div>
 
@@ -514,38 +516,23 @@
     flex-shrink: 0;
   }
 
-  /* ── Load More ── */
-  .arenus-cpg__load-more-wrap {
-    margin-top: 40px;
+  /* ── Infinite scroll sentinel ── */
+  .arenus-cpg__sentinel {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    min-height: 40px;
     margin-inline: 20px;
   }
 
-  .arenus-cpg__load-more-btn {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    background-color: #ffffff;
-    color: #000000;
-    border: 1px solid #000000;
-    border-radius: 6px;
-    font-family: var(--font-body--family);
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 1;
-    text-transform: uppercase;
-    letter-spacing: 0;
-    cursor: pointer;
-    text-align: center;
-    transition: opacity 0.2s ease;
+  .arenus-cpg__spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .arenus-cpg__load-more-btn:hover {
-    opacity: 0.7;
-  }
-
-  .arenus-cpg__load-more-btn.is-loading {
-    opacity: 0.6;
-    pointer-events: none;
+  .arenus-cpg__spinner[hidden] {
+    display: none;
   }
 
   /* ===== Quick-Add Modal (reuses arenus-qam styles with cpg prefix) ===== */
@@ -1004,16 +991,7 @@
       height: 20px;
     }
 
-    /* Load more button */
-    .arenus-cpg__load-more-wrap {
-      margin-top: 32px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .arenus-cpg__load-more-btn {
-      width: auto;
-      min-width: 218px;
+    .arenus-cpg__sentinel {
       margin-inline: 0;
     }
 
@@ -1036,8 +1014,7 @@
 
     var grid = section.querySelector('.arenus-cpg__grid');
     var gridWrapper = section.querySelector('.arenus-cpg__grid-wrapper');
-    var loadMoreWrap = section.querySelector('.arenus-cpg__load-more-wrap');
-    var loadMoreBtn = section.querySelector('.arenus-cpg__load-more-btn');
+    /* loadMoreWrap/loadMoreBtn removed — using infinite scroll instead */
     var categoryRow = section.querySelector('.arenus-cpg__filters-row--categories');
     var animalRow = section.querySelector('.arenus-cpg__filters-row--animals');
     var dialog = section.querySelector('.arenus-cpg-qam__dialog');
@@ -1074,7 +1051,7 @@
       return {
         grid: tmp.querySelector('.arenus-cpg__grid'),
         empty: tmp.querySelector('.arenus-cpg__empty'),
-        loadMoreWrap: tmp.querySelector('.arenus-cpg__load-more-wrap'),
+        sentinel: tmp.querySelector('[data-cpg-sentinel]'),
         hasActiveFilter: wrapper ? wrapper.getAttribute('data-has-active-filter') === 'true' : false
       };
     }
@@ -1121,17 +1098,15 @@
               gridWrapper.appendChild(extracted.empty);
             }
             gridWrapper.appendChild(extracted.grid);
-            if (extracted.loadMoreWrap) {
-              gridWrapper.appendChild(extracted.loadMoreWrap);
+            if (extracted.sentinel) {
+              gridWrapper.appendChild(extracted.sentinel);
             }
 
             grid = section.querySelector('.arenus-cpg__grid');
-            loadMoreWrap = section.querySelector('.arenus-cpg__load-more-wrap');
-            loadMoreBtn = section.querySelector('.arenus-cpg__load-more-btn');
             totalPages = grid ? parseInt(grid.getAttribute('data-total-pages'), 10) : 1;
             currentPage = 1;
 
-            bindLoadMore();
+            setupInfiniteScroll();
             bindAddToCartButtons();
           }
           isFetching = false;
@@ -1184,61 +1159,69 @@
       });
     }
 
-    /* --- Load More --- */
-    function bindLoadMore() {
-      loadMoreBtn = section.querySelector('.arenus-cpg__load-more-btn');
-      if (!loadMoreBtn) return;
+    /* --- Infinite Scroll --- */
+    var infiniteObserver = null;
 
-      loadMoreBtn.addEventListener('click', function handleLoadMore() {
-        if (isFetching) return;
+    function setupInfiniteScroll() {
+      if (infiniteObserver) infiniteObserver.disconnect();
+      var sentinel = section.querySelector('[data-cpg-sentinel]');
+      if (!sentinel || currentPage >= totalPages) {
+        if (sentinel) sentinel.remove();
+        return;
+      }
 
-        var nextPage = currentPage + 1;
-        if (nextPage > totalPages) return;
+      infiniteObserver = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !isFetching && currentPage < totalPages) {
+          loadNextPage();
+        }
+      }, { rootMargin: '200px' });
 
-        isFetching = true;
-        loadMoreBtn.classList.add('is-loading');
-        loadMoreBtn.textContent = 'LOADING...';
-
-        fetch(buildUrl(buildCombinedTag(), nextPage))
-          .then(function(res) { return res.text(); })
-          .then(function(html) {
-            var extracted = extractGrid(html);
-            if (extracted.grid && grid) {
-              /* Append new cards to existing grid */
-              var newCards = extracted.grid.querySelectorAll('.arenus-cpg__card');
-              newCards.forEach(function(card) {
-                grid.appendChild(card);
-              });
-
-              currentPage = nextPage;
-
-              /* Update total pages from new data */
-              var newTotalPages = parseInt(extracted.grid.getAttribute('data-total-pages'), 10);
-              if (newTotalPages) totalPages = newTotalPages;
-
-              /* Hide load more if no more pages */
-              if (currentPage >= totalPages) {
-                if (loadMoreWrap) loadMoreWrap.style.display = 'none';
-              } else {
-                loadMoreBtn.classList.remove('is-loading');
-                loadMoreBtn.textContent = 'LOAD MORE';
-              }
-
-              /* Re-bind add-to-cart for new cards */
-              bindAddToCartButtons();
-            }
-            isFetching = false;
-          })
-          .catch(function(err) {
-            console.error('Load more fetch error:', err);
-            loadMoreBtn.classList.remove('is-loading');
-            loadMoreBtn.textContent = 'LOAD MORE';
-            isFetching = false;
-          });
-      });
+      infiniteObserver.observe(sentinel);
     }
 
-    bindLoadMore();
+    function loadNextPage() {
+      if (isFetching || currentPage >= totalPages) return;
+      isFetching = true;
+
+      var nextPage = currentPage + 1;
+      var spinner = section.querySelector('[data-cpg-spinner]');
+      if (spinner) spinner.hidden = false;
+
+      fetch(buildUrl(buildCombinedTag(), nextPage))
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var extracted = extractGrid(html);
+          if (extracted.grid && grid) {
+            var newCards = extracted.grid.querySelectorAll('.arenus-cpg__card');
+            newCards.forEach(function(card) {
+              grid.appendChild(card);
+            });
+
+            currentPage = nextPage;
+
+            var newTotalPages = parseInt(extracted.grid.getAttribute('data-total-pages'), 10);
+            if (newTotalPages) totalPages = newTotalPages;
+
+            bindAddToCartButtons();
+          }
+
+          if (spinner) spinner.hidden = true;
+          isFetching = false;
+
+          if (currentPage >= totalPages) {
+            if (infiniteObserver) infiniteObserver.disconnect();
+            var sentinel = section.querySelector('[data-cpg-sentinel]');
+            if (sentinel) sentinel.remove();
+          }
+        })
+        .catch(function(err) {
+          console.error('Infinite scroll fetch error:', err);
+          if (spinner) spinner.hidden = true;
+          isFetching = false;
+        });
+    }
+
+    setupInfiniteScroll();
 
     /* ===== Quick Add-to-Cart (modal) ===== */
     if (!dialog) return;
@@ -1541,16 +1524,6 @@
       "max": 40,
       "step": 4,
       "default": 4
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "image_background_color",
-      "label": "Image background color",
-      "default": "#fffcea"
     },
     {
       "type": "header",

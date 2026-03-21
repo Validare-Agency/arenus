@@ -1,0 +1,42 @@
+{%- comment -%}
+  FAQ Filter — pill button for filtering products in the Products tab.
+  Child of _faq-products-tab.
+{%- endcomment -%}
+
+<button
+  class="arenus-faq__filter-btn"
+  type="button"
+  data-faq-filter-tag="{{ block.settings.tag | downcase }}"
+  {{ block.shopify_attributes }}
+>
+  {{ block.settings.label }}
+</button>
+
+{% schema %}
+{
+  "name": "Filter Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Button label",
+      "default": "Filter"
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Product tag to filter by",
+      "info": "Products with this tag will be shown when the filter is active. Leave blank for 'Show all'."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Filter Button",
+      "settings": {
+        "label": "Filter"
+      }
+    }
+  ]
+}
+{% endschema %}

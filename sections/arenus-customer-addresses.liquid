@@ -1,0 +1,232 @@
+{%- comment -%}
+  Arenus Customer Addresses.
+  Lists existing addresses with edit/delete, and a form to add new ones.
+{%- endcomment -%}
+
+<div class="arenus-account">
+  <div class="arenus-account__layout">
+
+    {%- render 'arenus-account-sidebar', active_page: 'addresses' -%}
+
+    <div class="arenus-account__content">
+      <h1 class="arenus-account__greeting">
+        {{ 'content.account_addresses' | t }}
+      </h1>
+
+      {%- comment -%} Add new address toggle {%- endcomment -%}
+      <button
+        type="button"
+        class="arenus-auth__btn"
+        style="margin-bottom: 24px; max-width: 280px;"
+        data-address-toggle-new
+      >
+        {{ 'content.account_add_address' | t }}
+      </button>
+
+      {%- comment -%} New address form (hidden by default) {%- endcomment -%}
+      <div class="arenus-account__card arenus-addresses__form-card" data-address-new-form hidden style="margin-bottom: 24px;">
+        {%- form 'customer_address', customer.new_address -%}
+          <h2 class="arenus-account__section-heading">{{ 'content.account_add_address' | t }}</h2>
+          {%- render 'arenus-address-fields', form: form -%}
+          <div class="arenus-addresses__actions">
+            <button type="submit" class="arenus-auth__btn" style="max-width: 200px;">
+              {{ 'actions.submit' | t }}
+            </button>
+            <button type="button" class="arenus-addresses__cancel" data-address-cancel-new>
+              {{ 'content.cancel' | t }}
+            </button>
+          </div>
+        {%- endform -%}
+      </div>
+
+      {%- comment -%} Existing addresses {%- endcomment -%}
+      {%- for address in customer.addresses -%}
+        <div class="arenus-account__card arenus-addresses__card" style="margin-bottom: 16px;" data-address-card="{{ address.id }}">
+
+          {%- comment -%} Display mode {%- endcomment -%}
+          <div class="arenus-addresses__display" data-address-display="{{ address.id }}">
+            {%- if address == customer.default_address -%}
+              <span class="arenus-addresses__default-badge">{{ 'content.account_default_address' | t }}</span>
+            {%- endif -%}
+            <p class="arenus-addresses__text">{{ address | format_address }}</p>
+            <div class="arenus-addresses__actions">
+              <button type="button" class="arenus-addresses__edit-btn" data-address-edit="{{ address.id }}">
+                {{ 'content.account_edit_address' | t }}
+              </button>
+              <button
+                type="button"
+                class="arenus-addresses__delete-btn"
+                data-address-delete="{{ address.id }}"
+                data-confirm-message="{{ 'content.account_delete_confirm' | t }}"
+              >
+                {{ 'content.account_delete_address' | t }}
+              </button>
+            </div>
+          </div>
+
+          {%- comment -%} Edit mode (hidden by default) {%- endcomment -%}
+          <div class="arenus-addresses__edit-form" data-address-edit-form="{{ address.id }}" hidden>
+            {%- form 'customer_address', address -%}
+              <h2 class="arenus-account__section-heading">{{ 'content.account_edit_address' | t }}</h2>
+              {%- render 'arenus-address-fields', form: form, address: address -%}
+              <div class="arenus-addresses__checkbox">
+                {{ form.set_as_default }}
+                <label for="address_default_address_{{ address.id }}">Set as default address</label>
+              </div>
+              <div class="arenus-addresses__actions">
+                <button type="submit" class="arenus-auth__btn" style="max-width: 200px;">
+                  {{ 'actions.submit' | t }}
+                </button>
+                <button type="button" class="arenus-addresses__cancel" data-address-cancel-edit="{{ address.id }}">
+                  {{ 'content.cancel' | t }}
+                </button>
+              </div>
+            {%- endform -%}
+          </div>
+
+        </div>
+      {%- endfor -%}
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    /* Toggle new address form */
+    var toggleNew = document.querySelector('[data-address-toggle-new]');
+    var newForm = document.querySelector('[data-address-new-form]');
+    var cancelNew = document.querySelector('[data-address-cancel-new]');
+
+    if (toggleNew && newForm) {
+      toggleNew.addEventListener('click', function() {
+        newForm.hidden = false;
+        toggleNew.hidden = true;
+        newForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+    if (cancelNew && newForm && toggleNew) {
+      cancelNew.addEventListener('click', function() {
+        newForm.hidden = true;
+        toggleNew.hidden = false;
+      });
+    }
+
+    /* Edit / cancel edit */
+    document.querySelectorAll('[data-address-edit]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-address-edit');
+        var display = document.querySelector('[data-address-display="' + id + '"]');
+        var editForm = document.querySelector('[data-address-edit-form="' + id + '"]');
+        if (display) display.hidden = true;
+        if (editForm) editForm.hidden = false;
+      });
+    });
+
+    document.querySelectorAll('[data-address-cancel-edit]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-address-cancel-edit');
+        var display = document.querySelector('[data-address-display="' + id + '"]');
+        var editForm = document.querySelector('[data-address-edit-form="' + id + '"]');
+        if (display) display.hidden = false;
+        if (editForm) editForm.hidden = true;
+      });
+    });
+
+    /* Delete address */
+    document.querySelectorAll('[data-address-delete]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var msg = btn.getAttribute('data-confirm-message') || 'Are you sure?';
+        if (confirm(msg)) {
+          var id = btn.getAttribute('data-address-delete');
+          Shopify.postLink('/account/addresses/' + id, { parameters: { _method: 'delete' } });
+        }
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ===== Arenus Addresses ===== */
+
+  .arenus-addresses__text {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0 0 12px;
+    white-space: pre-line;
+  }
+
+  .arenus-addresses__default-badge {
+    display: inline-block;
+    font-family: var(--font-body--family);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #E6B236;
+    margin-bottom: 8px;
+  }
+
+  .arenus-addresses__actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .arenus-addresses__edit-btn,
+  .arenus-addresses__cancel {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #000;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .arenus-addresses__edit-btn:hover,
+  .arenus-addresses__cancel:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-addresses__delete-btn {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #c0392b;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .arenus-addresses__delete-btn:hover {
+    opacity: 0.7;
+  }
+
+  .arenus-addresses__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+  }
+
+  .arenus-addresses__form-card .arenus-auth__input {
+    margin-bottom: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Customer Addresses",
+  "tag": "section",
+  "class": "arenus-account-wrapper section-wrapper"
+}
+{% endschema %}

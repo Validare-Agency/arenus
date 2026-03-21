@@ -1,0 +1,230 @@
+{%- comment -%}
+  Arenus Research Content — block-based section.
+  Block types: richtext (body copy with bold, lists, etc.) and image_pair (two side-by-side images).
+{%- endcomment -%}
+
+<div
+  id="ArenusResearch-{{ section.id }}"
+  class="arenus-rc"
+  style="
+    --rc-bg: {{ section.settings.background_color }};
+    --rc-text: {{ section.settings.text_color }};
+    --rc-padding-top: {{ section.settings.padding_top }}px;
+    --rc-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="arenus-rc__inner">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'richtext' -%}
+          {%- if block.settings.content != blank -%}
+            <div class="arenus-rc__richtext" {{ block.shopify_attributes }}>
+              {{ block.settings.content }}
+            </div>
+          {%- endif -%}
+
+        {%- when 'image_pair' -%}
+          <div class="arenus-rc__image-pair" {{ block.shopify_attributes }}>
+            {%- if block.settings.image_left != blank -%}
+              <div class="arenus-rc__image-wrap">
+                {{
+                  block.settings.image_left
+                  | image_url: width: 1200
+                  | image_tag:
+                    width: block.settings.image_left.width,
+                    widths: '300, 400, 600, 800, 1200',
+                    height: block.settings.image_left.height,
+                    alt: block.settings.image_left.alt,
+                    class: 'arenus-rc__image',
+                    sizes: '(min-width: 750px) 441px, calc(50vw - 30px)',
+                    loading: 'lazy'
+                }}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.image_right != blank -%}
+              <div class="arenus-rc__image-wrap">
+                {{
+                  block.settings.image_right
+                  | image_url: width: 1200
+                  | image_tag:
+                    width: block.settings.image_right.width,
+                    widths: '300, 400, 600, 800, 1200',
+                    height: block.settings.image_right.height,
+                    alt: block.settings.image_right.alt,
+                    class: 'arenus-rc__image',
+                    sizes: '(min-width: 750px) 441px, calc(50vw - 30px)',
+                    loading: 'lazy'
+                }}
+              </div>
+            {%- endif -%}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Research Content — Mobile-first ===== */
+
+  .arenus-rc {
+    background-color: var(--rc-bg, #ffffff);
+    color: var(--rc-text, #000000);
+    padding: var(--rc-padding-top, 40px) 20px var(--rc-padding-bottom, 72px);
+  }
+
+  .arenus-rc__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Richtext block */
+  .arenus-rc__richtext {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+  }
+
+  .arenus-rc__richtext p {
+    margin: 0;
+  }
+
+  .arenus-rc__richtext strong,
+  .arenus-rc__richtext b {
+    font-weight: 700;
+  }
+
+  .arenus-rc__richtext ul,
+  .arenus-rc__richtext ol {
+    margin: 0;
+    padding-left: 1.5em;
+  }
+
+  .arenus-rc__richtext li {
+    margin: 0;
+  }
+
+  /* Image pair block */
+  .arenus-rc__image-pair {
+    display: flex;
+    gap: 20px;
+  }
+
+  .arenus-rc__image-wrap {
+    flex: 1;
+    min-width: 0;
+    aspect-ratio: 596 / 592;
+    overflow: hidden;
+  }
+
+  .arenus-rc__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-rc {
+      padding: var(--rc-padding-top, 40px) 40px 102px;
+    }
+
+    .arenus-rc__inner {
+      max-width: 902px;
+      margin: 0 auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Research Content",
+  "tag": "section",
+  "class": "arenus-rc-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "richtext",
+      "name": "Rich text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "image_pair",
+      "name": "Image pair",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_left",
+          "label": "Left image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_right",
+          "label": "Right image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Research Content",
+      "category": "Content",
+      "settings": {
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "padding_top": 40,
+        "padding_bottom": 72
+      }
+    }
+  ]
+}
+{% endschema %}

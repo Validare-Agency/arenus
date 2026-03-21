@@ -59,7 +59,7 @@
                 resource_type: 'product',
                 resource: product,
                 image_width: 500,
-                image_hover: true,
+                image_hover: false,
                 image_aspect_ratio: '4 / 5'
               %}
             </li>
@@ -74,7 +74,7 @@
                 resource_type: 'product',
                 resource: product,
                 image_width: 500,
-                image_hover: true,
+                image_hover: false,
                 image_aspect_ratio: '4 / 5'
               %}
             </li>
@@ -103,7 +103,7 @@
             resource_type: 'product',
             resource: product,
             image_width: 500,
-            image_hover: true,
+            image_hover: false,
             image_aspect_ratio: '4 / 5'
           %}
         </li>
@@ -115,6 +115,12 @@
 {% stylesheet %}
   .predictive-search-results__products {
     padding-inline: var(--padding-xl);
+  }
+
+  /* Apply global product card background color to search product images */
+  .predictive-search-results__products .resource-card__media {
+    background-color: var(--product-card-image-bg, #fffcea);
+    border-radius: 12px;
   }
 
   .recently-viewed-wrapper {

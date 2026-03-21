@@ -4,7 +4,7 @@
   style="
     --arenus-products-bg: {{ section.settings.background_color }};
     --arenus-products-text: {{ section.settings.text_color }};
-    --arenus-products-image-bg: {{ section.settings.image_background_color }};
+    --arenus-products-image-bg: {{ settings.product_card_image_bg }};
     padding-block-start: {{ section.settings.padding-block-start }}px;
     padding-block-end: {{ section.settings.padding-block-end }}px;
   "
@@ -398,7 +398,8 @@
     justify-content: center;
     gap: 4px;
     width: 100%;
-    padding: 12px 16px;
+    height: 44px;
+    padding: 0 16px;
     background-color: #e6b236;
     color: #ffffff;
     border: none;
@@ -410,6 +411,10 @@
     text-transform: uppercase;
     letter-spacing: 0;
     cursor: pointer;
+  }
+
+  .arenus-products__add-btn:hover:not(:disabled) {
+    opacity: 0.85;
   }
 
   .arenus-products__add-btn.is-sold-out {
@@ -592,7 +597,7 @@
 
   .arenus-qam__price {
     font-family: var(--font-body--family);
-    font-weight: 700;
+    font-weight: 500;
     font-size: 16px;
     line-height: 1.4;
     letter-spacing: -0.16px;
@@ -839,6 +844,7 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 225px;
+      height: auto;
       padding: 16px 32px;
       font-size: 16px;
       opacity: 0;
@@ -1320,12 +1326,6 @@
       "default": "#000000"
     },
     {
-      "type": "color",
-      "id": "image_background_color",
-      "label": "Image background color",
-      "default": "#fffcea"
-    },
-    {
       "type": "header",
       "content": "Padding"
     },
@@ -1357,8 +1357,7 @@
       "settings": {
         "heading": "Best Sellers",
         "background_color": "#ffffff",
-        "text_color": "#000000",
-        "image_background_color": "#fffcea"
+        "text_color": "#000000"
       }
     }
   ]

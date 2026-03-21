@@ -1,0 +1,584 @@
+{%- comment -%}
+  Arenus Customer Login / Register — single page with tab navigation.
+  Two-column layout on desktop (hero image left, form right).
+  Single-column on mobile (hero image top, form below).
+  Includes password recovery sub-panel within the login tab.
+{%- endcomment -%}
+
+{%- liquid
+  assign accent = section.settings.accent_color | default: '#E6B236'
+  assign has_image = false
+  if section.settings.hero_image != blank
+    assign has_image = true
+  endif
+-%}
+
+<div
+  id="ArenusAuth-{{ section.id }}"
+  class="arenus-auth"
+  style="--auth-accent: {{ accent }};"
+  data-arenus-auth
+>
+  <div class="arenus-auth__grid">
+
+    {%- comment -%} Hero image column {%- endcomment -%}
+    <div class="arenus-auth__hero">
+      {%- if has_image -%}
+        {{
+          section.settings.hero_image
+          | image_url: width: 1800
+          | image_tag:
+            width: section.settings.hero_image.width,
+            widths: '353, 600, 900, 1200, 1800',
+            height: section.settings.hero_image.height,
+            alt: section.settings.hero_image.alt,
+            class: 'arenus-auth__hero-img',
+            sizes: '(min-width: 750px) 50vw, 100vw',
+            loading: 'eager',
+            fetchpriority: 'high'
+        }}
+      {%- else -%}
+        <div class="arenus-auth__hero-placeholder"></div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Form column {%- endcomment -%}
+    <div class="arenus-auth__form-col">
+
+      {%- comment -%} Tab navigation {%- endcomment -%}
+      <div class="arenus-auth__tabs" role="tablist">
+        <button
+          type="button"
+          class="arenus-auth__tab arenus-auth__tab--active"
+          role="tab"
+          aria-selected="true"
+          data-auth-tab="login"
+        >
+          {{ 'content.customer_login_title' | t }}
+        </button>
+        <button
+          type="button"
+          class="arenus-auth__tab"
+          role="tab"
+          aria-selected="false"
+          data-auth-tab="register"
+        >
+          {{ 'content.customer_register_title' | t }}
+        </button>
+      </div>
+
+      {%- comment -%} ═══ LOGIN PANEL ═══ {%- endcomment -%}
+      <div
+        class="arenus-auth__panel arenus-auth__panel--active"
+        data-auth-panel="login"
+        role="tabpanel"
+      >
+        <div class="arenus-auth__login-form" data-auth-login-form>
+          {%- form 'customer_login' -%}
+            {%- if form.errors -%}
+              <div class="arenus-auth__errors" role="alert">
+                <p>{{ form.errors | default_errors }}</p>
+              </div>
+            {%- endif -%}
+
+            <div class="arenus-auth__field">
+              <label class="arenus-auth__label" for="CustomerEmail">
+                {{ 'content.customer_email_label' | t }}
+              </label>
+              <input
+                type="email"
+                id="CustomerEmail"
+                name="customer[email]"
+                class="arenus-auth__input"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                required
+              />
+            </div>
+
+            <div class="arenus-auth__field">
+              <label class="arenus-auth__label" for="CustomerPassword">
+                {{ 'content.customer_password_label' | t }}
+              </label>
+              <input
+                type="password"
+                id="CustomerPassword"
+                name="customer[password]"
+                class="arenus-auth__input"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+
+            <a href="#" class="arenus-auth__forgot-link" data-auth-recover-link>
+              {{ 'actions.forgot_password' | t }}
+            </a>
+
+            <button type="submit" class="arenus-auth__btn">
+              {{ 'actions.log_in' | t }}
+            </button>
+          {%- endform -%}
+        </div>
+
+        {%- comment -%} Password recovery sub-panel {%- endcomment -%}
+        <div class="arenus-auth__recover" data-auth-recover hidden>
+          {%- form 'recover_customer_password' -%}
+            <h3 class="arenus-auth__recover-title">
+              {{ 'content.customer_recover_title' | t }}
+            </h3>
+            <p class="arenus-auth__recover-body">
+              {{ 'content.customer_recover_body' | t }}
+            </p>
+
+            {%- if form.errors -%}
+              <div class="arenus-auth__errors" role="alert">
+                <p>{{ form.errors | default_errors }}</p>
+              </div>
+            {%- endif -%}
+
+            {%- if form.posted_successfully? -%}
+              <div class="arenus-auth__success" role="status" data-recover-success>
+                <p>{{ 'content.customer_recover_success' | t }}</p>
+              </div>
+            {%- endif -%}
+
+            <div class="arenus-auth__field">
+              <label class="arenus-auth__label" for="RecoverEmail">
+                {{ 'content.customer_email_label' | t }}
+              </label>
+              <input
+                type="email"
+                id="RecoverEmail"
+                name="email"
+                class="arenus-auth__input"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                required
+              />
+            </div>
+
+            <button type="submit" class="arenus-auth__btn">
+              {{ 'actions.submit' | t }}
+            </button>
+
+            <a href="#" class="arenus-auth__back-link" data-auth-back-to-login>
+              {{ 'actions.back_to_login' | t }}
+            </a>
+          {%- endform -%}
+        </div>
+      </div>
+
+      {%- comment -%} ═══ REGISTER PANEL ═══ {%- endcomment -%}
+      <div
+        class="arenus-auth__panel"
+        data-auth-panel="register"
+        role="tabpanel"
+      >
+        {%- form 'create_customer' -%}
+          {%- if form.errors -%}
+            <div class="arenus-auth__errors" role="alert">
+              <p>{{ form.errors | default_errors }}</p>
+            </div>
+          {%- endif -%}
+
+          <div class="arenus-auth__field">
+            <label class="arenus-auth__label" for="RegisterFirstName">
+              {{ 'content.customer_first_name_label' | t }}
+            </label>
+            <input
+              type="text"
+              id="RegisterFirstName"
+              name="customer[first_name]"
+              class="arenus-auth__input"
+              autocomplete="given-name"
+            />
+          </div>
+
+          <div class="arenus-auth__field">
+            <label class="arenus-auth__label" for="RegisterLastName">
+              {{ 'content.customer_last_name_label' | t }}
+            </label>
+            <input
+              type="text"
+              id="RegisterLastName"
+              name="customer[last_name]"
+              class="arenus-auth__input"
+              autocomplete="family-name"
+            />
+          </div>
+
+          <div class="arenus-auth__field">
+            <label class="arenus-auth__label" for="RegisterEmail">
+              {{ 'content.customer_email_label' | t }}
+            </label>
+            <input
+              type="email"
+              id="RegisterEmail"
+              name="customer[email]"
+              class="arenus-auth__input"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              required
+            />
+          </div>
+
+          <div class="arenus-auth__field">
+            <label class="arenus-auth__label" for="RegisterPassword">
+              {{ 'content.customer_password_label' | t }}
+            </label>
+            <input
+              type="password"
+              id="RegisterPassword"
+              name="customer[password]"
+              class="arenus-auth__input"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+
+          <button type="submit" class="arenus-auth__btn">
+            {{ 'actions.create_account' | t }}
+          </button>
+        {%- endform -%}
+      </div>
+
+    </div>{%- comment -%} /.arenus-auth__form-col {%- endcomment -%}
+  </div>{%- comment -%} /.arenus-auth__grid {%- endcomment -%}
+</div>
+
+<script>
+  (function() {
+    var root = document.getElementById('ArenusAuth-{{ section.id }}');
+    if (!root) return;
+
+    var tabs = root.querySelectorAll('[data-auth-tab]');
+    var panels = root.querySelectorAll('[data-auth-panel]');
+    var recoverPanel = root.querySelector('[data-auth-recover]');
+    var loginForm = root.querySelector('[data-auth-login-form]');
+    var recoverLink = root.querySelector('[data-auth-recover-link]');
+    var backToLogin = root.querySelector('[data-auth-back-to-login]');
+
+    function activateTab(tabName) {
+      tabs.forEach(function(tab) {
+        var isActive = tab.getAttribute('data-auth-tab') === tabName;
+        tab.classList.toggle('arenus-auth__tab--active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      panels.forEach(function(panel) {
+        var isActive = panel.getAttribute('data-auth-panel') === tabName;
+        panel.classList.toggle('arenus-auth__panel--active', isActive);
+      });
+      /* Reset recover panel when switching tabs */
+      if (recoverPanel) recoverPanel.hidden = true;
+      if (loginForm) loginForm.hidden = false;
+    }
+
+    /* Tab click */
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        activateTab(tab.getAttribute('data-auth-tab'));
+        history.replaceState(null, '', tab.getAttribute('data-auth-tab') === 'register' ? '#register' : '#login');
+      });
+    });
+
+    /* Forgot password toggle */
+    if (recoverLink) {
+      recoverLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (recoverPanel) recoverPanel.hidden = false;
+        if (loginForm) loginForm.hidden = true;
+      });
+    }
+    if (backToLogin) {
+      backToLogin.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (recoverPanel) recoverPanel.hidden = true;
+        if (loginForm) loginForm.hidden = false;
+      });
+    }
+
+    /* Auto-activate from URL hash */
+    if (window.location.hash === '#register') {
+      activateTab('register');
+    }
+
+    /* Auto-show recover panel if Shopify returned recover success */
+    var recoverSuccess = root.querySelector('[data-recover-success]');
+    if (recoverSuccess) {
+      if (recoverPanel) recoverPanel.hidden = false;
+      if (loginForm) loginForm.hidden = true;
+    }
+
+    /* Auto-show correct tab if form has errors */
+    var loginErrors = root.querySelector('[data-auth-panel="login"] .arenus-auth__errors');
+    var registerErrors = root.querySelector('[data-auth-panel="register"] .arenus-auth__errors');
+    if (registerErrors && !loginErrors) {
+      activateTab('register');
+    }
+  })();
+</script>
+
+{% stylesheet %}
+  /* ===== Arenus Auth — Login / Register — Mobile-first ===== */
+
+  .arenus-auth {
+    padding: 0 0 60px;
+  }
+
+  .arenus-auth__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* ── Hero image ── */
+  .arenus-auth__hero {
+    width: 100%;
+    aspect-ratio: 353 / 269;
+    overflow: hidden;
+  }
+
+  .arenus-auth__hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .arenus-auth__hero-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+  }
+
+  /* ── Form column ── */
+  .arenus-auth__form-col {
+    padding: 32px 20px 0;
+  }
+
+  /* ── Tabs ── */
+  .arenus-auth__tabs {
+    display: flex;
+    gap: 32px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 32px;
+  }
+
+  .arenus-auth__tab {
+    all: unset;
+    cursor: pointer;
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 24px;
+    line-height: 1.2;
+    color: #808085;
+    padding-bottom: 12px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .arenus-auth__tab--active {
+    color: #000;
+    border-bottom-color: var(--auth-accent, #E6B236);
+  }
+
+  /* ── Panels ── */
+  .arenus-auth__panel {
+    display: none;
+  }
+
+  .arenus-auth__panel--active {
+    display: block;
+  }
+
+  /* ── Form fields ── */
+  .arenus-auth__field {
+    margin-bottom: 20px;
+  }
+
+  .arenus-auth__label {
+    display: block;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .arenus-auth__input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    line-height: 54px;
+    color: #000;
+    background: #fff;
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+
+  .arenus-auth__input:focus {
+    border-color: var(--auth-accent, #E6B236);
+  }
+
+  /* ── Forgot password link ── */
+  .arenus-auth__forgot-link {
+    display: inline-block;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #808085;
+    text-decoration: underline;
+    margin-bottom: 24px;
+  }
+
+  .arenus-auth__forgot-link:hover {
+    color: #000;
+  }
+
+  /* ── CTA button ── */
+  .arenus-auth__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    padding: 0 24px;
+    font-family: var(--font-body--family);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: var(--auth-accent, #E6B236);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .arenus-auth__btn:hover {
+    opacity: 0.85;
+  }
+
+  /* ── Back to login link ── */
+  .arenus-auth__back-link {
+    display: inline-block;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #808085;
+    text-decoration: underline;
+    margin-top: 16px;
+  }
+
+  .arenus-auth__back-link:hover {
+    color: #000;
+  }
+
+  /* ── Recover panel ── */
+  .arenus-auth__recover-title {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+
+  .arenus-auth__recover-body {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #808085;
+    margin: 0 0 24px;
+  }
+
+  /* ── Error / success messages ── */
+  .arenus-auth__errors {
+    background-color: #fff0f0;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #c0392b;
+  }
+
+  .arenus-auth__errors p {
+    margin: 0;
+  }
+
+  .arenus-auth__success {
+    background-color: #f0fff0;
+    border: 1px solid #27ae60;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #1e8449;
+  }
+
+  .arenus-auth__success p {
+    margin: 0;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-auth {
+      padding: 40px 40px 80px;
+    }
+
+    .arenus-auth__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .arenus-auth__hero {
+      aspect-ratio: auto;
+      min-height: 500px;
+      border-radius: 6px;
+    }
+
+    .arenus-auth__hero-img {
+      border-radius: 6px;
+    }
+
+    .arenus-auth__form-col {
+      padding: 0;
+    }
+
+    .arenus-auth__tab {
+      font-size: 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Customer Login",
+  "tag": "section",
+  "class": "arenus-auth-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (tabs & buttons)",
+      "default": "#E6B236"
+    }
+  ]
+}
+{% endschema %}

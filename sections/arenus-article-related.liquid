@@ -1,0 +1,196 @@
+{%- comment -%}
+  Arenus Article Related — "More on this category" section.
+  Shows articles from the same blog, excluding the current article.
+  Structure matches arenus-blog.liquid (homepage blog section).
+{%- endcomment -%}
+
+{%- liquid
+  assign max_posts = section.settings.max_posts | default: 3
+  assign shown = 0
+-%}
+
+<div
+  id="ArenusArticleRelated-{{ section.id }}"
+  class="arenus-blog"
+  style="
+    --arenus-blog-bg: {{ section.settings.background_color }};
+    --arenus-blog-text: {{ section.settings.text_color }};
+    --arenus-blog-meta: {{ section.settings.meta_color }};
+    padding-block-start: {{ section.settings.padding-block-start }}px;
+    padding-block-end: {{ section.settings.padding-block-end }}px;
+  "
+>
+  <div class="arenus-blog__header arenus-artrel__header">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="arenus-blog__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <a href="{{ blog.url }}" class="arenus-blog__btn">
+      {{ section.settings.button_label }}
+    </a>
+  </div>
+
+  {%- if blog.articles.size > 0 -%}
+    <div class="arenus-blog__grid">
+      {%- for blog_article in blog.articles limit: 50 -%}
+        {%- if blog_article.id == article.id -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- if shown >= max_posts -%}
+          {%- break -%}
+        {%- endif -%}
+
+        {%- liquid
+          assign first_tag = blog_article.tags | first
+        -%}
+        <a href="{{ blog_article.url }}" class="arenus-blog__card">
+          <div class="arenus-blog__card-image">
+            {%- if blog_article.image != blank -%}
+              {{
+                blog_article.image
+                | image_url: width: 900
+                | image_tag:
+                  width: blog_article.image.width,
+                  widths: '353, 440, 600, 900',
+                  height: blog_article.image.height,
+                  alt: blog_article.title,
+                  sizes: '(min-width: 750px) 440px, calc(100vw - 40px)',
+                  loading: 'lazy'
+              }}
+            {%- endif -%}
+          </div>
+
+          <div class="arenus-blog__card-info">
+            <h3 class="arenus-blog__title">{{ blog_article.title }}</h3>
+            {%- if first_tag != blank -%}
+              <span class="arenus-blog__tag">{{ first_tag }}</span>
+            {%- endif -%}
+          </div>
+        </a>
+
+        {%- assign shown = shown | plus: 1 -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .arenus-artrel__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .arenus-artrel__header .arenus-blog__btn {
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-artrel__header {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .arenus-artrel__header .arenus-blog__btn {
+      width: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article Related",
+  "tag": "section",
+  "class": "arenus-blog-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "More on this category"
+    },
+    {
+      "type": "range",
+      "id": "max_posts",
+      "label": "Maximum posts",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta text color",
+      "default": "#808085"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article Related",
+      "category": "Blog",
+      "settings": {
+        "heading": "More on this category",
+        "button_label": "LEARN MORE",
+        "max_posts": 3,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "meta_color": "#808085"
+      }
+    }
+  ]
+}
+{% endschema %}

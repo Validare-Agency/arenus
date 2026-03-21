@@ -1,0 +1,13 @@
+{%- comment -%}
+  Register page — renders the same login/register section
+  with the register tab active by default.
+{%- endcomment -%}
+
+{% section 'arenus-customer-login' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var registerTab = document.querySelector('[data-auth-tab="register"]');
+    if (registerTab) registerTab.click();
+  });
+</script>

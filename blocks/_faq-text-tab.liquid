@@ -1,0 +1,60 @@
+{%- comment -%}
+  FAQ Text Tab — container for FAQ accordion items.
+  Renders as a hidden panel; JS handles tab switching.
+{%- endcomment -%}
+
+{%- capture children %}
+  {% content_for 'blocks' %}
+{% endcapture -%}
+
+<div
+  class="arenus-faq__panel"
+  data-faq-panel
+  data-faq-label="{{ block.settings.label }}"
+  {{ block.shopify_attributes }}
+>
+  {%- if children != blank -%}
+    {{ children }}
+  {%- else -%}
+    <p class="arenus-faq__empty">No questions added yet.</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "FAQ Text Tab",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_faq-item"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Tab label",
+      "default": "General"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Text Tab",
+      "settings": {
+        "label": "General"
+      },
+      "blocks": {
+        "q1": {
+          "type": "_faq-item",
+          "settings": {
+            "question": "Sample question?",
+            "answer": "<p>Sample answer.</p>",
+            "open_by_default": true
+          }
+        }
+      },
+      "block_order": ["q1"]
+    }
+  ]
+}
+{% endschema %}
