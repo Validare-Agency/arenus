@@ -40,7 +40,7 @@
               </div>
               <div class="arenus-ambassadors__info">
                 {%- if ambassador.name != blank -%}
-                  <span class="arenus-ambassadors__name">{{ ambassador.name }}</span>
+                  <span class="arenus-ambassadors__name">{{ ambassador.name }} {{ ambassador.last_name }}</span>
                 {%- endif -%}
                 {%- if ambassador.discipline != blank -%}
                   <span class="arenus-ambassadors__discipline">{{ ambassador.discipline }}</span>
