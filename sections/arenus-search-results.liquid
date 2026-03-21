@@ -1,0 +1,874 @@
+{%- comment -%}
+  Arenus Search Results — search input + product grid with infinite scroll.
+  Product card markup matches arenus-collection-products for visual consistency.
+  AJAX search updates grid without page refresh, URL updates via pushState.
+{%- endcomment -%}
+
+{%- liquid
+  assign image_bg = settings.product_card_image_bg
+  assign per_page = section.settings.products_per_page | default: 12
+-%}
+
+<div
+  id="ArenusSearch-{{ section.id }}"
+  class="arenus-search"
+  data-section-id="{{ section.id }}"
+  style="--arenus-cpg-image-bg: {{ image_bg }};"
+>
+  {%- comment -%} ── Search input ── {%- endcomment -%}
+  <div class="arenus-search__input-wrap">
+    <form
+      action="{{ routes.search_url }}"
+      method="get"
+      role="search"
+      class="arenus-search__form"
+      data-search-form
+    >
+      <input type="hidden" name="type" value="product" />
+      <input type="hidden" name="options[prefix]" value="last" />
+      <div class="arenus-search__input-container">
+        <span class="arenus-search__input-icon" aria-hidden="true">
+          {{ 'icon-search-black.svg' | inline_asset_content }}
+        </span>
+        <input
+          type="search"
+          name="q"
+          class="arenus-search__input"
+          value="{{ search.terms | escape }}"
+          placeholder="Search products..."
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          data-search-input
+        />
+        <button
+          type="button"
+          class="arenus-search__input-clear"
+          data-search-clear
+          aria-label="Clear search"
+          {% unless search.terms != blank %}hidden{% endunless %}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {%- comment -%} ── Results area ── {%- endcomment -%}
+  <div class="arenus-search__results" data-search-results>
+    {%- if search.performed -%}
+
+      {%- comment -%} Results count {%- endcomment -%}
+       {% if search.results_count == "0" %}
+         <p class="arenus-search__count" data-search-count>
+           {{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for "{{ search.terms | escape }}"
+        </p>
+      {% endif %}
+
+      {%- if search.results_count > 0 -%}
+        {% paginate search.results by per_page %}
+          <div
+            class="arenus-cpg__grid arenus-search__grid"
+            data-search-grid
+            data-current-page="{{ paginate.current_page }}"
+            data-total-pages="{{ paginate.pages }}"
+          >
+            {%- for product in search.results -%}
+              {%- if product.object_type == 'product' -%}
+                <div class="arenus-cpg__card">
+                  <a href="{{ product.url }}" class="arenus-cpg__card-link" aria-label="{{ product.title | escape }}" tabindex="-1"></a>
+                  <div class="arenus-cpg__card-image">
+                    {%- if product.featured_image != blank -%}
+                      {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '200, 400, 600, 800' }}
+                    {%- endif -%}
+                  </div>
+
+                  <div class="arenus-cpg__card-info">
+                    <div class="arenus-cpg__rating">
+                      <div class="arenus-cpg__stars" aria-label="5 out of 5 stars">
+                        {%- for i in (1..5) -%}
+                          {% render 'icon-star', width: 12, height: 12 %}
+                        {%- endfor -%}
+                      </div>
+                      <span class="arenus-cpg__review-count">0 reviews</span>
+                    </div>
+
+                    <div class="arenus-cpg__title-price">
+                      <span class="arenus-cpg__title">{{ product.title }}</span>
+                      <span class="arenus-cpg__price">
+                        {%- render 'format-price', price: product.selected_or_first_available_variant.price -%}
+                      </span>
+                    </div>
+
+                    {%- assign badges = product.metafields.custom.product_card_badges.value -%}
+                    {%- if badges != blank and badges.size > 0 -%}
+                      <div class="arenus-cpg__tags">
+                        {%- for badge in badges -%}
+                          <span class="arenus-cpg__tag">{{ badge }}</span>
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+
+                  <button
+                    type="button"
+                    class="arenus-cpg__add-btn{% unless product.available %} is-sold-out{% endunless %}"
+                    data-product-id="{{ product.id }}"
+                    data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                    {% if product.has_only_default_variant %}
+                      data-single-variant="true"
+                    {% endif %}
+                    {% unless product.available %}disabled{% endunless %}
+                    aria-label="{% if product.available %}Add {{ product.title | escape }} to cart{% else %}{{ product.title | escape }} is sold out{% endif %}"
+                  >
+                    {%- if product.available -%}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+                      </svg>
+                      ADD TO CART
+                    {%- else -%}
+                      SOLD OUT
+                    {%- endif -%}
+                  </button>
+
+                  {%- unless product.has_only_default_variant -%}
+                    <script type="application/json" class="arenus-cpg__card-data">
+                      {
+                        "id": {{ product.id }},
+                        "title": {{ product.title | json }},
+                        "url": {{ product.url | json }},
+                        "image": {{ product.featured_image | image_url: width: 400 | json }},
+                        "options": {{ product.options_with_values | json }},
+                        "variants": [
+                          {%- for variant in product.variants -%}
+                            {
+                              "id": {{ variant.id }},
+                              "available": {{ variant.available }},
+                              "price": {{ variant.price }},
+                              "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+                              "options": {{ variant.options | json }}
+                            }{%- unless forloop.last -%},{%- endunless -%}
+                          {%- endfor -%}
+                        ]
+                      }
+                    </script>
+                  {%- endunless -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- comment -%} Infinite scroll sentinel {%- endcomment -%}
+          {%- if paginate.pages > 1 -%}
+            <div class="arenus-search__sentinel" data-search-sentinel>
+              <div class="arenus-search__spinner" data-search-spinner hidden>
+                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" stroke="#ddd" stroke-width="3" fill="none" />
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="#E6B236" stroke-width="3" fill="none" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+              </div>
+            </div>
+          {%- endif -%}
+        {% endpaginate %}
+
+      {%- else -%}
+        <div class="arenus-search__empty">
+          <p>No results found for "{{ search.terms | escape }}".</p>
+          <p>Try a different search term.</p>
+        </div>
+      {%- endif -%}
+
+    {%- else -%}
+      <div class="arenus-search__initial">
+        <p>Search for products by name, type, or keyword.</p>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Quick-add modal (shared, single instance) ── {%- endcomment -%}
+  <dialog class="arenus-cpg-qam__dialog" id="arenus-search-qam-{{ section.id }}">
+    <div class="arenus-cpg-qam">
+      <button type="button" class="arenus-cpg-qam__close" aria-label="Close">
+        {{ 'icon-close-black.svg' | inline_asset_content }}
+      </button>
+
+      <div class="arenus-cpg-qam__header">
+        <div class="arenus-cpg-qam__image">
+          <img src="" alt="" width="80" height="80" loading="lazy" />
+        </div>
+        <div class="arenus-cpg-qam__meta">
+          <div class="arenus-cpg-qam__rating">
+            <div class="arenus-cpg-qam__stars">
+              {%- for i in (1..5) -%}
+                {% render 'icon-star', width: 16, height: 16 %}
+              {%- endfor -%}
+            </div>
+            <span class="arenus-cpg-qam__review-count">0 reviews</span>
+          </div>
+          <h3 class="arenus-cpg-qam__title"></h3>
+          <div class="arenus-cpg-qam__price-wrap">
+            <span class="arenus-cpg-qam__price"></span>
+            <span class="arenus-cpg-qam__compare-price"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arenus-cpg-qam__options"></div>
+
+      <div class="arenus-cpg-qam__footer">
+        <div class="arenus-cpg-qam__stepper">
+          <button type="button" class="arenus-cpg-qam__stepper-btn arenus-cpg-qam__stepper-minus" aria-label="Decrease quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <span class="arenus-cpg-qam__stepper-value">1</span>
+          <button type="button" class="arenus-cpg-qam__stepper-btn arenus-cpg-qam__stepper-plus" aria-label="Increase quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7 2.75L7 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button type="button" class="arenus-cpg-qam__add-btn" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+          </svg>
+          ADD TO CART
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  /* ===== Arenus Search Results — AJAX Search, Infinite Scroll, Quick Add ===== */
+  (function() {
+    var root = document.getElementById('ArenusSearch-{{ section.id }}');
+    if (!root) return;
+
+    var form = root.querySelector('[data-search-form]');
+    var input = root.querySelector('[data-search-input]');
+    var clearBtn = root.querySelector('[data-search-clear]');
+    var resultsContainer = root.querySelector('[data-search-results]');
+    var dialog = root.querySelector('.arenus-cpg-qam__dialog');
+    var sectionId = '{{ section.id }}';
+    var searchType = 'product';
+    var perPage = {{ per_page }};
+    var isLoading = false;
+    var currentPage = 1;
+    var totalPages = 1;
+
+    /* Read initial pagination state */
+    var gridEl = root.querySelector('[data-search-grid]');
+    if (gridEl) {
+      currentPage = parseInt(gridEl.getAttribute('data-current-page'), 10) || 1;
+      totalPages = parseInt(gridEl.getAttribute('data-total-pages'), 10) || 1;
+    }
+
+    /* ══════════════════════════════════════════════
+       AJAX Search
+       ══════════════════════════════════════════════ */
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var query = input.value.trim();
+        if (!query) return;
+        performSearch(query);
+      });
+    }
+
+    /* Clear button */
+    if (clearBtn && input) {
+      clearBtn.addEventListener('click', function() {
+        input.value = '';
+        clearBtn.hidden = true;
+        input.focus();
+      });
+      input.addEventListener('input', function() {
+        clearBtn.hidden = input.value.trim().length === 0;
+      });
+    }
+
+    function performSearch(query) {
+      if (isLoading) return;
+      isLoading = true;
+
+      var url = '{{ routes.search_url }}?q=' + encodeURIComponent(query)
+        + '&type=' + searchType
+        + '&options[prefix]=last'
+        + '&section_id=' + sectionId;
+
+      var stateUrl = '{{ routes.search_url }}?q=' + encodeURIComponent(query) + '&type=' + searchType + '&options[prefix]=last';
+      history.pushState({ query: query }, '', stateUrl);
+
+      fetch(url)
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          var newResults = doc.querySelector('[data-search-results]');
+          if (newResults && resultsContainer) {
+            resultsContainer.innerHTML = newResults.innerHTML;
+          }
+          var newGrid = root.querySelector('[data-search-grid]');
+          if (newGrid) {
+            currentPage = parseInt(newGrid.getAttribute('data-current-page'), 10) || 1;
+            totalPages = parseInt(newGrid.getAttribute('data-total-pages'), 10) || 1;
+          } else {
+            currentPage = 1;
+            totalPages = 1;
+          }
+          setupInfiniteScroll();
+          isLoading = false;
+        })
+        .catch(function(err) {
+          console.error('[arenus-search] Fetch error:', err);
+          isLoading = false;
+        });
+    }
+
+    /* Browser back/forward */
+    window.addEventListener('popstate', function() {
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get('q') || '';
+      if (input) input.value = q;
+      if (clearBtn) clearBtn.hidden = q.length === 0;
+      if (q) performSearch(q);
+    });
+
+    /* ══════════════════════════════════════════════
+       Infinite Scroll
+       ══════════════════════════════════════════════ */
+    var observer = null;
+
+    function setupInfiniteScroll() {
+      if (observer) observer.disconnect();
+      var sentinel = root.querySelector('[data-search-sentinel]');
+      if (!sentinel || currentPage >= totalPages) return;
+
+      observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !isLoading && currentPage < totalPages) {
+          loadNextPage();
+        }
+      }, { rootMargin: '200px' });
+
+      observer.observe(sentinel);
+    }
+
+    function loadNextPage() {
+      if (isLoading || currentPage >= totalPages) return;
+      isLoading = true;
+      var nextPage = currentPage + 1;
+
+      var spinner = root.querySelector('[data-search-spinner]');
+      if (spinner) spinner.hidden = false;
+
+      var params = new URLSearchParams(window.location.search);
+      var query = params.get('q') || '';
+
+      var url = '{{ routes.search_url }}?q=' + encodeURIComponent(query)
+        + '&type=' + searchType
+        + '&options[prefix]=last'
+        + '&page=' + nextPage
+        + '&section_id=' + sectionId;
+
+      fetch(url)
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          var newGrid = doc.querySelector('[data-search-grid]');
+          var currentGrid = root.querySelector('[data-search-grid]');
+
+          if (newGrid && currentGrid) {
+            var cards = newGrid.querySelectorAll('.arenus-cpg__card');
+            cards.forEach(function(card) {
+              currentGrid.appendChild(card);
+            });
+            currentPage = nextPage;
+            currentGrid.setAttribute('data-current-page', currentPage);
+          }
+
+          if (spinner) spinner.hidden = true;
+          isLoading = false;
+
+          if (currentPage >= totalPages) {
+            if (observer) observer.disconnect();
+            var sentinel = root.querySelector('[data-search-sentinel]');
+            if (sentinel) sentinel.remove();
+          }
+        })
+        .catch(function(err) {
+          console.error('[arenus-search] Load more error:', err);
+          if (spinner) spinner.hidden = true;
+          isLoading = false;
+        });
+    }
+
+    setupInfiniteScroll();
+
+    /* ══════════════════════════════════════════════
+       Quick Add-to-Cart (single variant + modal)
+       ══════════════════════════════════════════════ */
+    if (!dialog) return;
+
+    var currentProductData = null;
+    var selectedOptions = [];
+    var quantity = 1;
+    var isAdding = false;
+
+    var modalTitle = dialog.querySelector('.arenus-cpg-qam__title');
+    var modalPrice = dialog.querySelector('.arenus-cpg-qam__price');
+    var modalComparePrice = dialog.querySelector('.arenus-cpg-qam__compare-price');
+    var modalImage = dialog.querySelector('.arenus-cpg-qam__image img');
+    var modalOptions = dialog.querySelector('.arenus-cpg-qam__options');
+    var modalAddBtn = dialog.querySelector('.arenus-cpg-qam__add-btn');
+    var modalCloseBtn = dialog.querySelector('.arenus-cpg-qam__close');
+    var stepperValue = dialog.querySelector('.arenus-cpg-qam__stepper-value');
+    var stepperMinus = dialog.querySelector('.arenus-cpg-qam__stepper-minus');
+    var stepperPlus = dialog.querySelector('.arenus-cpg-qam__stepper-plus');
+
+    function formatPrice(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    function findVariant() {
+      if (!currentProductData) return null;
+      for (var i = 0; i < currentProductData.variants.length; i++) {
+        var v = currentProductData.variants[i];
+        var match = true;
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (v.options[j] !== selectedOptions[j]) { match = false; break; }
+        }
+        if (match) return v;
+      }
+      return null;
+    }
+
+    function isOptionAvailable(optionIndex, optionValue) {
+      if (!currentProductData) return false;
+      for (var i = 0; i < currentProductData.variants.length; i++) {
+        var v = currentProductData.variants[i];
+        if (v.options[optionIndex] !== optionValue) continue;
+        var compatible = true;
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (j === optionIndex) continue;
+          if (v.options[j] !== selectedOptions[j]) { compatible = false; break; }
+        }
+        if (compatible && v.available) return true;
+      }
+      return false;
+    }
+
+    function buildModalOptions() {
+      if (!currentProductData || !modalOptions) return;
+      modalOptions.innerHTML = '';
+      var options = currentProductData.options;
+      for (var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        var group = document.createElement('div');
+        group.className = 'arenus-cpg-qam__option-group';
+
+        var label = document.createElement('p');
+        label.className = 'arenus-cpg-qam__option-label';
+        label.textContent = opt.name + ':';
+        group.appendChild(label);
+
+        var valuesWrap = document.createElement('div');
+        valuesWrap.className = 'arenus-cpg-qam__option-values';
+
+        for (var j = 0; j < opt.values.length; j++) {
+          var val = opt.values[j];
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'arenus-cpg-qam__option-btn';
+          btn.textContent = val;
+          btn.setAttribute('data-option-index', i);
+          btn.setAttribute('data-option-value', val);
+          if (selectedOptions[i] === val) btn.classList.add('is-selected');
+          if (!isOptionAvailable(i, val)) btn.classList.add('is-unavailable');
+          valuesWrap.appendChild(btn);
+        }
+
+        group.appendChild(valuesWrap);
+        modalOptions.appendChild(group);
+      }
+    }
+
+    function updateModalPrices(variant) {
+      if (modalPrice) {
+        modalPrice.textContent = variant ? formatPrice(variant.price) : '';
+      }
+      if (modalComparePrice) {
+        var hasCompare = variant && variant.compare_at_price && variant.compare_at_price > variant.price;
+        modalComparePrice.textContent = hasCompare ? formatPrice(variant.compare_at_price) : '';
+      }
+    }
+
+    function updateModalState() {
+      var variant = findVariant();
+      buildModalOptions();
+      updateModalPrices(variant);
+      if (modalAddBtn) {
+        modalAddBtn.disabled = !variant || !variant.available;
+      }
+    }
+
+    /* Modal option clicks */
+    if (modalOptions) {
+      modalOptions.addEventListener('click', function(e) {
+        var btn = e.target.closest('.arenus-cpg-qam__option-btn');
+        if (!btn) return;
+        var idx = parseInt(btn.getAttribute('data-option-index'), 10);
+        var val = btn.getAttribute('data-option-value');
+        selectedOptions[idx] = val;
+        updateModalState();
+      });
+    }
+
+    /* Stepper */
+    if (stepperMinus) {
+      stepperMinus.addEventListener('click', function() {
+        if (quantity > 1) { quantity--; stepperValue.textContent = quantity; }
+      });
+    }
+    if (stepperPlus) {
+      stepperPlus.addEventListener('click', function() {
+        quantity++;
+        stepperValue.textContent = quantity;
+      });
+    }
+
+    function openModal(productData) {
+      currentProductData = productData;
+      quantity = 1;
+      selectedOptions = [];
+      for (var i = 0; i < productData.options.length; i++) {
+        selectedOptions.push(productData.options[i].values[0]);
+      }
+      if (modalTitle) modalTitle.textContent = productData.title;
+      if (modalImage) { modalImage.src = productData.image; modalImage.alt = productData.title; }
+      if (stepperValue) stepperValue.textContent = '1';
+      buildModalOptions();
+      var variant = findVariant();
+      updateModalPrices(variant);
+      if (modalAddBtn) modalAddBtn.disabled = !variant || !variant.available;
+      dialog.classList.remove('is-closing');
+      dialog.showModal();
+      var scrollY = window.scrollY;
+      dialog._previousScrollY = scrollY;
+      document.body.style.width = '100%';
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + scrollY + 'px';
+    }
+
+    function closeModal() {
+      dialog.classList.add('is-closing');
+      function onEnd() {
+        dialog.removeEventListener('animationend', onEnd);
+        dialog.close();
+        dialog.classList.remove('is-closing');
+        document.body.style.width = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        if (dialog._previousScrollY !== undefined) {
+          window.scrollTo({ top: dialog._previousScrollY, behavior: 'instant' });
+        }
+        currentProductData = null;
+        selectedOptions = [];
+        quantity = 1;
+      }
+      dialog.addEventListener('animationend', onEnd);
+    }
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', function() { closeModal(); });
+    }
+    dialog.addEventListener('click', function(e) {
+      if (e.target === dialog) closeModal();
+    });
+    dialog.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+    });
+    dialog.addEventListener('cancel', function(e) {
+      e.preventDefault();
+      closeModal();
+    });
+
+    /* ── Add to cart helper ── */
+    function setButtonLoading(btn, loading) {
+      if (!btn) return;
+      if (loading) {
+        btn._prevHTML = btn.innerHTML;
+        btn.classList.add('is-loading');
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/></svg> ADDING...';
+      } else {
+        btn.classList.remove('is-loading');
+        if (btn._prevHTML !== undefined) btn.innerHTML = btn._prevHTML;
+      }
+    }
+
+    function addToCart(variantId, qty, triggerBtn, onDone) {
+      if (isAdding) return;
+      isAdding = true;
+      setButtonLoading(triggerBtn, true);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: qty })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.status) {
+          console.error('Add to cart error:', data.description);
+          isAdding = false;
+          setButtonLoading(triggerBtn, false);
+          return;
+        }
+        document.dispatchEvent(new CustomEvent('cart:update', {
+          bubbles: true,
+          detail: { resource: {}, sourceId: '', data: { source: 'arenus-search-quick-add', itemCount: qty } }
+        }));
+        var cartDrawer = document.querySelector('cart-drawer-component');
+        if (cartDrawer) {
+          if (typeof cartDrawer.open === 'function') cartDrawer.open();
+          else if (typeof cartDrawer.showDialog === 'function') cartDrawer.showDialog();
+        }
+        isAdding = false;
+        setButtonLoading(triggerBtn, false);
+        if (typeof onDone === 'function') onDone();
+      })
+      .catch(function(err) {
+        console.error('Add to cart fetch error:', err);
+        isAdding = false;
+        setButtonLoading(triggerBtn, false);
+      });
+    }
+
+    /* Modal add-to-cart */
+    if (modalAddBtn) {
+      modalAddBtn.addEventListener('click', function() {
+        var variant = findVariant();
+        if (!variant || !variant.available) return;
+        addToCart(variant.id, quantity, modalAddBtn, function() { closeModal(); });
+      });
+    }
+
+    /* ── Delegated card add-to-cart click (works with AJAX-loaded cards) ── */
+    root.addEventListener('click', function(e) {
+      var btn = e.target.closest('.arenus-cpg__add-btn');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      var isSingleVariant = btn.hasAttribute('data-single-variant');
+      if (isSingleVariant) {
+        var variantId = parseInt(btn.getAttribute('data-variant-id'), 10);
+        addToCart(variantId, 1, btn);
+      } else {
+        var card = btn.closest('.arenus-cpg__card');
+        if (!card) return;
+        var scriptTag = card.querySelector('.arenus-cpg__card-data');
+        if (!scriptTag) return;
+        try {
+          var productData = JSON.parse(scriptTag.textContent);
+          openModal(productData);
+        } catch (err) {
+          console.error('Failed to parse product data:', err);
+        }
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ===== Arenus Search Results — Mobile-first ===== */
+
+  .arenus-search {
+    padding: 32px 20px 60px;
+  }
+
+  /* ── Search input ── */
+  .arenus-search__input-wrap {
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+
+  .arenus-search__form {
+    width: 100%;
+  }
+
+  .arenus-search__input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .arenus-search__input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: #808085;
+    pointer-events: none;
+  }
+
+  .arenus-search__input-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .arenus-search__input {
+    width: 100%;
+    height: 54px;
+    padding: 0 44px 0 48px;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    line-height: 54px;
+    color: #000;
+    background: #fff;
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .arenus-search__input:focus {
+    border-color: #E6B236;
+  }
+
+  .arenus-search__input::placeholder {
+    color: #808085;
+  }
+
+  /* Hide WebKit search cancel button */
+  .arenus-search__input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .arenus-search__input-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #808085;
+    padding: 0;
+    border-radius: 50%;
+    transition: background-color 0.15s;
+  }
+
+  .arenus-search__input-clear:hover {
+    background-color: #f5f5f5;
+    color: #000;
+  }
+
+  .arenus-search__input-clear[hidden] {
+    display: none;
+  }
+
+  /* ── Results count ── */
+  .arenus-search__count {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    color: #808085;
+    margin: 0 0 24px;
+  }
+
+  /* ── Product grid — reuses .arenus-cpg__* classes from collection ── */
+  .arenus-search__grid {
+    padding-inline: 0;
+  }
+
+  /* ── Empty / initial states ── */
+  .arenus-search__empty,
+  .arenus-search__initial {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .arenus-search__empty p,
+  .arenus-search__initial p {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 16px;
+    line-height: 1.6;
+    color: #808085;
+    margin: 0 0 4px;
+  }
+
+  /* ── Infinite scroll sentinel ── */
+  .arenus-search__sentinel {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    min-height: 40px;
+  }
+
+  .arenus-search__spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-search__spinner[hidden] {
+    display: none;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-search {
+      padding: 40px 40px 80px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .arenus-search__input-wrap {
+      margin-bottom: 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search Results",
+  "tag": "section",
+  "class": "arenus-search-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per batch",
+      "info": "Number of products to show initially and load with each infinite scroll batch.",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

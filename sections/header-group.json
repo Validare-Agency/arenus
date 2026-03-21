@@ -51,14 +51,10 @@
       },
       "settings": {
         "show_top_bar": true,
-        "top_bar_link_1_text": "Arenus Ambassadors",
-        "top_bar_link_1_url": "shopify://pages/ambassadors",
-        "top_bar_link_2_text": "Become a Dealer",
-        "top_bar_link_2_url": "",
         "show_country_selector": true,
         "top_bar_bg_color": "#191919",
-        "top_bar_text_color": "#dddddd",
         "top_bar_border_color": "#45484a",
+        "top_bar_text_color": "#FFFFFF",
         "pill_1_text": "Colic Assurance Program",
         "pill_1_url": "",
         "pill_2_text": "Our Blog",
@@ -71,7 +67,7 @@
         "enable_sticky_header": "always",
         "color_scheme_top": "scheme-1",
         "color_scheme_transparent": "scheme-6",
-        "transparent_pages": "index, collection, ambassadors, about-us, contact, employees", 
+        "transparent_pages": "index, collection, ambassadors, about-us, contact, employees, research, colic-assurance-program, colic-form, 404",
         "transparent_color_scheme": "default"
       }
     }

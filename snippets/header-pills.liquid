@@ -77,7 +77,15 @@
     font-family: inherit;
   }
 
+  /* Hide pills on mobile */
   @media screen and (max-width: 749px) {
+    .header-pills {
+      display: none;
+    }
+  }
+
+  /* Hide pills on smaller desktop/tablet to free space for nav items */
+  @media screen and (min-width: 750px) and (max-width: 1350px) {
     .header-pills {
       display: none;
     }

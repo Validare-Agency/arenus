@@ -1,0 +1,156 @@
+{%- doc -%}
+  Shared address form fields for customer addresses.
+  Used by both add-new and edit-existing address forms.
+
+  @param {form} form - The Liquid form object
+  @param {address} [address] - The existing address (nil for new)
+{%- enddoc -%}
+
+<div class="arenus-address-fields">
+  <div class="arenus-address-fields__row">
+    <div class="arenus-auth__field">
+      <label class="arenus-auth__label" for="address_first_name_{{ form.id }}">First Name</label>
+      <input
+        type="text"
+        id="address_first_name_{{ form.id }}"
+        name="address[first_name]"
+        class="arenus-auth__input"
+        value="{{ address.first_name | default: '' }}"
+        autocomplete="given-name"
+      />
+    </div>
+    <div class="arenus-auth__field">
+      <label class="arenus-auth__label" for="address_last_name_{{ form.id }}">Last Name</label>
+      <input
+        type="text"
+        id="address_last_name_{{ form.id }}"
+        name="address[last_name]"
+        class="arenus-auth__input"
+        value="{{ address.last_name | default: '' }}"
+        autocomplete="family-name"
+      />
+    </div>
+  </div>
+
+  <div class="arenus-auth__field">
+    <label class="arenus-auth__label" for="address_company_{{ form.id }}">Company</label>
+    <input
+      type="text"
+      id="address_company_{{ form.id }}"
+      name="address[company]"
+      class="arenus-auth__input"
+      value="{{ address.company | default: '' }}"
+      autocomplete="organization"
+    />
+  </div>
+
+  <div class="arenus-auth__field">
+    <label class="arenus-auth__label" for="address_address1_{{ form.id }}">Address</label>
+    <input
+      type="text"
+      id="address_address1_{{ form.id }}"
+      name="address[address1]"
+      class="arenus-auth__input"
+      value="{{ address.address1 | default: '' }}"
+      autocomplete="address-line1"
+    />
+  </div>
+
+  <div class="arenus-auth__field">
+    <label class="arenus-auth__label" for="address_address2_{{ form.id }}">Apartment, suite, etc.</label>
+    <input
+      type="text"
+      id="address_address2_{{ form.id }}"
+      name="address[address2]"
+      class="arenus-auth__input"
+      value="{{ address.address2 | default: '' }}"
+      autocomplete="address-line2"
+    />
+  </div>
+
+  <div class="arenus-address-fields__row">
+    <div class="arenus-auth__field">
+      <label class="arenus-auth__label" for="address_city_{{ form.id }}">City</label>
+      <input
+        type="text"
+        id="address_city_{{ form.id }}"
+        name="address[city]"
+        class="arenus-auth__input"
+        value="{{ address.city | default: '' }}"
+        autocomplete="address-level2"
+      />
+    </div>
+    <div class="arenus-auth__field">
+      <label class="arenus-auth__label" for="address_zip_{{ form.id }}">Postal / ZIP code</label>
+      <input
+        type="text"
+        id="address_zip_{{ form.id }}"
+        name="address[zip]"
+        class="arenus-auth__input"
+        value="{{ address.zip | default: '' }}"
+        autocomplete="postal-code"
+      />
+    </div>
+  </div>
+
+  <div class="arenus-auth__field">
+    <label class="arenus-auth__label" for="address_country_{{ form.id }}">Country</label>
+    <select
+      id="address_country_{{ form.id }}"
+      name="address[country]"
+      class="arenus-auth__input arenus-auth__select"
+      data-default="{{ address.country | default: 'United States' }}"
+      autocomplete="country"
+    >
+      {{ all_country_option_tags }}
+    </select>
+  </div>
+
+  <div class="arenus-auth__field" id="address_province_container_{{ form.id }}">
+    <label class="arenus-auth__label" for="address_province_{{ form.id }}">Province / State</label>
+    <select
+      id="address_province_{{ form.id }}"
+      name="address[province]"
+      class="arenus-auth__input arenus-auth__select"
+      data-default="{{ address.province }}"
+      autocomplete="address-level1"
+    >
+    </select>
+  </div>
+
+  <div class="arenus-auth__field">
+    <label class="arenus-auth__label" for="address_phone_{{ form.id }}">Phone</label>
+    <input
+      type="tel"
+      id="address_phone_{{ form.id }}"
+      name="address[phone]"
+      class="arenus-auth__input"
+      value="{{ address.phone | default: '' }}"
+      autocomplete="tel"
+    />
+  </div>
+</div>
+
+{% stylesheet %}
+  .arenus-address-fields__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .arenus-auth__select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-address-fields__row {
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+  }
+{% endstylesheet %}

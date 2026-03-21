@@ -1,0 +1,632 @@
+{%- unless cart.empty? -%}
+  <div class="cart-reco" data-source="{{ settings.cart_recommendations_source }}"
+    {%- if settings.cart_recommendations_source == 'recommendations' -%}
+      data-product-id="{{ cart.items.first.product_id }}"
+    {%- endif -%}
+  >
+    <div class="cart-reco__header">
+      <p class="cart-reco__heading">You May Also Like</p>
+      <div class="cart-reco__nav">
+        <button type="button" class="cart-reco__nav-btn cart-reco__nav-btn--prev" aria-label="Previous">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M15 4.5L7.5 12L15 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button type="button" class="cart-reco__nav-btn cart-reco__nav-btn--next" aria-label="Next">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M9 4.5L16.5 12L9 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cart-reco__carousel">
+      <div class="cart-reco__track">
+        {%- if settings.cart_recommendations_source == 'collection' and settings.cart_recommendations_collection != blank -%}
+          {%- assign reco_collection = collections[settings.cart_recommendations_collection] -%}
+          {%- for product in reco_collection.products limit: 20 -%}
+            {%- unless product.available == false -%}
+              {%- assign already_in_cart = false -%}
+              {%- for item in cart.items -%}
+                {%- if item.product.id == product.id -%}
+                  {%- assign already_in_cart = true -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- unless already_in_cart -%}
+                <div class="cart-reco__card" data-product-id="{{ product.id }}">
+                  {%- unless product.has_only_default_variant -%}
+                    <script type="application/json" class="cart-reco__card-data">
+                      {
+                        "title": {{ product.title | json }},
+                        "image": {{ product.featured_image | image_url: width: 300 | json }},
+                        "options": {{ product.options_with_values | json }},
+                        "variants": [
+                          {%- for variant in product.variants -%}
+                            {
+                              "id": {{ variant.id }},
+                              "available": {{ variant.available }},
+                              "price": {{ variant.price }},
+                              "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+                              "option1": {{ variant.option1 | json }},
+                              "option2": {{ variant.option2 | json }},
+                              "option3": {{ variant.option3 | json }}
+                            }{%- unless forloop.last -%},{%- endunless -%}
+                          {%- endfor -%}
+                        ]
+                      }
+                    </script>
+                  {%- endunless -%}
+                  <a href="{{ product.url }}" class="cart-reco__card-link">
+                    <div class="cart-reco__card-image" style="background-color: {{ settings.product_card_image_bg }};">
+                      {%- if product.featured_image -%}
+                        <img
+                          src="{{ product.featured_image | image_url: width: 300 }}"
+                          alt="{{ product.title | escape }}"
+                          width="121"
+                          height="121"
+                          loading="lazy"
+                        />
+                      {%- endif -%}
+                    </div>
+                    <div class="cart-reco__card-info">
+                      <span class="cart-reco__card-title">{{ product.title }}</span>
+                      <span class="cart-reco__card-price">{{ product.price | money }}</span>
+                    </div>
+                  </a>
+                  <button
+                    type="button"
+                    class="cart-reco__add-btn"
+                    data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                    data-product-id="{{ product.id }}"
+                    data-product-url="{{ product.url }}"
+                    {% if product.has_only_default_variant %}data-single-variant="true"{% endif %}
+                    aria-label="Add {{ product.title | escape }} to cart"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+                    </svg>
+                    ADD
+                  </button>
+                </div>
+              {%- endunless -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- comment -%} Recommendations source cards are injected by JS {%- endcomment -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Quick-add modal for multi-variant products. Populated by JS from inline card data {%- endcomment -%}
+  <dialog class="cart-reco-qam__dialog" id="cart-reco-qam">
+    <div class="cart-reco-qam">
+      <button type="button" class="cart-reco-qam__close" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="cart-reco-qam__header">
+        <div class="cart-reco-qam__image">
+          <img src="" alt="" width="80" height="80" loading="lazy" />
+        </div>
+        <div class="cart-reco-qam__meta">
+          <h3 class="cart-reco-qam__title"></h3>
+          <div class="cart-reco-qam__price-wrap">
+            <span class="cart-reco-qam__price"></span>
+            <span class="cart-reco-qam__compare-price"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-reco-qam__options"></div>
+
+      <div class="cart-reco-qam__footer">
+        <div class="cart-reco-qam__stepper">
+          <button type="button" class="cart-reco-qam__stepper-btn cart-reco-qam__stepper-minus" aria-label="Decrease quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <span class="cart-reco-qam__stepper-value">1</span>
+          <button type="button" class="cart-reco-qam__stepper-btn cart-reco-qam__stepper-plus" aria-label="Increase quantity">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2.75 7H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7 2.75V11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button type="button" class="cart-reco-qam__add-btn" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/>
+          </svg>
+          ADD TO BAG
+        </button>
+      </div>
+    </div>
+  </dialog>
+{%- endunless -%}
+
+{% stylesheet %}
+  /* ---- Recommendations section ---- */
+  .cart-reco {
+    padding: 20px 0 12px;
+  }
+
+  .cart-reco__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 4px;
+    padding-inline:16px;
+
+    @media screen and (min-width: 750px) {
+      padding-inline: 20px;
+    }
+  }
+
+  .cart-reco__heading {
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+    color: #000;
+    margin: 0;
+  }
+
+  .cart-reco__nav {
+    display: none;
+    gap: 0;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .cart-reco__nav {
+      display: flex;
+    }
+  }
+
+  .cart-reco__nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    border: none;
+    border-radius: 100px;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .cart-reco__nav-btn:hover {
+    opacity: 0.6;
+  }
+
+  /* ---- Carousel ---- */
+  .cart-reco__carousel {
+    overflow: hidden;
+  }
+
+  .cart-reco__track {
+    display: flex;
+    /* gap: 12px; */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 12px 0;
+  }
+
+  .cart-reco__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---- Product card ---- */
+  .cart-reco__card {
+    flex: 0 0 137px;
+    max-width: 137px;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    padding-left: 16px;
+    gap: 12px;
+
+    @media screen and (min-width: 750px) {
+      flex: 0 0 141px;
+      max-width: 141px;
+      padding-left: 20px;
+    }
+  }
+
+  .cart-reco__card:last-child {
+    flex: 0 0 153px;
+    max-width: 153px;
+    padding-right: 16px;
+
+    @media screen and (min-width: 750px) {
+      flex: 0 0 161px;
+      max-width: 161px;
+      padding-right: 20px;
+    }
+  }
+
+  .cart-reco__card-link {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .cart-reco__card-image {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    padding: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-reco__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-reco__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cart-reco__card-title {
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .cart-reco__card-price {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.12px;
+    color: #000;
+  }
+
+  .cart-reco__add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e6b236;
+    border-radius: 6px;
+    background: transparent;
+    color: #e6b236;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 1;
+    cursor: pointer;
+    letter-spacing: 0;
+  }
+
+  .cart-reco__add-btn:hover {
+    background-color: #e6b236;
+    color: #fff;
+  }
+
+  .cart-reco__add-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* ---- Quick-Add Modal ---- */
+  .cart-reco-qam__dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    max-width: calc(100% - 32px);
+    width: 100%;
+    max-height: 85vh;
+    max-height: 85dvh;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  .cart-reco-qam__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .cart-reco-qam__dialog[open] {
+    animation: cartRecoQamFadeIn 0.25s ease forwards;
+  }
+
+  .cart-reco-qam__dialog.is-closing {
+    animation: cartRecoQamFadeOut 0.2s ease forwards;
+  }
+
+  .cart-reco-qam__dialog.is-closing::backdrop {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  @keyframes cartRecoQamFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes cartRecoQamFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.95); }
+  }
+
+  .cart-reco-qam {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+  }
+
+  .cart-reco-qam__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1;
+    color: #000;
+    transition: opacity 0.2s ease;
+  }
+
+  .cart-reco-qam__close:hover {
+    opacity: 0.7;
+  }
+
+  .cart-reco-qam__header {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .cart-reco-qam__image {
+    flex-shrink: 0;
+    width: 112px;
+    height: 112px;
+    background: #fffcea;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .cart-reco-qam__image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  .cart-reco-qam__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    padding-right: 40px;
+  }
+
+  .cart-reco-qam__title {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+    color: #000000;
+  }
+
+  .cart-reco-qam__price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cart-reco-qam__price {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.16px;
+    color: #000000;
+  }
+
+  .cart-reco-qam__compare-price {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: -0.14px;
+    color: #808085;
+    text-decoration: line-through;
+  }
+
+  .cart-reco-qam__compare-price:empty {
+    display: none;
+  }
+
+  .cart-reco-qam__options {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .cart-reco-qam__option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cart-reco-qam__option-label {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000000;
+    margin: 0;
+  }
+
+  .cart-reco-qam__option-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cart-reco-qam__option-btn {
+    padding: 12px 16px;
+    border: 1px solid #eeeeef;
+    border-radius: 6px;
+    background: #ffffff;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000000;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .cart-reco-qam__option-btn:hover {
+    border-color: #c0c0c0;
+  }
+
+  .cart-reco-qam__option-btn.is-selected {
+    border-color: #191919;
+  }
+
+  .cart-reco-qam__option-btn.is-unavailable {
+    opacity: 0.4;
+    text-decoration: line-through;
+  }
+
+  .cart-reco-qam__footer {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .cart-reco-qam__stepper {
+    flex-shrink: 0;
+    width: 125px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e3e4e5;
+    border-radius: 6px;
+    padding: 4px;
+  }
+
+  .cart-reco-qam__stepper-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    padding: 0;
+    color: #000;
+    transition: opacity 0.15s ease;
+  }
+
+  .cart-reco-qam__stepper-btn:hover {
+    opacity: 0.6;
+  }
+
+  .cart-reco-qam__stepper-value {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    text-align: center;
+    width: 32px;
+    color: #1e2122;
+    user-select: none;
+  }
+
+  .cart-reco-qam__add-btn {
+    flex: 1;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: #e6b236;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .cart-reco-qam__add-btn:hover {
+    opacity: 0.85;
+  }
+
+  .cart-reco-qam__add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .cart-reco-qam__add-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  @media (min-width: 769px) {
+    .cart-reco-qam__dialog {
+      max-width: 588px;
+    }
+  }
+{% endstylesheet %}

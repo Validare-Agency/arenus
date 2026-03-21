@@ -36,17 +36,13 @@
 
           {%- comment -%} Card info {%- endcomment -%}
           <div class="arenus-blog__card-info">
-            {%- comment -%} Meta row: date + tag {%- endcomment -%}
-            <div class="arenus-blog__meta">
-              <span class="arenus-blog__date">{{ article.published_at | date: "%b %d, %Y" }}</span>
-              {%- if article.tags.size > 0 -%}
-                <span class="arenus-blog__dot" aria-hidden="true"></span>
-                <span class="arenus-blog__tag">{{ article.tags.first }}</span>
-              {%- endif -%}
-            </div>
-
+            {%- comment -%} Tag {%- endcomment -%}
+            {%- if article.tags.size > 0 -%}
+              <span class="arenus-blog__tag">{{ article.tags.first }}</span>
+            {%- endif -%}
             {%- comment -%} Title {%- endcomment -%}
             <h3 class="arenus-blog__title">{{ article.title }}</h3>
+            
           </div>
         </a>
       {%- endfor -%}
@@ -71,7 +67,6 @@
   /* Header row */
   .arenus-blog__header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
   }
 

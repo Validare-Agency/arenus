@@ -6,110 +6,70 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
-    "main": {
-      "type": "main-blog",
+    "arenus_blog_listing": {
+      "type": "arenus-blog-listing",
       "blocks": {
-        "title": {
-          "type": "text",
-          "name": "Title",
+        "filter_all": {
+          "type": "filter",
           "settings": {
-            "text": "<h1>{{ closest.blog.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 48,
-            "padding-block-end": 48,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "label": "View All",
+            "tag": ""
+          }
         },
-        "static-blog-post-card": {
-          "type": "_blog-post-card",
-          "static": true,
+        "filter_gut": {
+          "type": "filter",
           "settings": {
-            "alignment": "left"
-          },
-          "blocks": {
-            "heading": {
-              "type": "_heading",
-              "name": "t:names.title",
-              "static": true,
-              "settings": {
-                "type_preset": "h4",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "text": "",
-                "read_only": true,
-                "alignment": "left",
-                "show_alignment": false,
-                "padding-block-start": 0,
-                "padding-block-end": 10,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "blog-post-details": {
-              "type": "_blog-post-info-text",
-              "name": "t:names.details",
-              "static": true,
-              "settings": {
-                "show_date": true,
-                "show_author": false,
-                "type_preset": "",
-                "alignment": "left",
-                "show_alignment": false,
-                "padding-block-start": 0,
-                "padding-block-end": 0
-              },
-              "blocks": {}
-            },
-            "image": {
-              "type": "_blog-post-image",
-              "static": true,
-              "settings": {
-                "height": "large",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 4
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": []
+            "label": "Gut Health",
+            "tag": "gut-health"
+          }
+        },
+        "filter_breathing": {
+          "type": "filter",
+          "settings": {
+            "label": "Breathing",
+            "tag": "breathing"
+          }
+        },
+        "filter_joint": {
+          "type": "filter",
+          "settings": {
+            "label": "Joint & Mobility",
+            "tag": "joint-mobility"
+          }
+        },
+        "filter_performance": {
+          "type": "filter",
+          "settings": {
+            "label": "Performance",
+            "tag": "performance"
+          }
+        },
+        "filter_brands": {
+          "type": "filter",
+          "settings": {
+            "label": "Brands We Trust",
+            "tag": "brands-we-trust"
+          }
         }
       },
       "block_order": [
-        "title"
+        "filter_all",
+        "filter_gut",
+        "filter_breathing",
+        "filter_joint",
+        "filter_performance",
+        "filter_brands"
       ],
       "settings": {
-        "color_scheme": "",
-        "padding-block-start": 0,
-        "padding-block-end": 48
+        "heading": "In-depth information on feeding, management, and testing",
+        "posts_per_load": 30
       }
     }
   },
   "order": [
-    "main"
+    "arenus_blog_listing"
   ]
 }

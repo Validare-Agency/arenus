@@ -1,0 +1,48 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_colic_form_banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Thank you for your interest in the Colic Assurance Program",
+        "description": "<p>Please complete this short application and you'll get an instant answer on your horse's eligibility for coverage.</p>",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 830,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "arenus_colic_form_embed": {
+      "type": "arenus-jotform-embed",
+      "settings": {
+        "form_id": "63054265318151",
+        "max_width": 900,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "background_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "arenus_colic_form_banner",
+    "arenus_colic_form_embed"
+  ]
+}

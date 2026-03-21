@@ -97,7 +97,7 @@
             ref="closeModalButton"
           >
             <span class="svg-wrapper">
-              {{ 'icon-close.svg' | inline_asset_content }}
+              {{ 'icon-close-black.svg' | inline_asset_content }}
             </span>
           </button>
         </div>
@@ -118,7 +118,7 @@
 
           <div class="predictive-search-form__footer">
             <button
-              class="button button-primary predictive-search__search-button"
+              class="button button-secondary predictive-search__search-button"
               ref="viewAllButton"
             >
               {{ 'content.search_results_view_all' | t }}
@@ -133,7 +133,7 @@
 {% stylesheet %}
   /* Search modal style */
   .search-modal {
-    --search-border-radius: var(--style-border-radius-popover);
+    --search-border-radius: 12px;
     --search-border-width: var(--style-border-width);
   }
 
@@ -479,6 +479,8 @@
   }
 
   .predictive-search__search-button {
+    background-color: #FFFFFF;
+    padding: 10px 24px;
     margin: auto;
     z-index: var(--layer-raised);
     transition: transform var(--animation-speed-medium) var(--animation-timing-bounce),
@@ -486,8 +488,7 @@
     transform-origin: center;
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgb(0 0 0 / var(--opacity-5));
+      color: rgba(0, 0, 0, 0.6);
     }
 
     &:active {

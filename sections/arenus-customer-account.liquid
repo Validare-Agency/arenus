@@ -1,0 +1,372 @@
+{%- comment -%}
+  Arenus Customer Account Dashboard.
+  Desktop: sidebar navigation + content (account details + order history table).
+  Mobile: dropdown nav + stacked cards.
+{%- endcomment -%}
+
+<div class="arenus-account">
+  <div class="arenus-account__layout">
+
+    {%- render 'arenus-account-sidebar', active_page: 'dashboard' -%}
+
+    <div class="arenus-account__content">
+
+      {%- comment -%} Greeting {%- endcomment -%}
+      <h1 class="arenus-account__greeting">
+        {%- if customer.first_name != blank -%}
+          {{ 'content.account_greeting' | t: first_name: customer.first_name }}
+        {%- else -%}
+          {{ 'content.account_title' | t }}
+        {%- endif -%}
+      </h1>
+
+      {%- comment -%} Content card {%- endcomment -%}
+      <div class="arenus-account__card">
+        <div class="arenus-account__card-grid">
+
+          {%- comment -%} ── Account details column ── {%- endcomment -%}
+          <div class="arenus-account__details">
+            <h2 class="arenus-account__section-heading">
+              {{ 'content.account_details' | t }}
+            </h2>
+            <div class="arenus-account__details-info">
+              {%- if customer.name != blank -%}
+                <p>{{ customer.name }}</p>
+              {%- endif -%}
+              {%- if customer.email != blank -%}
+                <p>{{ customer.email }}</p>
+              {%- endif -%}
+              {%- assign default_address = customer.default_address -%}
+              {%- if default_address -%}
+                <p>
+                  {%- if default_address.address1 != blank -%}{{ default_address.address1 }}<br>{%- endif -%}
+                  {%- if default_address.city != blank -%}{{ default_address.city }}{% endif -%}
+                  {%- if default_address.province_code != blank %} {{ default_address.province_code }}{% endif -%}
+                  {%- if default_address.zip != blank %} {{ default_address.zip }}{% endif -%}
+                  {%- if default_address.country != blank -%}<br>{{ default_address.country }}{%- endif -%}
+                </p>
+              {%- endif -%}
+            </div>
+            <a href="{{ routes.account_addresses_url }}" class="arenus-account__view-addresses">
+              {{ 'content.account_view_addresses' | t }}
+            </a>
+          </div>
+
+          {%- comment -%} ── Order history column ── {%- endcomment -%}
+          <div class="arenus-account__orders">
+            <h2 class="arenus-account__section-heading">
+              {{ 'content.account_order_history' | t }}
+            </h2>
+
+            {%- if customer.orders.size > 0 -%}
+
+              {%- comment -%} Desktop: table layout {%- endcomment -%}
+              <table class="arenus-account__orders-table">
+                <thead>
+                  <tr>
+                    <th>{{ 'content.account_order_number' | t }}</th>
+                    <th>{{ 'content.account_order_date' | t }}</th>
+                    <th>{{ 'content.account_order_payment' | t }}</th>
+                    <th>{{ 'content.account_order_fulfillment' | t }}</th>
+                    <th>{{ 'content.account_order_total' | t }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for order in customer.orders -%}
+                    <tr>
+                      <td>
+                        <a href="{{ order.customer_url }}" class="arenus-account__order-link">
+                          {{ order.name }}
+                        </a>
+                      </td>
+                      <td>{{ order.created_at | date: '%B %e, %Y' }}</td>
+                      <td>{{ order.financial_status_label }}</td>
+                      <td>{{ order.fulfillment_status_label }}</td>
+                      <td class="arenus-account__order-total">{{ order.total_price | money }}</td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+
+              {%- comment -%} Mobile: card layout {%- endcomment -%}
+              <div class="arenus-account__orders-cards">
+                {%- for order in customer.orders -%}
+                  <a href="{{ order.customer_url }}" class="arenus-account__order-card">
+                    <div class="arenus-account__order-row">
+                      <span class="arenus-account__order-label">{{ 'content.account_order_number' | t }}</span>
+                      <span class="arenus-account__order-value">{{ order.name }}</span>
+                    </div>
+                    <div class="arenus-account__order-row">
+                      <span class="arenus-account__order-label">{{ 'content.account_order_date' | t }}</span>
+                      <span class="arenus-account__order-value">{{ order.created_at | date: '%B %e, %Y' }}</span>
+                    </div>
+                    <div class="arenus-account__order-row">
+                      <span class="arenus-account__order-label">{{ 'content.account_order_payment' | t }}</span>
+                      <span class="arenus-account__order-value">{{ order.financial_status_label }}</span>
+                    </div>
+                    <div class="arenus-account__order-row">
+                      <span class="arenus-account__order-label">{{ 'content.account_order_fulfillment' | t }}</span>
+                      <span class="arenus-account__order-value">{{ order.fulfillment_status_label }}</span>
+                    </div>
+                    <div class="arenus-account__order-row">
+                      <span class="arenus-account__order-label">{{ 'content.account_order_total' | t }}</span>
+                      <span class="arenus-account__order-value arenus-account__order-total">{{ order.total_price | money }}</span>
+                    </div>
+                  </a>
+                {%- endfor -%}
+              </div>
+
+            {%- else -%}
+              <p class="arenus-account__no-orders">
+                {{ 'content.account_no_orders' | t }}
+              </p>
+            {%- endif -%}
+          </div>
+
+        </div>{%- comment -%} /.arenus-account__card-grid {%- endcomment -%}
+      </div>{%- comment -%} /.arenus-account__card {%- endcomment -%}
+
+      {%- comment -%} Mobile-only log out link {%- endcomment -%}
+      <a href="{{ routes.account_logout_url }}" class="arenus-account__mobile-logout">
+        {{ 'actions.log_out' | t }}
+      </a>
+
+    </div>{%- comment -%} /.arenus-account__content {%- endcomment -%}
+  </div>{%- comment -%} /.arenus-account__layout {%- endcomment -%}
+</div>
+
+{% stylesheet %}
+  /* ===== Arenus Account Dashboard — Mobile-first ===== */
+
+  .arenus-account {
+    padding: 20px 20px 60px;
+  }
+
+  .arenus-account__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* ── Greeting ── */
+  .arenus-account__greeting {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: var(--font-heading--weight);
+    font-size: 24px;
+    line-height: 1.2;
+    color: #E6B236;
+    margin: 0 0 20px;
+  }
+
+  /* ── Content card ── */
+  .arenus-account__card {
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    padding: 21px;
+  }
+
+  .arenus-account__card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  /* ── Section headings ── */
+  .arenus-account__section-heading {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.3;
+    margin: 0 0 16px;
+  }
+
+  /* ── Account details ── */
+  .arenus-account__details-info {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .arenus-account__details-info p {
+    margin: 0 0 4px;
+  }
+
+  .arenus-account__view-addresses {
+    display: inline-block;
+    font-family: var(--font-body--family);
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+    text-transform: uppercase;
+    text-decoration: underline;
+    margin-top: 16px;
+  }
+
+  .arenus-account__view-addresses:hover {
+    opacity: 0.7;
+  }
+
+  /* ── Orders table (desktop only) ── */
+  .arenus-account__orders-table {
+    display: none;
+  }
+
+  /* ── Orders cards (mobile) ── */
+  .arenus-account__orders-cards {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .arenus-account__order-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 12px 8px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .arenus-account__order-card:first-child {
+    border-top: 1px solid #eee;
+  }
+
+  .arenus-account__order-card:hover {
+    background-color: #fafafa;
+  }
+
+  .arenus-account__order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+  }
+
+  .arenus-account__order-label {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #808085;
+    letter-spacing: 0.3px;
+  }
+
+  .arenus-account__order-value {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #000;
+    text-align: right;
+  }
+
+  .arenus-account__order-total {
+    color: #E6B236;
+    font-weight: 700;
+  }
+
+  .arenus-account__order-link {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .arenus-account__no-orders {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    color: #808085;
+  }
+
+  /* ── Mobile logout ── */
+  .arenus-account__mobile-logout {
+    display: block;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    color: #000;
+    text-decoration: none;
+    padding: 8px 12px;
+    margin-top: 24px;
+  }
+
+  .arenus-account__mobile-logout:hover {
+    opacity: 0.7;
+  }
+
+  /* ===== Desktop ===== */
+  @media screen and (min-width: 750px) {
+    .arenus-account {
+      padding: 40px 40px 80px;
+    }
+
+    .arenus-account__layout {
+      grid-template-columns: 128px 1fr;
+      gap: 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .arenus-account__greeting {
+      font-size: 32px;
+      margin-bottom: 24px;
+    }
+
+    .arenus-account__card-grid {
+      grid-template-columns: 226px 1fr;
+      gap: 64px;
+    }
+
+    /* Desktop: show table, hide cards */
+    .arenus-account__orders-table {
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-body--family);
+      font-size: 14px;
+    }
+
+    .arenus-account__orders-table thead th {
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #000;
+      text-align: left;
+      padding: 12px 24px 12px 0;
+      border-bottom: 1px solid #DDDDDD;
+      white-space: nowrap;
+    }
+
+    .arenus-account__orders-table thead th:first-child {
+      padding-left: 24px;
+    }
+
+    .arenus-account__orders-table tbody td {
+      padding: 16px 24px 16px 0;
+      border-bottom: 1px solid #eee;
+      color: #333;
+      vertical-align: middle;
+    }
+
+    .arenus-account__orders-table tbody td:first-child {
+      padding-left: 24px;
+    }
+
+    .arenus-account__orders-table tbody tr:hover {
+      background-color: #fafafa;
+    }
+
+    .arenus-account__orders-cards {
+      display: none;
+    }
+
+    /* Hide mobile logout on desktop (sidebar has it) */
+    .arenus-account__mobile-logout {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Customer Account",
+  "tag": "section",
+  "class": "arenus-account-wrapper section-wrapper"
+}
+{% endschema %}

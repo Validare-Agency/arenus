@@ -1,0 +1,67 @@
+{%- if settings.free_shipping_threshold > 0 and cart.empty? == false -%}
+  {%- assign threshold_cents = settings.free_shipping_threshold | times: 100 -%}
+  {%- assign remaining_cents = threshold_cents | minus: cart.total_price -%}
+
+  <div class="cart-drawer-shipping">
+    <div class="cart-drawer-shipping__text-row">
+      {%- if remaining_cents <= 0 -%}
+        <p class="cart-drawer-shipping__text">Congratulations, you get <strong>FREE SHIPPING!</strong></p>
+      {%- else -%}
+        {%- assign remaining_money = remaining_cents | money_without_trailing_zeros -%}
+        <p class="cart-drawer-shipping__text">You are <strong>{{ remaining_money }}</strong> away from <strong>FREE SHIPPING</strong></p>
+      {%- endif -%}
+    </div>
+    <div class="cart-drawer-shipping__track">
+      {%- if remaining_cents <= 0 -%}
+        <div class="cart-drawer-shipping__fill" style="width: 100%;"></div>
+      {%- else -%}
+        {%- assign fill_pct = cart.total_price | times: 100 | divided_by: threshold_cents -%}
+        {%- if fill_pct > 100 -%}{%- assign fill_pct = 100 -%}{%- endif -%}
+        <div class="cart-drawer-shipping__fill" style="width: {{ fill_pct }}%;"></div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .cart-drawer-shipping {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 4px 16px 12px;
+  }
+
+  .cart-drawer-shipping__text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #808085;
+    letter-spacing: -0.14px;
+    margin: 0;
+  }
+
+  .cart-drawer-shipping__text strong {
+    font-weight: inherit;
+  }
+
+  .cart-drawer-shipping__track {
+    height: 6px;
+    background-color: rgba(120, 120, 120, 0.2);
+    border-radius: 3px;
+    margin: 12px 0 16px;
+    overflow: hidden;
+  }
+
+  .cart-drawer-shipping__fill {
+    height: 100%;
+    background-color: #e6b236;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    min-width: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .cart-drawer-shipping {
+      padding: 4px 20px 12px;
+    }
+  }
+{% endstylesheet %}

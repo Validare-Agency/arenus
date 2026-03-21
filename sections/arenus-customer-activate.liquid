@@ -1,0 +1,62 @@
+{%- comment -%}
+  Arenus Customer Activate Account.
+  Form to set a password and activate an account (from invitation email).
+{%- endcomment -%}
+
+<div class="arenus-auth" style="--auth-accent: #E6B236;">
+  <div class="arenus-auth__form-col arenus-auth__form-col--centered">
+
+    <h1 class="arenus-auth__centered-title">
+      {{ 'content.customer_activate_title' | t }}
+    </h1>
+
+    {%- form 'activate_customer_password' -%}
+      {%- if form.errors -%}
+        <div class="arenus-auth__errors" role="alert">
+          <p>{{ form.errors | default_errors }}</p>
+        </div>
+      {%- endif -%}
+
+      <div class="arenus-auth__field">
+        <label class="arenus-auth__label" for="ActivatePassword">
+          {{ 'content.customer_password_label' | t }}
+        </label>
+        <input
+          type="password"
+          id="ActivatePassword"
+          name="customer[password]"
+          class="arenus-auth__input"
+          autocomplete="new-password"
+          required
+        />
+      </div>
+
+      <div class="arenus-auth__field">
+        <label class="arenus-auth__label" for="ActivatePasswordConfirm">
+          {{ 'content.customer_password_confirm_label' | t }}
+        </label>
+        <input
+          type="password"
+          id="ActivatePasswordConfirm"
+          name="customer[password_confirmation]"
+          class="arenus-auth__input"
+          autocomplete="new-password"
+          required
+        />
+      </div>
+
+      <button type="submit" class="arenus-auth__btn">
+        {{ 'actions.activate_account' | t }}
+      </button>
+    {%- endform -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer Activate",
+  "tag": "section",
+  "class": "arenus-auth-wrapper section-wrapper"
+}
+{% endschema %}

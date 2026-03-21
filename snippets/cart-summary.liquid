@@ -233,7 +233,7 @@
       class="cart__summary-item cart__total"
       role="status"
     >
-      <span class="cart__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
+      <span class="cart__total-label cart-primary-typography">Subtotal</span>
       <text-component
         ref="cartTotal"
         value="{{ total_price | strip_html }}"
@@ -261,14 +261,14 @@
   <button
     type="submit"
     id="checkout"
-    class="cart__checkout-button button"
+    class="cart__checkout-button button cart__checkout-button--arenus"
     name="checkout"
     {% if cart == empty %}
       disabled
     {% endif %}
     form="cart-form"
   >
-    {{ 'content.checkout' | t }}
+    PROCEED TO CHECKOUT
   </button>
 
   {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
@@ -284,6 +284,67 @@
 </div>
 
 {% stylesheet %}
+  /* ---- Arenus checkout button ---- */
+  .cart__checkout-button--arenus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: #e6b236;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .cart__checkout-button--arenus:hover {
+    opacity: 0.9;
+  }
+
+  .cart__checkout-button--arenus svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ---- Arenus subtotal styling ---- */
+  .cart__total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .cart-drawer__summary .cart__total-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: -0.36px;
+  }
+
+  .cart-drawer__summary .cart__total-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: -0.36px;
+  }
+
+  .cart-drawer__summary .tax-note {
+    font-size: 14px;
+    color: #808085;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+  }
+
+  .cart-drawer__summary .cart__summary-totals {
+    gap: 4px;
+  }
+
   .cart-actions {
     display: flex;
     flex-direction: column;
@@ -299,7 +360,7 @@
 
   .cart__summary-totals:not(:has(.cart-actions)) {
     margin-block-start: var(--margin-3xs);
-    border-block-start: 1px solid var(--color-border);
+    /* border-block-start: 1px solid var(--color-border); */
     padding-block-start: var(--margin-xl);
   }
 

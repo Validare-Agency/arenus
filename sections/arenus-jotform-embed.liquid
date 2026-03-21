@@ -1,0 +1,160 @@
+{%- comment -%}
+  Arenus JotForm Embed — renders a JotForm form via iframe.
+  Listens for JotForm's postMessage events to auto-resize the iframe height.
+{%- endcomment -%}
+
+{%- if section.settings.form_id != blank -%}
+  <div
+    id="ArenusJotform-{{ section.id }}"
+    class="arenus-jfe"
+    style="
+      --jfe-bg: {{ section.settings.background_color }};
+      --jfe-padding-top: {{ section.settings.padding_top }}px;
+      --jfe-padding-bottom: {{ section.settings.padding_bottom }}px;
+      --jfe-max-width: {{ section.settings.max_width }}px;
+    "
+  >
+    <div class="arenus-jfe__container">
+      <iframe
+        id="JotFormIFrame-{{ section.settings.form_id }}"
+        title="JotForm"
+        src="https://form.jotform.com/{{ section.settings.form_id }}"
+        class="arenus-jfe__iframe"
+        allow="geolocation; microphone; camera; fullscreen; payment"
+        allowfullscreen
+        scrolling="no"
+      ></iframe>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var iframeId = 'JotFormIFrame-{{ section.settings.form_id }}';
+      var iframe = document.getElementById(iframeId);
+      if (!iframe) return;
+
+      /* Listen for JotForm height messages */
+      window.addEventListener('message', function(e) {
+        if (!e.data || typeof e.data !== 'string') return;
+        try {
+          var args = e.data.split(':');
+          if (args.length > 2 && args[0] === 'setHeight') {
+            var height = parseInt(args[1], 10);
+            if (height > 0) iframe.style.height = height + 'px';
+          }
+        } catch (err) { /* ignore parse errors */ }
+      });
+
+      /* Also handle JSON-format messages from newer JotForm versions */
+      window.addEventListener('message', function(e) {
+        if (!e.data || typeof e.data !== 'object') return;
+        if (e.data.action === 'setHeight' && e.data.height) {
+          iframe.style.height = e.data.height + 'px';
+        }
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  /* ===== Arenus JotForm Embed ===== */
+
+  .arenus-jfe {
+    background-color: var(--jfe-bg, #ffffff);
+  }
+
+  .arenus-jfe__container {
+    max-width: var(--jfe-max-width, 900px);
+    margin: 0 auto;
+  }
+
+  .arenus-jfe__iframe {
+    width: 100%;
+    min-height: 500px;
+    height: 800px;
+    border: none;
+    display: block;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-jfe {
+      padding-top: var(--jfe-padding-top, 40px);
+      padding-bottom: var(--jfe-padding-bottom, 40px);
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "JotForm Embed",
+  "tag": "section",
+  "class": "arenus-jfe-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "form_id",
+      "label": "JotForm Form ID",
+      "info": "The numeric ID from your JotForm URL (e.g. 63054265318151)"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Form max width",
+      "min": 400,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "JotForm Embed",
+      "category": "Forms",
+      "settings": {
+        "max_width": 900,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "background_color": "#ffffff"
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1412 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign short_desc = product.metafields.custom.short_description
+  assign ingredients_meta = product.metafields.custom.ingredients
+  assign how_to_use_meta = product.metafields.custom.how_to_use
+  assign first_collection = product.collections | first
+-%}
+
+{%- comment -%} ── Breadcrumbs ── {%- endcomment -%}
+{%- if section.settings.show_breadcrumbs -%}
+  <nav class="arenus-product-breadcrumbs" aria-label="Breadcrumb">
+    <div class="arenus-product-breadcrumbs__inner">
+      {%- comment -%} Mobile: back link {%- endcomment -%}
+      <a
+        class="arenus-product-breadcrumbs__back"
+        href="{{ first_collection.url | default: collections.all.url }}"
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {{ first_collection.title | default: 'Shop All' }}
+      </a>
+
+      {%- comment -%} Desktop: full trail {%- endcomment -%}
+      <ol class="arenus-product-breadcrumbs__trail">
+        <li><a href="/">Home</a></li>
+        <li>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <a href="{{ first_collection.url | default: collections.all.url }}">{{ first_collection.title | default: 'Shop All' }}</a>
+        </li>
+        <li>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span aria-current="page">{{ product.title }}</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+{%- endif -%}
+
+{%- comment -%} ══════════ MAIN SECTION ══════════ {%- endcomment -%}
+<section
+  class="arenus-product"
+  data-section-id="{{ section.id }}"
+  data-product-url="{{ product.url }}"
+>
+  <div class="arenus-product__inner c-page-width">
+    <div class="arenus-product__grid">
+
+      {%- comment -%} ── LEFT: Media column ── {%- endcomment -%}
+      <div class="arenus-product__media-col">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'media' -%}
+            <div
+              class="arenus-product__media"
+              style="--arenus-product-image-bg: {{ settings.product_card_image_bg }};"
+              {{ block.shopify_attributes }}
+            >
+              {%- comment -%} Desktop thumbnails {%- endcomment -%}
+              <div class="arenus-product__thumbnails" data-thumbnails>
+                {%- for media in product.media -%}
+                  <button
+                    type="button"
+                    class="arenus-product__thumb{% if forloop.first %} arenus-product__thumb--active{% endif %}"
+                    data-thumb-index="{{ forloop.index0 }}"
+                    aria-label="View image {{ forloop.index }}"
+                  >
+                    <img
+                      src="{{ media | image_url: width: 168 }}"
+                      alt="{{ media.alt | escape }}"
+                      width="76"
+                      height="76"
+                      loading="{% if forloop.index <= 5 %}eager{% else %}lazy{% endif %}"
+                    >
+                  </button>
+                {%- endfor -%}
+              </div>
+
+              {%- comment -%} Main carousel {%- endcomment -%}
+              <div class="arenus-product__carousel-wrap">
+                <div class="arenus-product__carousel" data-carousel>
+                  {%- for media in product.media -%}
+                    <div class="arenus-product__slide" data-slide-index="{{ forloop.index0 }}">
+                      <div class="arenus-product__slide-bg-color">
+                        {% assign image_width = media.width | times: 2 %}
+                        <img
+                          src="{{ media | image_url: width: image_width }}"
+                          alt="{{ media.alt | escape }}"
+                          width="{{ image_width }}"
+                          height="{{ image_width }}"
+                          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                        >
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                </div>
+
+                {%- comment -%} Mobile dots {%- endcomment -%}
+                {%- if product.media.size > 1 -%}
+                  <div class="arenus-product__dots" data-dots>
+                    {%- for media in product.media -%}
+                      <button
+                        type="button"
+                        class="arenus-product__dot{% if forloop.first %} arenus-product__dot--active{% endif %}"
+                        data-dot-index="{{ forloop.index0 }}"
+                        aria-label="Go to image {{ forloop.index }}"
+                      ></button>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} ── RIGHT: Info column ── {%- endcomment -%}
+      <div class="arenus-product__info-col">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- comment -%} ── TITLE ── {%- endcomment -%}
+            {%- when 'title' -%}
+              <div class="arenus-product__title-block" {{ block.shopify_attributes }}>
+                {%- comment -%} Star rating — placeholder {%- endcomment -%}
+                <div class="arenus-product__rating">
+                  <div class="arenus-product__stars" aria-label="5 out of 5 stars">
+                    {%- for i in (1..5) -%}
+                      {% render 'icon-star', width: 16, height: 16 %}
+                    {%- endfor -%}
+                  </div>
+                  <span class="arenus-product__review-count">0 reviews</span>
+                </div>
+
+                <div class="arenus-product__title-row">
+                  <h1 class="arenus-product__title">{{ product.title }}</h1>
+                  <button type="button" class="arenus-product__wishlist" aria-label="Add to wishlist">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+              </div>
+
+            {%- comment -%} ── PRICE ── {%- endcomment -%}
+            {%- when 'price' -%}
+              <div class="arenus-product__price-block" {{ block.shopify_attributes }} data-price-wrapper>
+                <span class="arenus-product__price" data-product-price>{{ current_variant.price | money }}</span>
+                {%- if current_variant.compare_at_price > current_variant.price -%}
+                  <span class="arenus-product__price-compare" data-compare-price>{{ current_variant.compare_at_price | money }}</span>
+                {%- endif -%}
+              </div>
+
+            {%- comment -%} ── SHORT DESCRIPTION ── {%- endcomment -%}
+            {%- when 'short_description' -%}
+              {%- if short_desc != blank -%}
+                <div class="arenus-product__short-desc" {{ block.shopify_attributes }}>
+                  {{ short_desc | metafield_tag }}
+                </div>
+              {%- endif -%}
+
+            {%- comment -%} ── SCROLL LINKS ── {%- endcomment -%}
+            {%- when 'scroll_links' -%}
+              {% if block.settings.link_1_label != blank or block.settings.link_2_label != blank or block.settings.link_3_label != blank %}
+                <div class="arenus-product__scroll-links" {{ block.shopify_attributes }}>
+                  {%- if block.settings.link_1_label != blank -%}
+                    <a href="#{{ block.settings.link_1_target }}" class="arenus-product__scroll-link" data-scroll-link>{{ block.settings.link_1_label }}</a>
+                  {%- endif -%}
+                  {%- if block.settings.link_2_label != blank -%}
+                    <a href="#{{ block.settings.link_2_target }}" class="arenus-product__scroll-link" data-scroll-link>{{ block.settings.link_2_label }}</a>
+                  {%- endif -%}
+                  {%- if block.settings.link_3_label != blank -%}
+                    <a href="#{{ block.settings.link_3_target }}" class="arenus-product__scroll-link" data-scroll-link>{{ block.settings.link_3_label }}</a>
+                  {%- endif -%}
+                </div>
+              {% endif %}
+
+            {%- comment -%} ── VARIANT SELECTOR ── {%- endcomment -%}
+            {%- when 'variant_selector' -%}
+              {%- unless product.has_only_default_variant -%}
+                <div class="arenus-product__variants" {{ block.shopify_attributes }} data-variant-selector>
+                  {%- for option in product.options_with_values -%}
+                    <div class="arenus-product__option" data-option-position="{{ option.position }}">
+                      <p class="arenus-product__option-label">{{ option.name }}:</p>
+                      <div class="arenus-product__option-values">
+                        {%- for value in option.values -%}
+                          <button
+                            type="button"
+                            class="arenus-product__option-btn{% if option.selected_value == value %} arenus-product__option-btn--active{% endif %}"
+                            data-option-position="{{ option.position }}"
+                            data-option-value="{{ value | escape }}"
+                          >
+                            {{ value }}
+                          </button>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- endunless -%}
+
+            {%- comment -%} ── ADD TO CART ── {%- endcomment -%}
+            {%- when 'add_to_cart' -%}
+              <div class="arenus-product__buy" {{ block.shopify_attributes }}>
+                {%- if block.settings.show_quantity -%}
+                  <div class="arenus-product__qty" data-quantity-stepper>
+                    <button type="button" class="arenus-product__qty-btn" data-qty-minus aria-label="Decrease quantity">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </button>
+                    <input
+                      type="number"
+                      class="arenus-product__qty-input"
+                      value="1"
+                      min="1"
+                      name="quantity"
+                      aria-label="Quantity"
+                      data-qty-input
+                    >
+                    <button type="button" class="arenus-product__qty-btn" data-qty-plus aria-label="Increase quantity">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+                {%- endif -%}
+
+                <button
+                  type="button"
+                  class="arenus-product__atc-btn"
+                  data-add-to-cart
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 6.75H3.75C3.33579 6.75 3 7.08579 3 7.5V19.5C3 19.9142 3.33579 20.25 3.75 20.25H20.25C20.6642 20.25 21 19.9142 21 19.5V7.5C21 7.08579 20.6642 6.75 20.25 6.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.25 6.75C8.25 5.75544 8.64509 4.80161 9.34835 4.09835C10.0516 3.39509 11.0054 3 12 3C12.9946 3 13.9484 3.39509 14.6517 4.09835C15.3549 4.80161 15.75 5.75544 15.75 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span data-atc-text>
+                    {%- if current_variant.available -%}
+                      ADD TO CART
+                    {%- else -%}
+                      SOLD OUT
+                    {%- endif -%}
+                  </span>
+                </button>
+              </div>
+
+            {%- comment -%} ── DESCRIPTION TAB ── {%- endcomment -%}
+            {%- when 'description' -%}
+              {%- unless accordion_group_open -%}
+                {%- assign accordion_group_open = true -%}
+                <div class="arenus-product__accordions">
+              {%- endunless -%}
+              {% if product.description != blank %}
+                <details
+                  class="arenus-product__accordion"
+                  id="arenus-product-description-{{ section.id }}"
+                  {{ block.shopify_attributes }}
+                  {% if block.settings.open_by_default %}open{% endif %}
+                >
+                  <summary class="arenus-product__accordion-header">
+                    <span>Description</span>
+                    <span class="arenus-product__accordion-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </summary>
+                  <div class="arenus-product__accordion-body">
+                    {{ product.description }}
+                  </div>
+                </details>
+              {% endif %}
+
+            {%- comment -%} ── INGREDIENTS TAB ── {%- endcomment -%}
+            {%- when 'ingredients' -%}
+              {%- if ingredients_meta != blank -%}
+                {%- unless accordion_group_open -%}
+                  {%- assign accordion_group_open = true -%}
+                  <div class="arenus-product__accordions">
+                {%- endunless -%}
+                <details class="arenus-product__accordion" {{ block.shopify_attributes }}>
+                  <summary class="arenus-product__accordion-header">
+                    <span>Ingredients</span>
+                    <span class="arenus-product__accordion-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </summary>
+                  <div class="arenus-product__accordion-body">
+                    {{ ingredients_meta | metafield_tag }}
+                  </div>
+                </details>
+              {%- endif -%}
+
+            {%- comment -%} ── HOW TO USE TAB ── {%- endcomment -%}
+            {%- when 'how_to_use' -%}
+              {%- if how_to_use_meta != blank -%}
+                {%- unless accordion_group_open -%}
+                  {%- assign accordion_group_open = true -%}
+                  <div class="arenus-product__accordions">
+                {%- endunless -%}
+                <details class="arenus-product__accordion" {{ block.shopify_attributes }}>
+                  <summary class="arenus-product__accordion-header">
+                    <span>How To Use</span>
+                    <span class="arenus-product__accordion-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </summary>
+                  <div class="arenus-product__accordion-body">
+                    {{ how_to_use_meta | metafield_tag }}
+                  </div>
+                </details>
+              {%- endif -%}
+
+            {%- comment -%} ── COLLAPSIBLE TAB (Shipping & Returns) ── {%- endcomment -%}
+            {%- when 'collapsible_tab' -%}
+              {%- unless accordion_group_open -%}
+                {%- assign accordion_group_open = true -%}
+                <div class="arenus-product__accordions">
+              {%- endunless -%}
+              <details class="arenus-product__accordion" {{ block.shopify_attributes }}>
+                <summary class="arenus-product__accordion-header">
+                  <span>{{ block.settings.heading | default: 'Shipping & Returns' }}</span>
+                  <span class="arenus-product__accordion-icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </summary>
+                <div class="arenus-product__accordion-body">
+                  {{ block.settings.content }}
+                </div>
+              </details>
+
+            {%- comment -%} ── APP BLOCK ── {%- endcomment -%}
+            {%- when '@app' -%}
+              {%- if accordion_group_open -%}
+                {%- assign accordion_group_open = false -%}
+                </div>
+              {%- endif -%}
+              <div class="arenus-product__app-block" {{ block.shopify_attributes }}>
+                {% render block %}
+              </div>
+
+          {%- endcase -%}
+        {%- endfor -%}
+        {%- if accordion_group_open -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>{%- comment -%} /.arenus-product__grid {%- endcomment -%}
+  </div>{%- comment -%} /.arenus-product__inner {%- endcomment -%}
+
+  {%- comment -%} Variant data for JS {%- endcomment -%}
+  <script type="application/json" data-product-variants>
+    {{ product.variants | json }}
+  </script>
+  <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+</section>
+
+{%- comment -%} ══════════ STYLES ══════════ {%- endcomment -%}
+<style>
+  /* ── Breadcrumbs ── */
+
+  .arenus-product-breadcrumbs__inner {
+    padding: 16px 20px 8px;
+  }
+
+  .arenus-product-breadcrumbs__back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.2;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .arenus-product-breadcrumbs__trail {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.2;
+    color: #000;
+  }
+
+  .arenus-product-breadcrumbs__trail li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-product-breadcrumbs__trail a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .arenus-product-breadcrumbs__trail a:hover {
+    text-decoration: underline;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product-breadcrumbs__inner {
+      padding: 16px 40px 8px;
+    }
+
+    .arenus-product-breadcrumbs__back {
+      display: none;
+    }
+
+    .arenus-product-breadcrumbs__trail {
+      display: flex;
+    }
+  }
+
+  /* ── Section layout ── */
+  .arenus-product {
+    padding: 0 0 40px;
+  }
+
+  .arenus-product__inner {
+    padding: 0 0;
+  }
+
+  .arenus-product__grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product {
+      padding: 8px 0 40px;
+    }
+
+    .arenus-product__inner {
+      padding: 0 40px;
+      max-width: 1440px;
+    }
+
+    .arenus-product__grid {
+      flex-direction: row;
+      gap: 40px;
+    }
+
+    .arenus-product__media-col {
+      flex: 1 1 0%;
+      min-width: 0;
+    }
+
+    .arenus-product__info-col {
+      flex: 0 0 467px;
+      max-width: 467px;
+    }
+  }
+
+  /* ── Info column ── */
+  .arenus-product__info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px 20px 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product__info-col {
+      padding: 16px 0 0;
+    }
+  }
+
+  /* ── Media / Carousel ── */
+  .arenus-product__media {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .arenus-product__thumbnails {
+    display: none;
+  }
+
+  .arenus-product__carousel-wrap {
+    position: relative;
+  }
+
+  .arenus-product__carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .arenus-product__carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arenus-product__slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 16px;
+  }
+
+  .arenus-product__slide {
+  }
+
+  .arenus-product__slide-bg-color {
+    background: var(--arenus-product-image-bg, #FFFCEA);
+    border-radius: 8px;
+  }
+
+  .arenus-product__slide img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  /* Dots */
+  .arenus-product__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 0 0;
+  }
+
+  .arenus-product__dot {
+    all: unset;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ddd;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .arenus-product__dot--active {
+    background: #191919;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product__media {
+      flex-direction: row;
+      gap: 12px;
+      position: sticky;
+      top: 120px;
+      align-self: flex-start;
+    }
+
+    .arenus-product__thumbnails {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-shrink: 0;
+      padding-top: 16px;
+    }
+
+    .arenus-product__thumb {
+      all: unset;
+      cursor: pointer;
+      width: 84px;
+      height: 84px;
+      border-radius: 6px;
+      overflow: hidden;
+      outline: 1px solid #DDDDDD;
+      background: var(--arenus-product-image-bg, #FFFCEA);
+      transition: outline-color 0.2s;
+    }
+
+    .arenus-product__thumb--active {
+      outline: 2px solid #DDDDDD;
+      outline-color: #E6B236;
+    }
+
+    .arenus-product__thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .arenus-product__carousel-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .arenus-product__dots {
+      display: none;
+    }
+  }
+
+  /* ── Title block ── */
+  .arenus-product__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-product__stars {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .arenus-product__stars svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .arenus-product__review-count {
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 14px;
+    line-height: 1;
+    color: #808085;
+  }
+
+  .arenus-product__title-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .arenus-product__title {
+    flex: 1;
+    font-family: var(--font-heading--family);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    margin: 0;
+    color: #000;
+  }
+
+  .arenus-product__wishlist {
+    all: unset;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: #000;
+  }
+
+  .arenus-product__title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product__title {
+      font-size: 40px;
+      letter-spacing: -0.8px;
+    }
+  }
+
+  /* ── Price ── */
+  .arenus-product__price-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arenus-product__price {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.36px;
+    color: #000;
+  }
+
+  .arenus-product__price-compare {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.5;
+    color: #808085;
+    text-decoration: line-through;
+    letter-spacing: -0.14px;
+  }
+
+  /* ── Short description ── */
+  .arenus-product__short-desc {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #808085;
+  }
+
+  /* ── Scroll links ── */
+  .arenus-product__scroll-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .arenus-product__scroll-link {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+  }
+
+  .arenus-product__scroll-link:hover {
+    opacity: 0.7;
+  }
+
+  /* ── Variant selector ── */
+  .arenus-product__variants {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .arenus-product__option {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .arenus-product__option-label {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000;
+    margin: 0;
+  }
+
+  .arenus-product__option-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .arenus-product__option-btn {
+    all: unset;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #000;
+    padding: 12px 16px;
+    border: 1px solid #eeeeef;
+    border-radius: 6px;
+    transition: border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .arenus-product__option-btn:hover {
+    border-color: #999;
+  }
+
+  .arenus-product__option-btn--active {
+    border-color: #191919;
+  }
+
+  .arenus-product__option-btn--unavailable {
+    opacity: 0.4;
+    text-decoration: line-through;
+    {% comment %} cursor: not-allowed; {% endcomment %}
+  }
+
+  /* ── Add to cart ── */
+  .arenus-product__buy {
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .arenus-product__qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #e3e4e5;
+    border-radius: 6px;
+    padding: 4px;
+    flex-shrink: 0;
+    min-width: 125px;
+    height: 52px;
+    box-sizing: border-box;
+  }
+
+  .arenus-product__qty-btn {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #000;
+    transition: background 0.15s;
+  }
+
+  .arenus-product__qty-btn:hover {
+    background: #f5f5f5;
+  }
+
+  .arenus-product__qty-input {
+    width: 32px;
+    text-align: center;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    line-height: 1.4;
+    color: #1e2122;
+    border: none;
+    outline: none;
+    background: transparent;
+    -moz-appearance: textfield;
+  }
+
+  .arenus-product__qty-input::-webkit-inner-spin-button,
+  .arenus-product__qty-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .arenus-product__atc-btn {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex: 1;
+    background: #e6b236;
+    color: #fff;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 16px 24px;
+    height: 52px;
+    box-sizing: border-box;
+    transition: opacity 0.15s;
+  }
+
+  .arenus-product__atc-btn:hover:not(:disabled) {
+    opacity: 0.85;
+  }
+
+  .arenus-product__atc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .arenus-product__atc-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product__qty {
+      min-width: 144px;
+    }
+  }
+
+  /* ── Accordions ── */
+  .arenus-product__accordions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .arenus-product__accordion {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .arenus-product__accordion[open] {
+    border-bottom-color: #191919
+  }
+
+  .arenus-product__accordion[open] > .arenus-product__accordion-header {
+    border-bottom-color: #191919;
+  }
+
+  .arenus-product__accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 0;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.32px;
+    color: #000;
+  }
+
+  .arenus-product__accordion-header::-webkit-details-marker {
+    display: none;
+  }
+
+  .arenus-product__accordion-icon {
+    flex-shrink: 0;
+    display: flex;
+    transition: transform 0.2s;
+  }
+
+  .arenus-product__accordion[open] .arenus-product__accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .arenus-product__accordion-body {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.14px;
+    color: #424242;
+    padding: 0 0 16px;
+  }
+
+  .arenus-product__accordion-body p {
+    margin: 0 0 12px;
+  }
+
+  .arenus-product__accordion-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ── App block ── */
+  .arenus-product__app-block {
+    width: 100%;
+  }
+</style>
+
+{%- comment -%} ══════════ JAVASCRIPT ══════════ {%- endcomment -%}
+<script>
+  (function() {
+    var section = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!section) return;
+
+    /* ── Carousel / Gallery ── */
+    var carousel = section.querySelector('[data-carousel]');
+    var dots = section.querySelectorAll('[data-dot-index]');
+    var thumbs = section.querySelectorAll('[data-thumb-index]');
+    var slides = section.querySelectorAll('[data-slide-index]');
+
+    if (carousel && slides.length > 0) {
+      // IntersectionObserver for active slide detection
+      var currentIndex = 0;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var idx = parseInt(entry.target.getAttribute('data-slide-index'), 10);
+            currentIndex = idx;
+            // Update dots
+            dots.forEach(function(d) {
+              d.classList.toggle('arenus-product__dot--active', parseInt(d.getAttribute('data-dot-index'), 10) === idx);
+            });
+            // Update thumbs
+            thumbs.forEach(function(t) {
+              t.classList.toggle('arenus-product__thumb--active', parseInt(t.getAttribute('data-thumb-index'), 10) === idx);
+            });
+          }
+        });
+      }, {
+        root: carousel,
+        threshold: 0.6
+      });
+
+      slides.forEach(function(s) { observer.observe(s); });
+
+      // Dot clicks
+      dots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+          var idx = parseInt(dot.getAttribute('data-dot-index'), 10);
+          slides[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        });
+      });
+
+      // Thumbnail clicks
+      thumbs.forEach(function(thumb) {
+        thumb.addEventListener('click', function() {
+          var idx = parseInt(thumb.getAttribute('data-thumb-index'), 10);
+          slides[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        });
+      });
+    }
+
+    /* ── Variant selector ── */
+    var variantsJson = section.querySelector('[data-product-variants]');
+    var variants = [];
+    try { variants = JSON.parse(variantsJson.textContent); } catch(e) {}
+
+    var variantIdInput = section.querySelector('[data-variant-id]');
+    var priceEl = section.querySelector('[data-product-price]');
+    var comparePriceEl = section.querySelector('[data-compare-price]');
+    var priceWrapper = section.querySelector('[data-price-wrapper]');
+    var atcBtn = section.querySelector('[data-add-to-cart]');
+    var atcText = section.querySelector('[data-atc-text]');
+    var optionBtns = section.querySelectorAll('.arenus-product__option-btn');
+
+    // Track selected options
+    var selectedOptions = {};
+    optionBtns.forEach(function(btn) {
+      if (btn.classList.contains('arenus-product__option-btn--active')) {
+        selectedOptions[btn.getAttribute('data-option-position')] = btn.getAttribute('data-option-value');
+      }
+    });
+
+    /* Check if a specific option value leads to any available variant
+       given the current selections for all OTHER options */
+    function isOptionAvailable(optionPosition, optionValue) {
+      return variants.some(function(v) {
+        var optIndex = parseInt(optionPosition, 10) - 1;
+        if (v.options[optIndex] !== optionValue) return false;
+        var positions = Object.keys(selectedOptions).sort();
+        for (var i = 0; i < positions.length; i++) {
+          var p = positions[i];
+          var idx = parseInt(p, 10) - 1;
+          if (p === optionPosition) continue;
+          if (v.options[idx] !== selectedOptions[p]) return false;
+        }
+        return v.available;
+      });
+    }
+
+    function updateUnavailableStates() {
+      section.querySelectorAll('.arenus-product__option-btn').forEach(function(btn) {
+        var pos = btn.getAttribute('data-option-position');
+        var val = btn.getAttribute('data-option-value');
+        btn.classList.toggle('arenus-product__option-btn--unavailable', !isOptionAvailable(pos, val));
+      });
+    }
+
+    optionBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var position = btn.getAttribute('data-option-position');
+        var value = btn.getAttribute('data-option-value');
+
+        // Update active state for this option group
+        section.querySelectorAll('.arenus-product__option-btn[data-option-position="' + position + '"]').forEach(function(b) {
+          b.classList.toggle('arenus-product__option-btn--active', b.getAttribute('data-option-value') === value);
+        });
+
+        selectedOptions[position] = value;
+        updateVariant();
+      });
+    });
+
+    // Set unavailable states on initial load
+    updateUnavailableStates();
+
+    function updateVariant() {
+      // Build selected options array in order
+      var opts = [];
+      var positions = Object.keys(selectedOptions).sort();
+      positions.forEach(function(p) { opts.push(selectedOptions[p]); });
+
+      // Find matching variant
+      var matched = variants.find(function(v) {
+        return v.options.every(function(opt, i) { return opt === opts[i]; });
+      });
+
+      // Update unavailable states based on new selection
+      updateUnavailableStates();
+
+      if (matched) {
+        variantIdInput.value = matched.id;
+
+        // Update price
+        var formattedPrice = formatMoney(matched.price);
+        if (priceEl) priceEl.textContent = formattedPrice;
+
+        if (matched.compare_at_price && matched.compare_at_price > matched.price) {
+          if (comparePriceEl) {
+            comparePriceEl.textContent = formatMoney(matched.compare_at_price);
+            comparePriceEl.style.display = '';
+          } else if (priceWrapper) {
+            var span = document.createElement('span');
+            span.className = 'arenus-product__price-compare';
+            span.setAttribute('data-compare-price', '');
+            span.textContent = formatMoney(matched.compare_at_price);
+            priceWrapper.insertBefore(span, priceWrapper.firstChild);
+            comparePriceEl = span;
+          }
+        } else if (comparePriceEl) {
+          comparePriceEl.style.display = 'none';
+        }
+
+        // Update availability
+        if (matched.available) {
+          atcBtn.disabled = false;
+          if (atcText) atcText.textContent = 'ADD TO CART';
+        } else {
+          atcBtn.disabled = true;
+          if (atcText) atcText.textContent = 'SOLD OUT';
+        }
+
+        // Update URL
+        var url = new URL(window.location);
+        url.searchParams.set('variant', matched.id);
+        window.history.replaceState({}, '', url);
+      }
+    }
+
+    function formatMoney(cents) {
+      return (Shopify.currency && Shopify.currency.active)
+        ? '$' + (cents / 100).toFixed(2)
+        : '$' + (cents / 100).toFixed(2);
+    }
+
+    /* ── Quantity stepper ── */
+    var qtyInput = section.querySelector('[data-qty-input]');
+    var minusBtn = section.querySelector('[data-qty-minus]');
+    var plusBtn = section.querySelector('[data-qty-plus]');
+
+    if (minusBtn && plusBtn && qtyInput) {
+      minusBtn.addEventListener('click', function() {
+        var val = parseInt(qtyInput.value, 10) || 1;
+        if (val > 1) qtyInput.value = val - 1;
+      });
+      plusBtn.addEventListener('click', function() {
+        var val = parseInt(qtyInput.value, 10) || 1;
+        qtyInput.value = val + 1;
+      });
+      qtyInput.addEventListener('change', function() {
+        var val = parseInt(qtyInput.value, 10);
+        if (!val || val < 1) qtyInput.value = 1;
+      });
+    }
+
+    /* ── Add to cart ── */
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function() {
+        if (atcBtn.disabled || atcBtn.classList.contains('is-loading')) return;
+
+        var variantId = variantIdInput.value;
+        var quantity = parseInt(qtyInput?.value || '1', 10);
+
+        // Set loading state — save original HTML + swap to loading text
+        atcBtn._prevHTML = atcBtn.innerHTML;
+        atcBtn.classList.add('is-loading');
+        atcBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/></svg> ADDING...';
+
+        fetch(Theme.routes.cart_add_url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            items: [{
+              id: parseInt(variantId, 10),
+              quantity: quantity
+            }]
+          })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.status) {
+            // Error
+            console.error('Add to cart error:', data.description);
+            atcBtn.classList.remove('is-loading');
+            if (atcBtn._prevHTML !== undefined) atcBtn.innerHTML = atcBtn._prevHTML;
+            return;
+          }
+
+          // Success — dispatch cart:update event to trigger badge update
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: {
+              resource: {},
+              sourceId: '',
+              data: {
+                source: 'product-form-component',
+                itemCount: quantity
+              }
+            }
+          }));
+
+          // Explicitly open the cart drawer
+          var cartDrawer = document.querySelector('cart-drawer-component');
+          if (cartDrawer) {
+            if (typeof cartDrawer.open === 'function') {
+              cartDrawer.open();
+            } else if (typeof cartDrawer.showDialog === 'function') {
+              cartDrawer.showDialog();
+            }
+          }
+
+          // Restore button after short delay
+          setTimeout(function() {
+            atcBtn.classList.remove('is-loading');
+            if (atcBtn._prevHTML !== undefined) atcBtn.innerHTML = atcBtn._prevHTML;
+          }, 800);
+        })
+        .catch(function(err) {
+          console.error('Add to cart error:', err);
+          atcBtn.classList.remove('is-loading');
+          if (atcBtn._prevHTML !== undefined) atcBtn.innerHTML = atcBtn._prevHTML;
+        });
+      });
+    }
+
+    /* ── Scroll links ── */
+    section.querySelectorAll('[data-scroll-link]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var href = link.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        var target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Open if it's a details element
+          if (target.tagName === 'DETAILS' && !target.open) {
+            target.open = true;
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Arenus Product",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "media",
+      "name": "Media",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "short_description",
+      "name": "Short Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Content is pulled from the product metafield: custom.short_description"
+        }
+      ]
+    },
+    {
+      "type": "scroll_links",
+      "name": "Scroll Links",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "link_1_label",
+          "label": "Label",
+          "default": "READ MORE"
+        },
+        {
+          "type": "text",
+          "id": "link_1_target",
+          "label": "Section ID to scroll to",
+          "info": "The HTML id attribute of the target section (without #)"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "link_2_label",
+          "label": "Label",
+          "default": "WATCH VIDEOS"
+        },
+        {
+          "type": "text",
+          "id": "link_2_target",
+          "label": "Section ID to scroll to",
+          "info": "The HTML id attribute of the target section (without #)"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "link_3_label",
+          "label": "Label"
+        },
+        {
+          "type": "text",
+          "id": "link_3_target",
+          "label": "Section ID to scroll to",
+          "info": "The HTML id attribute of the target section (without #)"
+        }
+      ]
+    },
+    {
+      "type": "variant_selector",
+      "name": "Variant Selector",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "add_to_cart",
+      "name": "Add to Cart",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quantity",
+          "label": "Show quantity selector",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "ingredients",
+      "name": "Ingredients",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Content is pulled from the product metafield: custom.ingredients"
+        }
+      ]
+    },
+    {
+      "type": "how_to_use",
+      "name": "How To Use",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Content is pulled from the product metafield: custom.how_to_use"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "Collapsible Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shipping & Returns"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arenus Product",
+      "blocks": [
+        { "type": "media" },
+        { "type": "title" },
+        { "type": "price" },
+        { "type": "short_description" },
+        { "type": "scroll_links" },
+        { "type": "variant_selector" },
+        { "type": "add_to_cart" },
+        { "type": "description" },
+        { "type": "ingredients" },
+        { "type": "how_to_use" },
+        { "type": "collapsible_tab" }
+      ]
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}

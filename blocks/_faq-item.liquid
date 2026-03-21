@@ -1,0 +1,59 @@
+{%- comment -%}
+  FAQ Item — accordion question/answer row.
+  Child of _faq-text-tab.
+{%- endcomment -%}
+
+<details
+  class="arenus-faq__item"
+  {% if block.settings.open_by_default %}open{% endif %}
+  {{ block.shopify_attributes }}
+>
+  <summary class="arenus-faq__question">
+    <span class="arenus-faq__question-text">{{ block.settings.question }}</span>
+    <span class="arenus-faq__chevron">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </summary>
+  {%- if block.settings.answer != blank -%}
+    <div class="arenus-faq__answer">
+      {{ block.settings.answer }}
+    </div>
+  {%- endif -%}
+</details>
+
+{% schema %}
+{
+  "name": "FAQ Item",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "question",
+      "label": "Question",
+      "default": "Sample question?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer",
+      "label": "Answer"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open by default",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Item",
+      "settings": {
+        "question": "Sample question?",
+        "answer": "<p>Sample answer.</p>"
+      }
+    }
+  ]
+}
+{% endschema %}

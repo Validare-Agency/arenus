@@ -1,0 +1,72 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "arenus_dealer_banner": {
+      "type": "arenus-page-banner",
+      "settings": {
+        "heading": "Become a Dealer",
+        "description": "<p>Partner with Arenus Animal Health and bring equine wellness products to your customers. Whether you're a retail store or veterinary practice, we'd love to have you on the team.</p>",
+        "image": "shopify://shop_images/blog_post_placeholder.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "min_height_mobile": 330,
+        "min_height_desktop": 480,
+        "desktop_alignment": "bottom",
+        "content_max_width_desktop": 900,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "arenus_dealer_cards": {
+      "type": "arenus-dealer-cards",
+      "blocks": {
+        "sorenomore": {
+          "type": "dealer_card",
+          "settings": {
+            "title": "Sore No-More Retail Dealer",
+            "description": "<p>Do you own a small business, retail tack or horse supply store and would like to offer Sore No-More to your customers? We pride ourselves on supporting small businesses and would love to have you as part of Team Arenus!</p><p>The process starts here. Visit the link below and complete the easy, online application. Once received, your application will be reviewed and, typically, approved within one business day. Once approved, you'll be able to place your first order as a Sore No-More dealer!</p>",
+            "disclaimer": "*At this time, supplements are only sold directly through Arenus Animal Health and licensed veterinarians.",
+            "button_label": "APPLY NOW",
+            "button_link": "shopify://pages/sore-no-more-dealer-application"
+          }
+        },
+        "veterinary": {
+          "type": "dealer_card",
+          "settings": {
+            "title": "Veterinary Dealer",
+            "description": "<p>Do you recommend Arenus Animal Health products in your practice or would like to start carrying them? We work closely with veterinarians and their clients to provide the best solutions available for their patients.</p><p>Additionally, we realize each practice is different and being an Arenus Veterinary Dealer does not mean you need space to stock our products. We're happy to work with you to find solutions that fit your individual needs.</p><p>The first step in becoming an approved veterinary dealer is completing the easy online form. Once approved, you'll be contacted by a Veterinary Solutions Specialist who will serve as your liaison to our product lines.</p>",
+            "disclaimer": "",
+            "button_label": "APPLY NOW",
+            "button_link": "shopify://pages/veterinary-dealer-application"
+          }
+        }
+      },
+      "block_order": [
+        "sorenomore",
+        "veterinary"
+      ],
+      "settings": {
+        "heading": "",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": [
+    "arenus_dealer_banner",
+    "arenus_dealer_cards"
+  ]
+}
