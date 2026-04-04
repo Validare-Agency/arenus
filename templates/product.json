@@ -32,9 +32,9 @@
           "type": "scroll_links",
           "settings": {
             "link_1_label": "READ MORE",
-            "link_1_target": "",
+            "link_1_target": "description",
             "link_2_label": "WATCH VIDEOS",
-            "link_2_target": "",
+            "link_2_target": "videos",
             "link_3_label": "",
             "link_3_target": ""
           }

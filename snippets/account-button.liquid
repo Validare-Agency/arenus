@@ -19,30 +19,12 @@
   ref="trigger"
   {{ attributes }}
 >
-  {%- if customer.has_avatar? -%}
-    {{ customer | avatar }}
-  {%- elsif customer.first_name or customer.email -%}
-    {%- liquid
-      assign initial = customer.email | first
-
-      if customer.first_name != blank
-        assign initial = customer.first_name | first
-      endif
-    -%}
-    <span
-      class="account-button__avatar"
-      aria-hidden="true"
-    >
-      {{- initial -}}
-    </span>
-  {%- else -%}
-    <span
-      class="account-button__icon"
-      aria-hidden="true"
-    >
-      {{- 'icon-account.svg' | inline_asset_content -}}
-    </span>
-  {%- endif -%}
+  <span
+    class="account-button__icon"
+    aria-hidden="true"
+  >
+    {{- 'icon-account.svg' | inline_asset_content -}}
+  </span>
 </{{ tag }}>
 
 {% stylesheet %}

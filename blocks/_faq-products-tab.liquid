@@ -27,6 +27,10 @@
   {%- if collection != blank and collection.products.size > 0 -%}
     <div class="arenus-faq__product-list" data-faq-product-list>
       {%- for product in collection.products -%}
+        {%- assign p_faqs = product.metafields.custom.faqs.value -%}
+        {%- if p_faqs == blank or p_faqs.size == 0 -%}
+          {%- continue -%}
+        {%- endif -%}
         <a
           href="{{ product.url }}#faq"
           class="arenus-faq__product-row"

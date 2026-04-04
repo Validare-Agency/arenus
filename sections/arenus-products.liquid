@@ -73,14 +73,9 @@
 
             {%- comment -%} Product info {%- endcomment -%}
             <div class="arenus-products__card-info">
-              {%- comment -%} Star rating — placeholder {%- endcomment -%}
+              {%- comment -%} Stamped star rating badge {%- endcomment -%}
               <div class="arenus-products__rating">
-                <div class="arenus-products__stars" aria-label="5 out of 5 stars">
-                  {%- for i in (1..5) -%}
-                    {% render 'icon-star', width: 16, height: 16 %}
-                  {%- endfor -%}
-                </div>
-                <span class="arenus-products__review-count">0 reviews</span>
+                <span class="stamped-product-reviews-badge" data-id="{{ product.id }}" data-product-sku="{{ product.handle }}" data-product-type="{{ product.type }}" data-product-title="{{ product.title | escape }}" style="display:block;"></span>
               </div>
 
               {%- comment -%} Title + price row {%- endcomment -%}
@@ -107,6 +102,7 @@
               <script type="application/json" class="arenus-products__card-data">
                 {
                   "id": {{ product.id }},
+                  "handle": {{ product.handle | json }},
                   "title": {{ product.title | json }},
                   "url": {{ product.url | json }},
                   "image": {{ product.featured_image | image_url: width: 400 | json }},
@@ -148,12 +144,7 @@
         </div>
         <div class="arenus-qam__meta">
           <div class="arenus-qam__rating">
-            <div class="arenus-qam__stars">
-              {%- for i in (1..5) -%}
-                {% render 'icon-star', width: 16, height: 16 %}
-              {%- endfor -%}
-            </div>
-            <span class="arenus-qam__review-count">0 reviews</span>
+            <span class="stamped-product-reviews-badge arenus-qam__stamped-badge" style="display:block;"></span>
           </div>
           <h3 class="arenus-qam__title"></h3>
           <div class="arenus-qam__price-wrap">
@@ -1083,6 +1074,16 @@
         modalImage.alt = productData.title;
       }
       if (stepperValue) stepperValue.textContent = '1';
+
+      /* Update Stamped badge in modal */
+      var modalBadge = dialog.querySelector('.arenus-qam__stamped-badge');
+      if (modalBadge) {
+        modalBadge.setAttribute('data-id', productData.id);
+        modalBadge.setAttribute('data-product-sku', productData.handle || '');
+        modalBadge.setAttribute('data-product-title', productData.title || '');
+        modalBadge.innerHTML = '';
+        if (typeof StampedFn !== 'undefined' && StampedFn.loadBadges) { StampedFn.loadBadges(); }
+      }
 
       /* Build option pills */
       buildOptions();
