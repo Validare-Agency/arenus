@@ -64,7 +64,7 @@
               class="account-actions__icon"
               aria-hidden="true"
             >
-              {{- 'icon-account.svg' | inline_asset_content -}}
+              {{- 'icon-account-black.svg' | inline_asset_content -}}
             </span>
             {{ 'content.account_profile' | t }}
           </a>
@@ -157,6 +157,11 @@
     justify-content: center;
     align-items: center;
     gap: var(--gap-2xs);
+    border-radius: 6px;
+  }
+
+  .account-actions__link.button {
+    background-color: #e6b236;
   }
 
   .account-actions__icon {

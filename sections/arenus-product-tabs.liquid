@@ -102,18 +102,17 @@
 
   {%- comment -%} ══════════ REVIEWS PANEL ══════════ {%- endcomment -%}
   <div class="arenus-product-tabs__panel{% unless has_videos or has_faqs %} arenus-product-tabs__panel--active{% endunless %}" data-tab-panel="reviews">
-    {%- comment -%} Stamped reviews widget placeholder — activate once app is installed {%- endcomment -%}
+    {%- comment -%} Stamped.io main reviews widget {%- endcomment -%}
     <div
       id="stamped-main-widget"
       data-product-id="{{ product.id }}"
       data-name="{{ product.title | escape }}"
-      data-url="{{ product.url }}"
+      data-url="{{ shop.url }}{{ product.url }}"
       data-image-url="{{ product.featured_image | image_url: width: 200 }}"
       data-description="{{ product.description | strip_html | truncate: 250 | escape }}"
-      data-product-sku="{{ product.selected_or_first_available_variant.sku | escape }}"
-    >
-      <p class="arenus-product-tabs__empty">Reviews will appear here once the reviews app is installed.</p>
-    </div>
+      data-product-sku="{{ product.handle }}"
+      data-product-type="{{ product.type }}"
+    ></div>
   </div>
 
   {%- comment -%} ══════════ FAQS PANEL ══════════ {%- endcomment -%}
@@ -430,12 +429,37 @@
       });
     }
 
-    /* Activate default tab on page load — fall back to first available tab if configured default isn't present */
-    var defaultExists = section.querySelector('[data-tab-target="' + defaultTab + '"]');
-    if (defaultExists) {
-      activateTab(defaultTab);
-    } else if (tabs.length > 0) {
-      activateTab(tabs[0].getAttribute('data-tab-target'));
+    /* Check URL hash for tab targets — activate matching tab and smooth scroll */
+    var hash = window.location.hash;
+    var hashMap = { '#faq': 'faqs', '#videos': 'videos', '#reviews': 'reviews' };
+    var hashTab = hashMap[hash];
+    var hasTabHash = hashTab && section.querySelector('[data-tab-target="' + hashTab + '"]');
+
+    if (hasTabHash) {
+      activateTab(hashTab);
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    } else {
+      /* Activate default tab on page load — fall back to first available tab if configured default isn't present */
+      var defaultExists = section.querySelector('[data-tab-target="' + defaultTab + '"]');
+      if (defaultExists) {
+        activateTab(defaultTab);
+      } else if (tabs.length > 0) {
+        activateTab(tabs[0].getAttribute('data-tab-target'));
+      }
+    }
+
+    /* Smooth scroll to tab bar after everything has loaded */
+    if (hasTabHash) {
+      function scrollToBar() {
+        var tabBar = section.querySelector('.arenus-product-tabs__bar');
+        (tabBar || section).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      if (document.readyState === 'complete') {
+        scrollToBar();
+      } else {
+        window.addEventListener('load', scrollToBar);
+      }
     }
   })();
 </script>

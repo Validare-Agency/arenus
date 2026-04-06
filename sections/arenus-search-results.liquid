@@ -87,12 +87,7 @@
 
                   <div class="arenus-cpg__card-info">
                     <div class="arenus-cpg__rating">
-                      <div class="arenus-cpg__stars" aria-label="5 out of 5 stars">
-                        {%- for i in (1..5) -%}
-                          {% render 'icon-star', width: 12, height: 12 %}
-                        {%- endfor -%}
-                      </div>
-                      <span class="arenus-cpg__review-count">0 reviews</span>
+                      <span class="stamped-product-reviews-badge" data-id="{{ product.id }}" data-product-sku="{{ product.handle }}" data-product-type="{{ product.type }}" data-product-title="{{ product.title | escape }}" style="display:block;"></span>
                     </div>
 
                     <div class="arenus-cpg__title-price">
@@ -137,6 +132,7 @@
                     <script type="application/json" class="arenus-cpg__card-data">
                       {
                         "id": {{ product.id }},
+                        "handle": {{ product.handle | json }},
                         "title": {{ product.title | json }},
                         "url": {{ product.url | json }},
                         "image": {{ product.featured_image | image_url: width: 400 | json }},
@@ -202,12 +198,7 @@
         </div>
         <div class="arenus-cpg-qam__meta">
           <div class="arenus-cpg-qam__rating">
-            <div class="arenus-cpg-qam__stars">
-              {%- for i in (1..5) -%}
-                {% render 'icon-star', width: 16, height: 16 %}
-              {%- endfor -%}
-            </div>
-            <span class="arenus-cpg-qam__review-count">0 reviews</span>
+            <span class="stamped-product-reviews-badge arenus-cpg-qam__stamped-badge" style="display:block;"></span>
           </div>
           <h3 class="arenus-cpg-qam__title"></h3>
           <div class="arenus-cpg-qam__price-wrap">
@@ -554,6 +545,15 @@
       if (modalTitle) modalTitle.textContent = productData.title;
       if (modalImage) { modalImage.src = productData.image; modalImage.alt = productData.title; }
       if (stepperValue) stepperValue.textContent = '1';
+      /* Update Stamped badge in modal */
+      var modalBadge = dialog.querySelector('.arenus-cpg-qam__stamped-badge');
+      if (modalBadge) {
+        modalBadge.setAttribute('data-id', productData.id);
+        modalBadge.setAttribute('data-product-sku', productData.handle || '');
+        modalBadge.setAttribute('data-product-title', productData.title || '');
+        modalBadge.innerHTML = '';
+        if (typeof StampedFn !== 'undefined' && StampedFn.loadBadges) { StampedFn.loadBadges(); }
+      }
       buildModalOptions();
       var variant = findVariant();
       updateModalPrices(variant);

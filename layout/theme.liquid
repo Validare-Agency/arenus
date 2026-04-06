@@ -113,5 +113,17 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <!-- Stamped.io Reviews -->
+    <script>
+      function stampedInit(){
+        StampedFn.init({
+          apiKey: '08f1dd94-2a0a-4011-81cd-973d54ac54a9',
+          sId: '361550'
+        });
+      }
+    </script>
+    <script async onload="stampedInit()" type="text/javascript" src="https://cdn1.stamped.io/files/widget.min.js"></script>
+    <!-- End Stamped.io Reviews -->
   </body>
 </html>

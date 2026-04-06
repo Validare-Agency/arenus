@@ -119,14 +119,9 @@
             {%- comment -%} ── TITLE ── {%- endcomment -%}
             {%- when 'title' -%}
               <div class="arenus-product__title-block" {{ block.shopify_attributes }}>
-                {%- comment -%} Star rating — placeholder {%- endcomment -%}
+                {%- comment -%} Stamped star rating badge {%- endcomment -%}
                 <div class="arenus-product__rating">
-                  <div class="arenus-product__stars" aria-label="5 out of 5 stars">
-                    {%- for i in (1..5) -%}
-                      {% render 'icon-star', width: 16, height: 16 %}
-                    {%- endfor -%}
-                  </div>
-                  <span class="arenus-product__review-count">0 reviews</span>
+                  <span class="stamped-product-reviews-badge" data-id="{{ product.id }}" data-product-sku="{{ product.handle }}" data-product-type="{{ product.type }}" data-product-title="{{ product.title | escape }}" style="display:block;"></span>
                 </div>
 
                 <div class="arenus-product__title-row">
@@ -243,7 +238,7 @@
               {% if product.description != blank %}
                 <details
                   class="arenus-product__accordion"
-                  id="arenus-product-description-{{ section.id }}"
+                  id="description"
                   {{ block.shopify_attributes }}
                   {% if block.settings.open_by_default %}open{% endif %}
                 >
@@ -1200,18 +1195,38 @@
     }
 
     /* ── Scroll links ── */
+    var tabTargets = ['videos', 'reviews', 'faqs'];
+
     section.querySelectorAll('[data-scroll-link]').forEach(function(link) {
       link.addEventListener('click', function(e) {
         var href = link.getAttribute('href');
         if (!href || href.charAt(0) !== '#') return;
+        e.preventDefault();
+
+        var targetId = href.substring(1);
+
+        var scrollOffset = 150;
+
+        /* If the target is a product tab (videos/reviews/faqs), activate that tab and scroll to the tab bar */
+        if (tabTargets.indexOf(targetId) !== -1) {
+          var tabsSection = document.querySelector('.arenus-product-tabs');
+          if (!tabsSection) return;
+          var tabBtn = tabsSection.querySelector('[data-tab-target="' + targetId + '"]');
+          if (tabBtn) tabBtn.click();
+          var tabBar = tabsSection.querySelector('.arenus-product-tabs__bar') || tabsSection;
+          var y = tabBar.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+          return;
+        }
+
+        /* Otherwise scroll to the element directly */
         var target = document.querySelector(href);
         if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // Open if it's a details element
           if (target.tagName === 'DETAILS' && !target.open) {
             target.open = true;
           }
+          var y = target.getBoundingClientRect().top + window.pageYOffset - scrollOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
       });
     });
