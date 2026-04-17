@@ -104,6 +104,7 @@
     },
     "arenus_ambassadors": {
       "type": "arenus-ambassadors",
+      "disabled": true,
       "settings": {
         "heading": "Arenus Ambassadors",
         "subtitle": "At Arenus, we value the health and performance of competitive equine athletes and proudly support the riders who care for them.",
