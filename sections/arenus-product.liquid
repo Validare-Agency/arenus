@@ -56,19 +56,26 @@
               {%- comment -%} Desktop thumbnails {%- endcomment -%}
               <div class="arenus-product__thumbnails" data-thumbnails>
                 {%- for media in product.media -%}
+                  {%- assign thumb_src = media.preview_image | image_url: width: 168 -%}
                   <button
                     type="button"
                     class="arenus-product__thumb{% if forloop.first %} arenus-product__thumb--active{% endif %}"
                     data-thumb-index="{{ forloop.index0 }}"
-                    aria-label="View image {{ forloop.index }}"
+                    data-media-type="{{ media.media_type }}"
+                    aria-label="View {% if media.media_type contains 'video' %}video{% else %}image{% endif %} {{ forloop.index }}"
                   >
                     <img
-                      src="{{ media | image_url: width: 168 }}"
+                      src="{{ thumb_src }}"
                       alt="{{ media.alt | escape }}"
                       width="76"
                       height="76"
                       loading="{% if forloop.index <= 5 %}eager{% else %}lazy{% endif %}"
                     >
+                    {%- if media.media_type contains 'video' -%}
+                      <span class="arenus-product__thumb-video-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      </span>
+                    {%- endif -%}
                   </button>
                 {%- endfor -%}
               </div>
@@ -77,16 +84,56 @@
               <div class="arenus-product__carousel-wrap">
                 <div class="arenus-product__carousel" data-carousel>
                   {%- for media in product.media -%}
-                    <div class="arenus-product__slide" data-slide-index="{{ forloop.index0 }}">
+                    <div class="arenus-product__slide" data-slide-index="{{ forloop.index0 }}" data-media-type="{{ media.media_type }}">
                       <div class="arenus-product__slide-bg-color">
-                        {% assign image_width = media.width | times: 2 %}
-                        <img
-                          src="{{ media | image_url: width: image_width }}"
-                          alt="{{ media.alt | escape }}"
-                          width="{{ image_width }}"
-                          height="{{ image_width }}"
-                          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                        >
+                        {%- case media.media_type -%}
+                          {%- when 'video' -%}
+                            {%- comment -%} Shopify-hosted video with multiple sources {%- endcomment -%}
+                            <video
+                              class="arenus-product__slide-video"
+                              controls
+                              playsinline
+                              preload="{% if forloop.first %}metadata{% else %}none{% endif %}"
+                              poster="{{ media.preview_image | image_url: width: 1200 }}"
+                            >
+                              {%- for source in media.sources -%}
+                                <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                              {%- endfor -%}
+                            </video>
+                          {%- when 'external_video' -%}
+                            {%- comment -%} External video (YouTube/Vimeo) {%- endcomment -%}
+                            <div class="arenus-product__slide-video-wrap">
+                              {%- if media.host == 'youtube' -%}
+                                <iframe
+                                  src="https://www.youtube.com/embed/{{ media.external_id }}?rel=0&playsinline=1"
+                                  class="arenus-product__slide-video"
+                                  title="{{ media.alt | escape }}"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  allowfullscreen
+                                  loading="lazy"
+                                ></iframe>
+                              {%- elsif media.host == 'vimeo' -%}
+                                <iframe
+                                  src="https://player.vimeo.com/video/{{ media.external_id }}?playsinline=1"
+                                  class="arenus-product__slide-video"
+                                  title="{{ media.alt | escape }}"
+                                  allow="autoplay; fullscreen; picture-in-picture"
+                                  allowfullscreen
+                                  loading="lazy"
+                                ></iframe>
+                              {%- endif -%}
+                            </div>
+                          {%- else -%}
+                            {% assign image_width = media.width | times: 2 %}
+                            <img
+                              src="{{ media | image_url: width: image_width }}"
+                              alt="{{ media.alt | escape }}"
+                              width="{{ image_width }}"
+                              height="{{ image_width }}"
+                              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                              data-media-image
+                            >
+                        {%- endcase -%}
                       </div>
                     </div>
                   {%- endfor -%}
@@ -109,6 +156,73 @@
             </div>
           {%- endif -%}
         {%- endfor -%}
+
+        {%- comment -%} ── IMAGES LIGHTBOX MODAL ── {%- endcomment -%}
+        {%- if product.media.size > 0 -%}
+          <dialog class="arenus-product__lightbox" data-lightbox aria-label="Product images">
+            <button type="button" class="arenus-product__lightbox-close" data-lightbox-close aria-label="Close gallery">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            {%- if product.media.size > 1 -%}
+              <button type="button" class="arenus-product__lightbox-nav arenus-product__lightbox-nav--prev" data-lightbox-prev aria-label="Previous image">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button type="button" class="arenus-product__lightbox-nav arenus-product__lightbox-nav--next" data-lightbox-next aria-label="Next image">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            {%- endif -%}
+            <div class="arenus-product__lightbox-stage" data-lightbox-stage>
+              {%- for media in product.media -%}
+                <div class="arenus-product__lightbox-slide{% if forloop.first %} arenus-product__lightbox-slide--active{% endif %}" data-lightbox-slide="{{ forloop.index0 }}" data-media-type="{{ media.media_type }}">
+                  {%- case media.media_type -%}
+                    {%- when 'image' -%}
+                      <img
+                        src="{{ media | image_url: width: 1800 }}"
+                        alt="{{ media.alt | escape }}"
+                        loading="lazy"
+                      >
+                    {%- when 'video' -%}
+                      <video
+                        controls
+                        playsinline
+                        preload="none"
+                        poster="{{ media.preview_image | image_url: width: 1800 }}"
+                      >
+                        {%- for source in media.sources -%}
+                          <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                        {%- endfor -%}
+                      </video>
+                    {%- when 'external_video' -%}
+                      {%- if media.host == 'youtube' -%}
+                        <iframe
+                          src="https://www.youtube.com/embed/{{ media.external_id }}?rel=0&playsinline=1"
+                          title="{{ media.alt | escape }}"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowfullscreen
+                          loading="lazy"
+                          data-lightbox-iframe
+                        ></iframe>
+                      {%- elsif media.host == 'vimeo' -%}
+                        <iframe
+                          src="https://player.vimeo.com/video/{{ media.external_id }}?playsinline=1"
+                          title="{{ media.alt | escape }}"
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          allowfullscreen
+                          loading="lazy"
+                          data-lightbox-iframe
+                        ></iframe>
+                      {%- endif -%}
+                  {%- endcase -%}
+                </div>
+              {%- endfor -%}
+            </div>
+            {%- if product.media.size > 1 -%}
+              <div class="arenus-product__lightbox-counter" data-lightbox-counter aria-live="polite">
+                <span data-lightbox-current>1</span> / {{ product.media.size }}
+              </div>
+            {%- endif -%}
+          </dialog>
+        {%- endif -%}
       </div>
 
       {%- comment -%} ── RIGHT: Info column ── {%- endcomment -%}
@@ -151,15 +265,69 @@
 
             {%- comment -%} ── SCROLL LINKS ── {%- endcomment -%}
             {%- when 'scroll_links' -%}
-              {% if block.settings.link_1_label != blank or block.settings.link_2_label != blank or block.settings.link_3_label != blank %}
+              {%- liquid
+                assign pdp_videos = product.metafields.custom.youtube_videos.value
+                assign pdp_faqs = product.metafields.custom.faqs.value
+                assign pdp_has_videos = false
+                assign pdp_has_faqs = false
+                if pdp_videos != blank and pdp_videos.size > 0
+                  assign pdp_has_videos = true
+                endif
+                if pdp_faqs != blank and pdp_faqs.size > 0
+                  assign pdp_has_faqs = true
+                endif
+
+                assign show_link_1 = false
+                if block.settings.link_1_label != blank
+                  assign show_link_1 = true
+                  if block.settings.link_1_target == 'videos' and pdp_has_videos == false
+                    assign show_link_1 = false
+                  endif
+                  if block.settings.link_1_target == 'faq' and pdp_has_faqs == false
+                    assign show_link_1 = false
+                  endif
+                  if block.settings.link_1_target == 'faqs' and pdp_has_faqs == false
+                    assign show_link_1 = false
+                  endif
+                endif
+
+                assign show_link_2 = false
+                if block.settings.link_2_label != blank
+                  assign show_link_2 = true
+                  if block.settings.link_2_target == 'videos' and pdp_has_videos == false
+                    assign show_link_2 = false
+                  endif
+                  if block.settings.link_2_target == 'faq' and pdp_has_faqs == false
+                    assign show_link_2 = false
+                  endif
+                  if block.settings.link_2_target == 'faqs' and pdp_has_faqs == false
+                    assign show_link_2 = false
+                  endif
+                endif
+
+                assign show_link_3 = false
+                if block.settings.link_3_label != blank
+                  assign show_link_3 = true
+                  if block.settings.link_3_target == 'videos' and pdp_has_videos == false
+                    assign show_link_3 = false
+                  endif
+                  if block.settings.link_3_target == 'faq' and pdp_has_faqs == false
+                    assign show_link_3 = false
+                  endif
+                  if block.settings.link_3_target == 'faqs' and pdp_has_faqs == false
+                    assign show_link_3 = false
+                  endif
+                endif
+              -%}
+              {% if show_link_1 or show_link_2 or show_link_3 %}
                 <div class="arenus-product__scroll-links" {{ block.shopify_attributes }}>
-                  {%- if block.settings.link_1_label != blank -%}
+                  {%- if show_link_1 -%}
                     <a href="#{{ block.settings.link_1_target }}" class="arenus-product__scroll-link" data-scroll-link>{{ block.settings.link_1_label }}</a>
                   {%- endif -%}
-                  {%- if block.settings.link_2_label != blank -%}
+                  {%- if show_link_2 -%}
                     <a href="#{{ block.settings.link_2_target }}" class="arenus-product__scroll-link" data-scroll-link>{{ block.settings.link_2_label }}</a>
                   {%- endif -%}
-                  {%- if block.settings.link_3_label != blank -%}
+                  {%- if show_link_3 -%}
                     <a href="#{{ block.settings.link_3_target }}" class="arenus-product__scroll-link" data-scroll-link>{{ block.settings.link_3_label }}</a>
                   {%- endif -%}
                 </div>
@@ -188,6 +356,12 @@
                   {%- endfor -%}
                 </div>
               {%- endunless -%}
+
+            {%- comment -%} ── SUBSCRIPTION SELECTOR ── {%- endcomment -%}
+            {%- when 'subscription_selector' -%}
+              <div class="arenus-product__subscription" {{ block.shopify_attributes }}>
+                {% render 'arenus-subscription-selector', product: product, selector_id: section.id %}
+              </div>
 
             {%- comment -%} ── ADD TO CART ── {%- endcomment -%}
             {%- when 'add_to_cart' -%}
@@ -504,6 +678,189 @@
     border-radius: 8px;
   }
 
+  .arenus-product__slide-video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #000;
+  }
+
+  .arenus-product__slide-video-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .arenus-product__slide-video-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Cursor hint that images can be opened in lightbox */
+  .arenus-product__slide[data-media-type="image"] {
+    cursor: zoom-in;
+  }
+
+  /* ═══════════ Lightbox ═══════════ */
+  .arenus-product__lightbox {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.92);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .arenus-product__lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.92);
+  }
+
+  .arenus-product__lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-product__lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    all: unset;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.2s ease;
+  }
+
+  .arenus-product__lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .arenus-product__lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    all: unset;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.2s ease;
+  }
+
+  .arenus-product__lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .arenus-product__lightbox-nav--prev {
+    left: 16px;
+  }
+
+  .arenus-product__lightbox-nav--next {
+    right: 16px;
+  }
+
+  .arenus-product__lightbox-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 16px;
+    box-sizing: border-box;
+  }
+
+  .arenus-product__lightbox-slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-product__lightbox-slide--active {
+    display: flex;
+  }
+
+  .arenus-product__lightbox-slide img,
+  .arenus-product__lightbox-slide video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .arenus-product__lightbox-slide iframe {
+    width: min(1280px, 100%);
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 8px;
+  }
+
+  .arenus-product__lightbox-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-product__lightbox-close {
+      top: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .arenus-product__lightbox-nav {
+      width: 56px;
+      height: 56px;
+    }
+
+    .arenus-product__lightbox-nav--prev {
+      left: 32px;
+    }
+
+    .arenus-product__lightbox-nav--next {
+      right: 32px;
+    }
+
+    .arenus-product__lightbox-stage {
+      padding: 80px;
+    }
+  }
+
   /* Dots */
   .arenus-product__dots {
     display: flex;
@@ -541,18 +898,33 @@
       gap: 12px;
       flex-shrink: 0;
       padding-top: 16px;
+      max-height: 725px;
+      padding-inline: 2px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .arenus-product__thumbnails::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .arenus-product__thumbnails::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 2px;
     }
 
     .arenus-product__thumb {
       all: unset;
       cursor: pointer;
-      width: 84px;
-      height: 84px;
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
       border-radius: 6px;
       overflow: hidden;
       outline: 1px solid #DDDDDD;
       background: var(--arenus-product-image-bg, #FFFCEA);
       transition: outline-color 0.2s;
+      position: relative;
     }
 
     .arenus-product__thumb--active {
@@ -565,6 +937,17 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .arenus-product__thumb-video-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      pointer-events: none;
     }
 
     .arenus-product__carousel-wrap {
@@ -978,6 +1361,93 @@
       });
     }
 
+    /* ── Lightbox ── */
+    var lightbox = section.querySelector('[data-lightbox]');
+    if (lightbox) {
+      var lbSlides = lightbox.querySelectorAll('[data-lightbox-slide]');
+      var lbCurrentEl = lightbox.querySelector('[data-lightbox-current]');
+      var lbIndex = 0;
+
+      function openLightbox(index) {
+        lbIndex = index || 0;
+        showLightboxSlide(lbIndex);
+        if (typeof lightbox.showModal === 'function') {
+          lightbox.showModal();
+        } else {
+          lightbox.setAttribute('open', '');
+        }
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        /* Pause any playing videos */
+        lightbox.querySelectorAll('video').forEach(function(v) { try { v.pause(); } catch(e) {} });
+        /* Reset iframes to stop playback */
+        lightbox.querySelectorAll('[data-lightbox-iframe]').forEach(function(f) {
+          var src = f.getAttribute('src');
+          f.setAttribute('src', src);
+        });
+        if (typeof lightbox.close === 'function') {
+          lightbox.close();
+        } else {
+          lightbox.removeAttribute('open');
+        }
+        document.body.style.overflow = '';
+      }
+
+      function showLightboxSlide(idx) {
+        if (idx < 0) idx = lbSlides.length - 1;
+        if (idx >= lbSlides.length) idx = 0;
+        lbIndex = idx;
+        lbSlides.forEach(function(s, i) {
+          s.classList.toggle('arenus-product__lightbox-slide--active', i === idx);
+          /* Pause videos in non-active slides */
+          if (i !== idx) {
+            s.querySelectorAll('video').forEach(function(v) { try { v.pause(); } catch(e) {} });
+          }
+        });
+        if (lbCurrentEl) lbCurrentEl.textContent = String(idx + 1);
+      }
+
+      /* Open on main carousel slide click (images only, videos keep their own controls) */
+      slides.forEach(function(slide) {
+        slide.addEventListener('click', function(e) {
+          var type = slide.getAttribute('data-media-type');
+          if (type === 'image') {
+            var idx = parseInt(slide.getAttribute('data-slide-index'), 10);
+            openLightbox(idx);
+          }
+        });
+      });
+
+      /* Close button */
+      var lbClose = lightbox.querySelector('[data-lightbox-close]');
+      if (lbClose) lbClose.addEventListener('click', closeLightbox);
+
+      /* Prev / Next */
+      var lbPrev = lightbox.querySelector('[data-lightbox-prev]');
+      var lbNext = lightbox.querySelector('[data-lightbox-next]');
+      if (lbPrev) lbPrev.addEventListener('click', function() { showLightboxSlide(lbIndex - 1); });
+      if (lbNext) lbNext.addEventListener('click', function() { showLightboxSlide(lbIndex + 1); });
+
+      /* Click on backdrop (outside stage) closes */
+      lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      /* Escape / native cancel */
+      lightbox.addEventListener('cancel', function(e) {
+        e.preventDefault();
+        closeLightbox();
+      });
+
+      /* Keyboard navigation while open */
+      lightbox.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); showLightboxSlide(lbIndex - 1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); showLightboxSlide(lbIndex + 1); }
+      });
+    }
+
     /* ── Variant selector ── */
     var variantsJson = section.querySelector('[data-product-variants]');
     var variants = [];
@@ -1092,6 +1562,11 @@
         var url = new URL(window.location);
         url.searchParams.set('variant', matched.id);
         window.history.replaceState({}, '', url);
+
+        // Notify subscription selector of variant change
+        if (window.arenusSub && window.arenusSub['{{ section.id }}']) {
+          window.arenusSub['{{ section.id }}'].setVariant(matched.id);
+        }
       }
     }
 
@@ -1134,6 +1609,16 @@
         atcBtn.classList.add('is-loading');
         atcBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22.4893 18.5737L21.1525 7.32375C21.1091 6.95721 20.9321 6.61952 20.6554 6.37529C20.3786 6.13106 20.0215 5.99744 19.6525 6H16.4996C16.4996 4.80653 16.0255 3.66193 15.1816 2.81802C14.3377 1.97411 13.1931 1.5 11.9996 1.5C10.8062 1.5 9.66157 1.97411 8.81766 2.81802C7.97374 3.66193 7.49964 4.80653 7.49964 6H4.34308C3.97399 5.99744 3.61691 6.13106 3.34016 6.37529C3.06342 6.61952 2.88644 6.95721 2.84308 7.32375L1.5062 18.5737C1.4817 18.7837 1.50186 18.9965 1.56536 19.1981C1.62885 19.3998 1.73425 19.5857 1.87464 19.7438C2.01604 19.9025 2.18932 20.0296 2.38317 20.1168C2.57701 20.204 2.78707 20.2494 2.99964 20.25H20.9921C21.206 20.2505 21.4175 20.2056 21.6127 20.1183C21.8079 20.0311 21.9824 19.9034 22.1246 19.7438C22.2644 19.5854 22.3691 19.3993 22.4319 19.1977C22.4948 18.9961 22.5143 18.7835 22.4893 18.5737ZM11.9996 3C12.7953 3 13.5584 3.31607 14.121 3.87868C14.6836 4.44129 14.9996 5.20435 14.9996 6H8.99964C8.99964 5.20435 9.31571 4.44129 9.87832 3.87868C10.4409 3.31607 11.204 3 11.9996 3ZM2.99964 18.75L4.34308 7.5H7.49964V9.75C7.49964 9.94891 7.57866 10.1397 7.71931 10.2803C7.85996 10.421 8.05073 10.5 8.24964 10.5C8.44855 10.5 8.63932 10.421 8.77997 10.2803C8.92062 10.1397 8.99964 9.94891 8.99964 9.75V7.5H14.9996V9.75C14.9996 9.94891 15.0787 10.1397 15.2193 10.2803C15.36 10.421 15.5507 10.5 15.7496 10.5C15.9486 10.5 16.1393 10.421 16.28 10.2803C16.4206 10.1397 16.4996 9.94891 16.4996 9.75V7.5H19.6637L20.9921 18.75H2.99964Z" fill="currentColor"/></svg> ADDING...';
 
+        // Build line item — include selling_plan if subscription is selected
+        var lineItem = {
+          id: parseInt(variantId, 10),
+          quantity: quantity
+        };
+        if (window.arenusSub && window.arenusSub['{{ section.id }}']) {
+          var sellingPlanId = window.arenusSub['{{ section.id }}'].getSellingPlanId();
+          if (sellingPlanId) lineItem.selling_plan = parseInt(sellingPlanId, 10);
+        }
+
         fetch(Theme.routes.cart_add_url, {
           method: 'POST',
           headers: {
@@ -1141,10 +1626,7 @@
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            items: [{
-              id: parseInt(variantId, 10),
-              quantity: quantity
-            }]
+            items: [lineItem]
           })
         })
         .then(function(res) { return res.json(); })
@@ -1336,6 +1818,12 @@
       "settings": []
     },
     {
+      "type": "subscription_selector",
+      "name": "Subscription Selector",
+      "limit": 1,
+      "settings": []
+    },
+    {
       "type": "add_to_cart",
       "name": "Add to Cart",
       "limit": 1,
@@ -1414,6 +1902,7 @@
         { "type": "short_description" },
         { "type": "scroll_links" },
         { "type": "variant_selector" },
+        { "type": "subscription_selector" },
         { "type": "add_to_cart" },
         { "type": "description" },
         { "type": "ingredients" },

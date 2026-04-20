@@ -1,0 +1,92 @@
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-colic-banner",
+      "settings": {
+        "heading": "Overview",
+        "description": "<p>Simple enrollment. Instant peace of mind.</p>",
+        "button_label": "ENROLL NOW",
+        "button_link": "shopify://pages/colic-assurance-program-form",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 400,
+        "min_height_desktop": 480,
+        "content_max_width_desktop": 860,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "content": {
+      "type": "arenus-cap-content",
+      "blocks": {
+        "intro": {
+          "type": "text",
+          "settings": {
+            "content": "<p>The Colic Assurance Program offers customized wellness protocols and financial reimbursement for surgical and non-surgical colic-related expenses, providing peace of mind for horse owners. Qualified horses are eligible for up to $15,000 in lifetime reimbursement benefits.</p><p>The Assure System is a comprehensive digestive health solution offering unmatched, total digestive system support — designed by a team of veterinarians, nutritionists, and animal health specialists.</p>"
+          }
+        },
+        "h_promise": {
+          "type": "heading",
+          "settings": { "text": "The CAP Promise" }
+        },
+        "promise": {
+          "type": "text",
+          "settings": {
+            "content": "<ul><li>Covers both surgical and non-surgical colic (unlike competitors)</li><li>No age restrictions; accepts horses with colic histories</li><li>Coverage: up to $15,000 in lifetime reimbursement benefits</li><li>Eligibility begins at weaning with no upper age limit</li></ul>"
+          }
+        },
+        "h_features": {
+          "type": "heading",
+          "settings": { "text": "Program Features" }
+        },
+        "features": {
+          "type": "text",
+          "settings": {
+            "content": "<ul><li>Custom wellness programs</li><li>International travel coverage</li><li>Leased horse eligibility</li><li>No additional cost for eligible enrolled horses</li></ul>"
+          }
+        },
+        "h_enroll": {
+          "type": "heading",
+          "settings": { "text": "Enrollment Process" }
+        },
+        "enroll": {
+          "type": "text",
+          "settings": {
+            "content": "<ol><li>Complete online enrollment form</li><li>Receive confirmation email</li><li>Get qualification notice within 5 business days</li><li>Purchase initial products within 5 days of qualification</li><li>Begin loading dose protocol</li></ol>"
+          }
+        },
+        "h_claims": {
+          "type": "heading",
+          "settings": { "text": "Claims Process" }
+        },
+        "claims": {
+          "type": "text",
+          "settings": {
+            "content": "<ul><li><strong>Within 14 days:</strong> file claim initiation</li><li><strong>Within 30 days:</strong> submit reimbursement forms from owner and veterinarians</li><li><strong>Review and payment:</strong> decisions within 5 business days; payments within 10 business days</li></ul>"
+          }
+        },
+        "btn": {
+          "type": "button",
+          "settings": {
+            "label": "ENROLL NOW",
+            "link": "shopify://pages/colic-assurance-program-form"
+          }
+        }
+      },
+      "block_order": ["intro", "h_promise", "promise", "h_features", "features", "h_enroll", "enroll", "h_claims", "claims", "btn"],
+      "settings": {
+        "heading": "",
+        "max_width": 900,
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    }
+  },
+  "order": ["banner", "content"]
+}

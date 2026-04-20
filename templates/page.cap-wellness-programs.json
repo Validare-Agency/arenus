@@ -1,0 +1,90 @@
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-colic-banner",
+      "settings": {
+        "heading": "Wellness Programs",
+        "description": "<p>Full wellness program details of the Colic Assurance Program including dosing and supplement protocols.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 400,
+        "min_height_desktop": 480,
+        "content_max_width_desktop": 860,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "content": {
+      "type": "arenus-cap-content",
+      "blocks": {
+        "intro": {
+          "type": "text",
+          "settings": {
+            "content": "<p>Each enrolled horse is assigned to one of two wellness programs based on enrollment answers. Dosing protocols must be followed to maintain eligibility.</p><p>Products are organized into three weight brackets: 200–799 lb, 800–1300 lb, and 1301 lb+.</p>"
+          }
+        },
+        "h_free": {
+          "type": "heading",
+          "settings": { "text": "Colic Free Wellness Program" }
+        },
+        "free": {
+          "type": "text",
+          "settings": {
+            "content": "<p>For horses with no prior history of colic. Assure Guard paired with Assure Plus, or Assure Guard Gold as a single-product option.</p>"
+          }
+        },
+        "free_image": {
+          "type": "image",
+          "settings": {
+            "alt": "Colic Free Wellness Program dosing protocol"
+          }
+        },
+        "h_history": {
+          "type": "heading",
+          "settings": { "text": "Colic History Wellness Program" }
+        },
+        "history": {
+          "type": "text",
+          "settings": {
+            "content": "<p>For horses with a prior history of colic. Adjusted dosing protocols to provide enhanced digestive support.</p>"
+          }
+        },
+        "history_image": {
+          "type": "image",
+          "settings": {
+            "alt": "Colic History Wellness Program dosing protocol"
+          }
+        },
+        "note": {
+          "type": "text",
+          "settings": {
+            "content": "<p><strong>Note:</strong> Dosing protocols must be followed as prescribed to maintain program eligibility. Retain all product purchase receipts.</p>"
+          }
+        },
+        "btn": {
+          "type": "button",
+          "settings": {
+            "label": "ENROLL NOW",
+            "link": "shopify://pages/colic-assurance-program-form"
+          }
+        }
+      },
+      "block_order": ["intro", "h_free", "free", "free_image", "h_history", "history", "history_image", "note", "btn"],
+      "settings": {
+        "heading": "",
+        "max_width": 900,
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    }
+  },
+  "order": ["banner", "content"]
+}

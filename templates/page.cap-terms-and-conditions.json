@@ -1,0 +1,129 @@
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-colic-banner",
+      "settings": {
+        "heading": "Terms & Conditions",
+        "description": "<p>The Colic Assurance Program™ is a reimbursement program operated by Assurance Health Program, LLC.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 400,
+        "min_height_desktop": 480,
+        "content_max_width_desktop": 860,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "content": {
+      "type": "arenus-cap-content",
+      "blocks": {
+        "h_overview": {
+          "type": "heading",
+          "settings": { "text": "Program Overview" }
+        },
+        "overview": {
+          "type": "text",
+          "settings": {
+            "content": "<p>The Colic Assurance Program (CAP) is a reimbursement program operated by Assurance Health Program, LLC that covers qualifying horses for colic-related veterinary expenses up to $15,000 lifetime maximum.</p>"
+          }
+        },
+        "h_eligibility": {
+          "type": "heading",
+          "settings": { "text": "Horse Eligibility Requirements" }
+        },
+        "eligibility": {
+          "type": "text",
+          "settings": {
+            "content": "<ul><li>Formally accepted into the program via enrollment form</li><li>Reside in the United States or Canada</li><li>Under care of a licensed veterinarian</li><li>Fully weaned and at least five months old</li><li>Cannot have had more than one abdominal surgery</li><li>Cannot be miniature horses, donkeys, burros, mules, zebras, or zorses</li></ul><p><strong>Ineligible conditions include:</strong> diagnosis of lipomas or enterolithiasis; chronic orthopedic conditions or metabolic disease; cases where the attending veterinarian cannot rule out non-colic causes.</p>"
+          }
+        },
+        "h_products": {
+          "type": "heading",
+          "settings": { "text": "Product Requirements" }
+        },
+        "products": {
+          "type": "text",
+          "settings": {
+            "content": "<p>Horses must purchase and administer qualifying products — Assure Guard, Assure Plus, or Assure Guard Gold — at minimum doses based on assigned wellness programs.</p><p><strong>Purchase timeline:</strong></p><ul><li>No more than 48 hours before enrollment submission</li><li>No later than five business days after formal acceptance</li><li>Initial purchase through veterinarian, approved retailer, or Arenus</li></ul>"
+          }
+        },
+        "h_coverage": {
+          "type": "heading",
+          "settings": { "text": "Coverage Details" }
+        },
+        "coverage": {
+          "type": "text",
+          "settings": {
+            "content": "<p><strong>Maximum benefits vary by history:</strong></p><ul><li>No prior colic: $15,000 lifetime</li><li>Prior colic history: varies by colic episodes</li><li>One abdominal surgery history: $3,750 months 13–24; potentially $7,500 thereafter</li><li>Three or more colics during enrollment: program disqualification</li></ul><p><strong>Per-incident limits:</strong></p><ul><li>Medical colic: $800 maximum per episode</li><li>Surgical colic: one episode covered</li></ul>"
+          }
+        },
+        "h_docs": {
+          "type": "heading",
+          "settings": { "text": "Required Documentation for Claims" }
+        },
+        "docs": {
+          "type": "text",
+          "settings": {
+            "content": "<ul><li>Annual physical examinations by licensed veterinarian</li><li>Annual dental examinations and treatments</li><li>Core vaccinations (tetanus, EEE/WEE, WNV, rabies)</li><li>Veterinarian-directed deworming program documentation</li><li>Purchase records for all qualifying products</li><li>Medical records and proof of payment for treated colic episodes</li><li>Complete 12-month veterinary health history via affidavit</li></ul>"
+          }
+        },
+        "h_reporting": {
+          "type": "heading",
+          "settings": { "text": "Reporting Requirements" }
+        },
+        "reporting": {
+          "type": "text",
+          "settings": {
+            "content": "<p>Owners must report all colic episodes within 14 calendar days, regardless of claim filing. Failure to report renders horses ineligible for future benefits.</p>"
+          }
+        },
+        "h_submission": {
+          "type": "heading",
+          "settings": { "text": "Claim Submission Timeline" }
+        },
+        "submission": {
+          "type": "text",
+          "settings": {
+            "content": "<p>All required forms must be submitted within 30 calendar days of treatment completion, including the Primary Care Veterinarian Form, Attending Veterinarian Form, and Reimbursement Claim Form.</p>"
+          }
+        },
+        "h_termination": {
+          "type": "heading",
+          "settings": { "text": "Program Termination" }
+        },
+        "termination": {
+          "type": "text",
+          "settings": {
+            "content": "<p>Assurance Health Program, LLC may cancel with 90 days' notice. Owners may discontinue anytime via the Discontinuation Form. False or fraudulent claims result in disqualification.</p>"
+          }
+        },
+        "h_disclaimers": {
+          "type": "heading",
+          "settings": { "text": "Important Disclaimers" }
+        },
+        "disclaimers": {
+          "type": "text",
+          "settings": {
+            "content": "<p><em>Compliance with the terms of this Agreement does not constitute a guarantee that a Qualifying Horse will not experience colic.</em></p><p>The program is <strong>not intended to be a substitute for insurance</strong> and maximum liability is limited to applicable reimbursement amounts.</p>"
+          }
+        }
+      },
+      "block_order": ["h_overview", "overview", "h_eligibility", "eligibility", "h_products", "products", "h_coverage", "coverage", "h_docs", "docs", "h_reporting", "reporting", "h_submission", "submission", "h_termination", "termination", "h_disclaimers", "disclaimers"],
+      "settings": {
+        "heading": "",
+        "max_width": 900,
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    }
+  },
+  "order": ["banner", "content"]
+}

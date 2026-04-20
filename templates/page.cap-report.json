@@ -1,0 +1,49 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-colic-banner",
+      "settings": {
+        "heading": "Report",
+        "description": "<p>Report a colic episode for your enrolled horse. All colic episodes must be reported within 14 calendar days, regardless of whether a claim is filed.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 400,
+        "min_height_desktop": 480,
+        "content_max_width_desktop": 860,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "form": {
+      "type": "arenus-jotform-embed",
+      "settings": {
+        "form_id": "241304399133150",
+        "max_width": 900,
+        "padding_top": 56,
+        "padding_bottom": 56,
+        "background_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "form"
+  ]
+}

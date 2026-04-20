@@ -31,6 +31,8 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
+    {{ 'arenus-subscription.css' | asset_url | stylesheet_tag }}
+
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
     {% endif %}
@@ -113,6 +115,8 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <script src="{{ 'arenus-subscription.js' | asset_url }}" defer></script>
 
     <!-- Stamped.io Reviews -->
     <script>

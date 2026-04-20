@@ -31,6 +31,32 @@
         "gradient_direction": "to top"
       }
     },
+    "arenus_cap_tabs": {
+      "type": "arenus-cap-tabs",
+      "blocks": {
+        "tab_overview": { "type": "tab", "settings": { "label": "Overview", "icon": "overview", "link": "shopify://pages/cap-overview" } },
+        "tab_faq": { "type": "tab", "settings": { "label": "FAQ", "icon": "faq", "link": "shopify://pages/cap-faq" } },
+        "tab_enroll": { "type": "tab", "settings": { "label": "Enroll Now", "icon": "enroll", "link": "shopify://pages/colic-assurance-program-form" } },
+        "tab_wellness": { "type": "tab", "settings": { "label": "Wellness Programs", "icon": "wellness", "link": "shopify://pages/cap-wellness-programs" } },
+        "tab_claim": { "type": "tab", "settings": { "label": "File a Claim", "icon": "claim", "link": "shopify://pages/cap-file-a-claim" } },
+        "tab_report": { "type": "tab", "settings": { "label": "Report", "icon": "report", "link": "shopify://pages/cap-report" } },
+        "tab_terms": { "type": "tab", "settings": { "label": "Terms & Conditions", "icon": "terms", "link": "shopify://pages/cap-terms-and-conditions" } }
+      },
+      "block_order": [
+        "tab_overview",
+        "tab_faq",
+        "tab_enroll",
+        "tab_wellness",
+        "tab_claim",
+        "tab_report",
+        "tab_terms"
+      ],
+      "settings": {
+        "heading": "Explore the Program",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "arenus_colic_enroll": {
       "type": "arenus-colic-enroll",
       "blocks": {
@@ -129,6 +155,7 @@
   },
   "order": [
     "arenus_colic_banner",
+    "arenus_cap_tabs",
     "arenus_colic_enroll",
     "arenus_testimonials",
     "arenus_products"

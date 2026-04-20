@@ -231,11 +231,13 @@
                           </div>
                         {%- endif -%}
                       {%- endfor -%}
-                    </dl>
 
-                    {% if item.selling_plan_allocation %}
-                      <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
-                    {% endif %}
+                      {% if item.selling_plan_allocation %}
+                        <div class="cart-items__variant">
+                          <dd>{{ item.selling_plan_allocation.selling_plan.name }}</dd>
+                        </div>
+                      {% endif %}
+                    </dl>
                   {%- endif -%}
 
                   {% if item.line_level_discount_allocations.size > 0 %}
