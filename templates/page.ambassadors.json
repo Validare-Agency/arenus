@@ -48,7 +48,6 @@
         "max_products": 8,
         "background_color": "#ffffff",
         "text_color": "#000000",
-        "image_background_color": "#fffcea",
         "padding-block-start": 24,
         "padding-block-end": 72
       }
