@@ -120,6 +120,7 @@
 
             {%- comment -%} Variant data for quick-add modal (JSON) {%- endcomment -%}
             {%- unless product.has_only_default_variant -%}
+              {%- assign sp_group = product.selling_plan_groups | first -%}
               <script type="application/json" class="arenus-products__card-data">
                 {
                   "id": {{ product.id }},
@@ -128,6 +129,16 @@
                   "url": {{ product.url | json }},
                   "image": {{ product.featured_image | image_url: width: 400 | json }},
                   "options": {{ product.options_with_values | json }},
+                  {%- if sp_group and sp_group.selling_plans.size > 0 -%}
+                  "selling_plan_group": {
+                    "id": {{ sp_group.id | json }},
+                    "plans": [
+                      {%- for plan in sp_group.selling_plans -%}
+                        { "id": {{ plan.id }}, "name": {{ plan.name | json }} }{% unless forloop.last %},{% endunless %}
+                      {%- endfor -%}
+                    ]
+                  },
+                  {%- endif -%}
                   "variants": [
                     {%- for variant in product.variants -%}
                       {
@@ -135,7 +146,12 @@
                         "available": {{ variant.available }},
                         "price": {{ variant.price }},
                         "compare_at_price": {{ variant.compare_at_price | default: 0 }},
-                        "options": {{ variant.options | json }}
+                        "options": {{ variant.options | json }},
+                        "selling_plan_allocations": [
+                          {%- for alloc in variant.selling_plan_allocations -%}
+                            { "selling_plan_id": {{ alloc.selling_plan_id }}, "price": {{ alloc.price }} }{% unless forloop.last %},{% endunless %}
+                          {%- endfor -%}
+                        ]
                       }{%- unless forloop.last -%},{%- endunless -%}
                     {%- endfor -%}
                   ]
@@ -177,6 +193,9 @@
 
       {%- comment -%} Variant option groups (built dynamically by JS) {%- endcomment -%}
       <div class="arenus-qam__options"></div>
+
+      {%- comment -%} Subscription selector (rendered dynamically by JS) {%- endcomment -%}
+      <div class="arenus-qam__subscription" data-sub-wrap></div>
 
       {%- comment -%} Footer: quantity stepper + add to cart {%- endcomment -%}
       <div class="arenus-qam__footer">
@@ -302,7 +321,8 @@
   .arenus-products__card-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    aspect-ratio: 1/1;
   }
 
   .arenus-products__card-info {
@@ -887,6 +907,7 @@
 
     /* --- Modal state --- */
     var currentProductData = null;
+    var currentSubInstance = null;
     var selectedOptions = [];
     var quantity = 1;
     var isAdding = false;
@@ -1003,6 +1024,10 @@
       } else {
         modalAddBtn.disabled = true;
       }
+
+      if (currentSubInstance && variant) {
+        currentSubInstance.setVariant(variant.id);
+      }
     }
 
     if (modalOptions) {
@@ -1068,6 +1093,18 @@
         modalAddBtn.disabled = !variant || !variant.available;
       }
 
+      /* Render subscription selector */
+      try {
+        var subWrap = dialog.querySelector('[data-sub-wrap]');
+        if (subWrap && window.ArenusSubscription) {
+          currentSubInstance = window.ArenusSubscription.render(subWrap, productData, {
+            variantId: variant ? variant.id : productData.variants[0].id
+          });
+        }
+      } catch (err) {
+        console.error('Subscription render failed:', err);
+      }
+
       dialog.classList.remove('is-closing');
       dialog.showModal();
 
@@ -1093,6 +1130,7 @@
           window.scrollTo({ top: dialog._previousScrollY, behavior: 'instant' });
         }
 
+        if (currentSubInstance) { currentSubInstance.destroy(); currentSubInstance = null; }
         currentProductData = null;
         selectedOptions = [];
         quantity = 1;
@@ -1137,10 +1175,13 @@
       }
     }
 
-    function addToCart(variantId, qty, triggerBtn, onDone) {
+    function addToCart(variantId, qty, triggerBtn, onDone, sellingPlanId) {
       if (isAdding) return;
       isAdding = true;
       setButtonLoading(triggerBtn, true);
+
+      var body = { id: variantId, quantity: qty };
+      if (sellingPlanId) body.selling_plan = parseInt(sellingPlanId, 10);
 
       fetch('/cart/add.js', {
         method: 'POST',
@@ -1148,10 +1189,7 @@
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          id: variantId,
-          quantity: qty
-        })
+        body: JSON.stringify(body)
       })
       .then(function(res) { return res.json(); })
       .then(function(data) {
@@ -1199,9 +1237,10 @@
         var variant = findVariant();
         if (!variant || !variant.available) return;
 
+        var sellingPlanId = currentSubInstance ? currentSubInstance.getSellingPlanId() : null;
         addToCart(variant.id, quantity, modalAddBtn, function() {
           closeModal();
-        });
+        }, sellingPlanId);
       });
     }
 

@@ -1,0 +1,83 @@
+{
+  "sections": {
+    "banner": {
+      "type": "arenus-colic-banner",
+      "settings": {
+        "heading": "FAQ",
+        "description": "<p>Answers to common questions about the Colic Assurance Program.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/colic_assurance_program_banner.png",
+        "media_opacity": 30,
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 56,
+        "min_height_mobile": 400,
+        "min_height_desktop": 480,
+        "content_max_width_desktop": 860,
+        "background_color": "#191919",
+        "text_color": "#ffffff",
+        "show_overlay": true,
+        "overlay_color": "#00000033",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top"
+      }
+    },
+    "faq": {
+      "type": "arenus-faq",
+      "blocks": {
+        "products_tab": {
+          "type": "_faq-text-tab",
+          "blocks": {
+            "q1": { "type": "_faq-item", "settings": { "question": "How is the Arenus Colic Assurance Program different from other colic programs?", "answer": "<p>Arenus offers comprehensive coverage including medical and surgical colic, up to $15,000 lifetime coverage, horses with colic history, post-surgery horses, continued coverage after episodes, international travel coverage, and horses of all ages post-weaning.</p>" } },
+            "q2": { "type": "_faq-item", "settings": { "question": "How can Arenus offer this level of coverage?", "answer": "<p>Our products work. Our digestive health formulas are all scientifically developed, veterinarian approved and clinically tested.</p>" } },
+            "q3": { "type": "_faq-item", "settings": { "question": "What products are eligible for the Colic Assurance Program?", "answer": "<p>Assure Guard, Assure Plus, and Assure Guard Gold qualify. Enrolled horses receive recommendations for either Colic History Wellness Program or Colic Free Wellness Program.</p>" } },
+            "q4": { "type": "_faq-item", "settings": { "question": "Why does my horse need both Assure Guard and Assure Plus?", "answer": "<p>The combination provides flexible dosing to manage recurrent colic, allows tailored support based on need, and reduces daily maintenance costs.</p>" } },
+            "q5": { "type": "_faq-item", "settings": { "question": "Is there a purchase requirement for enrolling in CAP?", "answer": "<p>Yes, purchase required 48 hours prior to or within 5 days following enrollment notification acceptance.</p>" } }
+          },
+          "block_order": ["q1", "q2", "q3", "q4", "q5"],
+          "settings": { "label": "Products" }
+        },
+        "enrollment_tab": {
+          "type": "_faq-text-tab",
+          "blocks": {
+            "q1": { "type": "_faq-item", "settings": { "question": "What age of horse can be covered?", "answer": "<p>Any horse once weaned and at least 5 months old is eligible, with no upper age limits though coverage limitations may apply.</p>" } },
+            "q2": { "type": "_faq-item", "settings": { "question": "How long does it take for my enrollment form to be approved?", "answer": "<p>Approval occurs within 5 business days of completed form submission.</p>" } },
+            "q3": { "type": "_faq-item", "settings": { "question": "Is there a limit to the number of horses I can enroll in the CAP?", "answer": "<p>No limit. Submit a completed form for each horse.</p>" } },
+            "q4": { "type": "_faq-item", "settings": { "question": "Is there any monthly or annual fee to enroll in the CAP?", "answer": "<p>No fees. Enrollment is free with product purchase.</p>" } },
+            "q5": { "type": "_faq-item", "settings": { "question": "Can horses residing outside the USA enroll in the CAP?", "answer": "<p>Horse must reside in USA or Canada to enroll. Both countries' horses are covered while in either nation.</p>" } },
+            "q6": { "type": "_faq-item", "settings": { "question": "Can leased horses be enrolled in the CAP?", "answer": "<p>Yes, though the lessee/agent completes forms. Owner information is required and the owner is ultimately responsible.</p>" } }
+          },
+          "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"],
+          "settings": { "label": "Enrollment" }
+        },
+        "program_details_tab": {
+          "type": "_faq-text-tab",
+          "blocks": {
+            "q1": { "type": "_faq-item", "settings": { "question": "Can any veterinarian administer treatment for colic episodes?", "answer": "<p>Yes, any licensed veterinarian can treat. However, veterinarian-attended episodes are required for claim reimbursement.</p>" } },
+            "q2": { "type": "_faq-item", "settings": { "question": "Do I need to report all colic episodes?", "answer": "<p>Yes. All episodes of colic while enrolled must be reported to the CAP Program, regardless of whether a claim is filed or not.</p>" } },
+            "q3": { "type": "_faq-item", "settings": { "question": "What are the Annual Wellness Requirements for enrolled horses?", "answer": "<p>One physical exam by veterinarian per year, one dental exam with recommended treatments per year, annual veterinarian-administered vaccinations, and veterinarian-directed deworming program including at least two deworming administrations and one fecal egg count test yearly.</p>" } }
+          },
+          "block_order": ["q1", "q2", "q3"],
+          "settings": { "label": "Program Details" }
+        },
+        "filing_tab": {
+          "type": "_faq-text-tab",
+          "blocks": {
+            "q1": { "type": "_faq-item", "settings": { "question": "Does Arenus pay my veterinary bills directly?", "answer": "<p>No. Owners must pay veterinarian. CAP provides reimbursement after proof of payment.</p>" } },
+            "q2": { "type": "_faq-item", "settings": { "question": "Does the CAP offer reimbursement for medically treated (non-surgical) colic episodes?", "answer": "<p>Yes. Unlike other colic programs, medical and surgical colic episodes are eligible for reimbursement when your horse is enrolled in the CAP.</p>" } },
+            "q3": { "type": "_faq-item", "settings": { "question": "What is the process for filing a claim?", "answer": "<p>Complete Claim Initiation Form within 14 days of episode, then Colic Reimbursement Claim Form. Primary care veterinarian completes their form; attending veterinarian(s) complete their forms. All forms and materials due within 30 days of treatment completion for reimbursement eligibility.</p>" } }
+          },
+          "block_order": ["q1", "q2", "q3"],
+          "settings": { "label": "Filing a Claim" }
+        }
+      },
+      "block_order": ["products_tab", "enrollment_tab", "program_details_tab", "filing_tab"],
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    }
+  },
+  "order": ["banner", "faq"]
+}

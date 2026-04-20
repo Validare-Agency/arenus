@@ -1,0 +1,213 @@
+/* ═══════════════════════════════════════════
+   Arenus Subscription Selector — mobile-first
+   Shared styles for the PDP snippet + modal renderer
+   ═══════════════════════════════════════════ */
+
+.arenus-sub-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ── Card ── */
+.arenus-sub-selector__card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px 20px;
+  border: 1px solid #eeeeef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  margin: 0;
+}
+
+.arenus-sub-selector__card--selected {
+  border: 1.5px solid #191919;
+  padding: 15.5px 19.5px;
+}
+
+/* Hide the native radio input */
+.arenus-sub-selector__radio-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Custom radio visual */
+.arenus-sub-selector__radio-visual {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #808085;
+  border-radius: 50%;
+  background: transparent;
+  transition: border-color 0.2s ease;
+  margin-top: 1px;
+}
+
+.arenus-sub-selector__card--selected .arenus-sub-selector__radio-visual {
+  border-color: #191919;
+}
+
+.arenus-sub-selector__radio-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #191919;
+  transform: scale(0);
+  transition: transform 0.2s ease;
+}
+
+.arenus-sub-selector__card--selected .arenus-sub-selector__radio-dot {
+  transform: scale(1);
+}
+
+/* ── Card content ── */
+.arenus-sub-selector__content {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.arenus-sub-selector__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.arenus-sub-selector__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 0 0;
+}
+
+.arenus-sub-selector__label {
+  font-family: var(--font-body--family);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: -0.12px;
+  color: #808085;
+}
+
+/* ── Pricing ── */
+.arenus-sub-selector__price-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.arenus-sub-selector__price-strike {
+  font-family: var(--font-body--family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.14px;
+  color: #808085;
+  text-decoration: line-through;
+}
+
+.arenus-sub-selector__price-discount {
+  font-family: var(--font-body--family);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.4px;
+  color: #e6b236;
+}
+
+.arenus-sub-selector__price-onetime {
+  font-family: var(--font-body--family);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.36px;
+  color: #000;
+}
+
+/* ── Save X% badge ── */
+.arenus-sub-selector__badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #cce6ce;
+  color: #3e7c43;
+  font-family: var(--font-body--family);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: -0.12px;
+  white-space: nowrap;
+}
+
+/* ── Cadence dropdown ── */
+.arenus-sub-selector__cadence-wrap {
+  position: relative;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.arenus-sub-selector__card:not(.arenus-sub-selector__card--selected) .arenus-sub-selector__cadence-wrap {
+  display: none;
+}
+
+.arenus-sub-selector__cadence {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  height: 54px;
+  padding: 0 48px 0 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: var(--font-body--family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.32px;
+  color: #808085;
+  cursor: pointer;
+  outline: none;
+}
+
+.arenus-sub-selector__cadence:focus-visible {
+  border-color: #191919;
+}
+
+.arenus-sub-selector__cadence-caret {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #808085;
+  pointer-events: none;
+}
+
+.arenus-sub-selector__card--onetime .arenus-sub-selector__badge {
+  display: none;
+}

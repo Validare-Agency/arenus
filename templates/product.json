@@ -43,6 +43,10 @@
           "type": "variant_selector",
           "settings": {}
         },
+        "subscription_selector": {
+          "type": "subscription_selector",
+          "settings": {}
+        },
         "add_to_cart": {
           "type": "add_to_cart",
           "settings": {
@@ -78,6 +82,7 @@
         "short_description",
         "scroll_links",
         "variant_selector",
+        "subscription_selector",
         "add_to_cart",
         "description",
         "ingredients",

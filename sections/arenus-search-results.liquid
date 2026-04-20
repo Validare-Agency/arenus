@@ -129,6 +129,7 @@
                   </button>
 
                   {%- unless product.has_only_default_variant -%}
+                    {%- assign sp_group = product.selling_plan_groups | first -%}
                     <script type="application/json" class="arenus-cpg__card-data">
                       {
                         "id": {{ product.id }},
@@ -137,6 +138,16 @@
                         "url": {{ product.url | json }},
                         "image": {{ product.featured_image | image_url: width: 400 | json }},
                         "options": {{ product.options_with_values | json }},
+                        {%- if sp_group and sp_group.selling_plans.size > 0 -%}
+                        "selling_plan_group": {
+                          "id": {{ sp_group.id | json }},
+                          "plans": [
+                            {%- for plan in sp_group.selling_plans -%}
+                              { "id": {{ plan.id }}, "name": {{ plan.name | json }} }{% unless forloop.last %},{% endunless %}
+                            {%- endfor -%}
+                          ]
+                        },
+                        {%- endif -%}
                         "variants": [
                           {%- for variant in product.variants -%}
                             {
@@ -144,7 +155,12 @@
                               "available": {{ variant.available }},
                               "price": {{ variant.price }},
                               "compare_at_price": {{ variant.compare_at_price | default: 0 }},
-                              "options": {{ variant.options | json }}
+                              "options": {{ variant.options | json }},
+                              "selling_plan_allocations": [
+                                {%- for alloc in variant.selling_plan_allocations -%}
+                                  { "selling_plan_id": {{ alloc.selling_plan_id }}, "price": {{ alloc.price }} }{% unless forloop.last %},{% endunless %}
+                                {%- endfor -%}
+                              ]
                             }{%- unless forloop.last -%},{%- endunless -%}
                           {%- endfor -%}
                         ]
@@ -209,6 +225,8 @@
       </div>
 
       <div class="arenus-cpg-qam__options"></div>
+
+      <div class="arenus-cpg-qam__subscription" data-sub-wrap></div>
 
       <div class="arenus-cpg-qam__footer">
         <div class="arenus-cpg-qam__stepper">
@@ -409,6 +427,7 @@
     if (!dialog) return;
 
     var currentProductData = null;
+    var currentSubInstance = null;
     var selectedOptions = [];
     var quantity = 1;
     var isAdding = false;
@@ -508,6 +527,9 @@
       if (modalAddBtn) {
         modalAddBtn.disabled = !variant || !variant.available;
       }
+      if (currentSubInstance && variant) {
+        currentSubInstance.setVariant(variant.id);
+      }
     }
 
     /* Modal option clicks */
@@ -557,6 +579,17 @@
       buildModalOptions();
       var variant = findVariant();
       updateModalPrices(variant);
+      /* Render subscription selector */
+      try {
+        var subWrap = dialog.querySelector('[data-sub-wrap]');
+        if (subWrap && window.ArenusSubscription) {
+          currentSubInstance = window.ArenusSubscription.render(subWrap, productData, {
+            variantId: variant ? variant.id : productData.variants[0].id
+          });
+        }
+      } catch (err) {
+        console.error('Subscription render failed:', err);
+      }
       if (modalAddBtn) modalAddBtn.disabled = !variant || !variant.available;
       dialog.classList.remove('is-closing');
       dialog.showModal();
@@ -579,6 +612,7 @@
         if (dialog._previousScrollY !== undefined) {
           window.scrollTo({ top: dialog._previousScrollY, behavior: 'instant' });
         }
+        if (currentSubInstance) { currentSubInstance.destroy(); currentSubInstance = null; }
         currentProductData = null;
         selectedOptions = [];
         quantity = 1;
@@ -613,14 +647,16 @@
       }
     }
 
-    function addToCart(variantId, qty, triggerBtn, onDone) {
+    function addToCart(variantId, qty, triggerBtn, onDone, sellingPlanId) {
       if (isAdding) return;
       isAdding = true;
       setButtonLoading(triggerBtn, true);
+      var body = { id: variantId, quantity: qty };
+      if (sellingPlanId) body.selling_plan = parseInt(sellingPlanId, 10);
       fetch('/cart/add.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ id: variantId, quantity: qty })
+        body: JSON.stringify(body)
       })
       .then(function(res) { return res.json(); })
       .then(function(data) {
@@ -655,7 +691,8 @@
       modalAddBtn.addEventListener('click', function() {
         var variant = findVariant();
         if (!variant || !variant.available) return;
-        addToCart(variant.id, quantity, modalAddBtn, function() { closeModal(); });
+        var sellingPlanId = currentSubInstance ? currentSubInstance.getSellingPlanId() : null;
+        addToCart(variant.id, quantity, modalAddBtn, function() { closeModal(); }, sellingPlanId);
       });
     }
 

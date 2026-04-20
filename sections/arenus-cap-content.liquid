@@ -1,0 +1,326 @@
+{%- comment -%}
+  Arenus — CAP Generic Content section
+  Reusable rich-text + optional image section for CAP sub-pages
+  (Overview, Wellness Programs, Terms & Conditions, etc.).
+  Supports multiple content blocks (text, image, heading) in any order.
+{%- endcomment -%}
+
+<section
+  id="ArenusCapContent-{{ section.id }}"
+  class="arenus-cap-content c-page-width"
+  style="
+    padding-block-start: {{ section.settings.padding_top }}px;
+    padding-block-end: {{ section.settings.padding_bottom }}px;
+    --cap-content-max-width: {{ section.settings.max_width }}px;
+  "
+>
+  {%- if section.settings.heading != blank -%}
+    <h1 class="arenus-cap-content__heading">{{ section.settings.heading }}</h1>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="arenus-cap-content__body">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <h2 class="arenus-cap-content__h2" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+          {%- when 'text' -%}
+            <div class="arenus-cap-content__richtext" {{ block.shopify_attributes }}>
+              {{ block.settings.content }}
+            </div>
+          {%- when 'image' -%}
+            {%- if block.settings.image != blank -%}
+              <div class="arenus-cap-content__image-wrap" {{ block.shopify_attributes }}>
+                {{
+                  block.settings.image
+                  | image_url: width: 1800
+                  | image_tag:
+                    width: block.settings.image.width,
+                    height: block.settings.image.height,
+                    alt: block.settings.alt,
+                    loading: 'lazy',
+                    class: 'arenus-cap-content__image'
+                }}
+                {%- if block.settings.caption != blank -%}
+                  <p class="arenus-cap-content__caption">{{ block.settings.caption }}</p>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- when 'button' -%}
+            {%- if block.settings.label != blank and block.settings.link != blank -%}
+              <div class="arenus-cap-content__button-wrap" {{ block.shopify_attributes }}>
+                <a class="arenus-cap-content__button" href="{{ block.settings.link }}">{{ block.settings.label }}</a>
+              </div>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .arenus-cap-content {
+    margin: 0 auto;
+    max-width: 1440px;
+    padding-inline: 20px;
+  }
+
+  .arenus-cap-content__heading {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.64px;
+    color: #000;
+    margin: 0 0 24px;
+    max-width: var(--cap-content-max-width, 900px);
+    margin-inline: auto;
+  }
+
+  .arenus-cap-content__body {
+    max-width: var(--cap-content-max-width, 900px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .arenus-cap-content__h2 {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.48px;
+    color: #000;
+    margin: 16px 0 0;
+  }
+
+  .arenus-cap-content__richtext {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.16px;
+    color: #424242;
+  }
+
+  .arenus-cap-content__richtext p {
+    margin: 0 0 16px;
+  }
+
+  .arenus-cap-content__richtext p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arenus-cap-content__richtext ul,
+  .arenus-cap-content__richtext ol {
+    padding-left: 20px;
+    margin: 0 0 16px;
+  }
+
+  .arenus-cap-content__richtext li {
+    margin-bottom: 8px;
+  }
+
+  .arenus-cap-content__richtext a {
+    color: #e6b236;
+    text-decoration: underline;
+  }
+
+  .arenus-cap-content__richtext strong {
+    color: #000;
+    font-weight: 600;
+  }
+
+  .arenus-cap-content__image-wrap {
+    margin: 8px 0;
+  }
+
+  .arenus-cap-content__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .arenus-cap-content__caption {
+    margin: 8px 0 0;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.4;
+    color: #808085;
+    text-align: center;
+  }
+
+  .arenus-cap-content__button-wrap {
+    margin: 8px 0;
+  }
+
+  .arenus-cap-content__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px;
+    background: #e6b236;
+    color: #fff;
+    border-radius: 6px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    transition: background 0.2s ease;
+  }
+
+  .arenus-cap-content__button:hover {
+    background: #d9a42a;
+  }
+
+  @media screen and (min-width: 750px) {
+    .arenus-cap-content {
+      padding-inline: 40px;
+    }
+
+    .arenus-cap-content__heading {
+      font-size: 48px;
+      letter-spacing: -0.96px;
+      margin-bottom: 40px;
+    }
+
+    .arenus-cap-content__h2 {
+      font-size: 32px;
+      letter-spacing: -0.64px;
+    }
+
+    .arenus-cap-content__richtext {
+      font-size: 18px;
+      letter-spacing: -0.18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "CAP Content",
+  "tag": "section",
+  "class": "arenus-cap-content-wrapper section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Page heading"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content max width",
+      "min": 600,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Heading text",
+          "default": "Section heading"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Rich text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Paragraph content goes here.</p>"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CAP Content",
+      "category": "Arenus",
+      "blocks": [
+        { "type": "text" }
+      ]
+    }
+  ],
+  "templates": ["page"]
+}
+{% endschema %}
