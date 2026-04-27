@@ -271,7 +271,7 @@
 
       /* Hide the PDP's normal price element when subscribe is active; restore otherwise.
          We target the element by class so this doesn't need explicit binding. */
-      var pdpPrice = document.querySelector('.arenus-product__price');
+      var pdpPrice = document.querySelector('.arenus-product__price-block');
       if (pdpPrice) {
         pdpPrice.style.display = state.mode === 'subscribe' ? 'none' : '';
       }

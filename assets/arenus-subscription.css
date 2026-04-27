@@ -17,7 +17,7 @@
   align-items: flex-start;
   gap: 8px;
   padding: 16px 20px;
-  border: 1px solid #eeeeef;
+  border: 1px solid #000000;
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.2s ease;

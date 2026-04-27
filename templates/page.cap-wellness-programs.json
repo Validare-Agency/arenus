@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "banner": {
@@ -11,8 +20,8 @@
         "media_opacity": 30,
         "heading_size_mobile": 32,
         "heading_size_desktop": 56,
-        "min_height_mobile": 400,
-        "min_height_desktop": 480,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
         "content_max_width_desktop": 860,
         "background_color": "#191919",
         "text_color": "#ffffff",
@@ -28,39 +37,151 @@
         "intro": {
           "type": "text",
           "settings": {
-            "content": "<p>Each enrolled horse is assigned to one of two wellness programs based on enrollment answers. Dosing protocols must be followed to maintain eligibility.</p><p>Products are organized into three weight brackets: 200–799 lb, 800–1300 lb, and 1301 lb+.</p>"
+            "content": "<p>Upon completing your horse's enrollment form, you will receive a confirmation email and be assigned to one of two custom Wellness Programs based on your answers to the enrollment questions. Once your supplements arrive, follow the program charts below throughout your horse's enrollment to remain eligible for reimbursement benefits.</p>"
           }
         },
         "h_free": {
           "type": "heading",
-          "settings": { "text": "Colic Free Wellness Program" }
-        },
-        "free": {
-          "type": "text",
           "settings": {
-            "content": "<p>For horses with no prior history of colic. Assure Guard paired with Assure Plus, or Assure Guard Gold as a single-product option.</p>"
+            "text": "Colic Free Wellness Program"
           }
         },
-        "free_image": {
+        "free_intro": {
+          "type": "text",
+          "settings": {
+            "content": "<p>For horses with no prior history of colic. Use either the two-product Assure Guard + Assure Plus system, or the single-product Assure Guard Gold option.</p>"
+          }
+        },
+        "h_free_system": {
+          "type": "heading",
+          "settings": {
+            "text": "Assure Guard and Assure Plus"
+          }
+        },
+        "free_system_1": {
           "type": "image",
           "settings": {
-            "alt": "Colic Free Wellness Program dosing protocol"
+            "image": "shopify://shop_images/2023-4-18-colic-free-wellness-program-200-799lbs-system.webp",
+            "alt": "Colic Free Wellness Program — Assure Guard and Assure Plus — 200–799 lb",
+            "caption": "200–799 lb"
+          }
+        },
+        "free_system_2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/colic-free-wellness-program-800-1300lbs-system.webp",
+            "alt": "Colic Free Wellness Program — Assure Guard and Assure Plus — 800–1300 lb",
+            "caption": "800–1300 lb"
+          }
+        },
+        "free_system_3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-free-wellness-program-1301-system.webp",
+            "alt": "Colic Free Wellness Program — Assure Guard and Assure Plus — 1301 lb+",
+            "caption": "1301 lb+"
+          }
+        },
+        "h_free_gold": {
+          "type": "heading",
+          "settings": {
+            "text": "Assure Guard Gold"
+          }
+        },
+        "free_gold_1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-free-wellness-program-200-799lbs-agg.webp",
+            "alt": "Colic Free Wellness Program — Assure Guard Gold — 200–799 lb",
+            "caption": "200–799 lb"
+          }
+        },
+        "free_gold_2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-free-wellness-program-800-1300lbs-agg.webp",
+            "alt": "Colic Free Wellness Program — Assure Guard Gold — 800–1300 lb",
+            "caption": "800–1300 lb"
+          }
+        },
+        "free_gold_3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-free-wellness-program-1301-agg.webp",
+            "alt": "Colic Free Wellness Program — Assure Guard Gold — 1301 lb+",
+            "caption": "1301 lb+"
           }
         },
         "h_history": {
           "type": "heading",
-          "settings": { "text": "Colic History Wellness Program" }
-        },
-        "history": {
-          "type": "text",
           "settings": {
-            "content": "<p>For horses with a prior history of colic. Adjusted dosing protocols to provide enhanced digestive support.</p>"
+            "text": "Colic History Wellness Program"
           }
         },
-        "history_image": {
+        "history_intro": {
+          "type": "text",
+          "settings": {
+            "content": "<p>For horses with a prior history of colic. Adjusted dosing protocols to provide enhanced digestive support. Use either the two-product Assure Guard + Assure Plus system, or the single-product Assure Guard Gold option.</p>"
+          }
+        },
+        "h_history_system": {
+          "type": "heading",
+          "settings": {
+            "text": "Assure Guard and Assure Plus"
+          }
+        },
+        "history_system_1": {
           "type": "image",
           "settings": {
-            "alt": "Colic History Wellness Program dosing protocol"
+            "image": "shopify://shop_images/2023-4-18-colic-history-wellness-program-200-799lbs-system.webp",
+            "alt": "Colic History Wellness Program — Assure Guard and Assure Plus — 200–799 lb",
+            "caption": "200–799 lb"
+          }
+        },
+        "history_system_2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-history-wellness-program-800-1300lbs-system.webp",
+            "alt": "Colic History Wellness Program — Assure Guard and Assure Plus — 800–1300 lb",
+            "caption": "800–1300 lb"
+          }
+        },
+        "history_system_3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-history-welllness-program-1301-system.webp",
+            "alt": "Colic History Wellness Program — Assure Guard and Assure Plus — 1301 lb+",
+            "caption": "1301 lb+"
+          }
+        },
+        "h_history_gold": {
+          "type": "heading",
+          "settings": {
+            "text": "Assure Guard Gold"
+          }
+        },
+        "history_gold_1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-history-wellness-program-200-799lbs-agg.webp",
+            "alt": "Colic History Wellness Program — Assure Guard Gold — 200–799 lb",
+            "caption": "200–799 lb"
+          }
+        },
+        "history_gold_2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-history-wellness-program-800-1300lbs-agg.jpg",
+            "alt": "Colic History Wellness Program — Assure Guard Gold — 800–1300 lb",
+            "caption": "800–1300 lb"
+          }
+        },
+        "history_gold_3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/2023-4-18-colic-history-wellness-program-1301-agg.webp",
+            "alt": "Colic History Wellness Program — Assure Guard Gold — 1301 lb+",
+            "caption": "1301 lb+"
           }
         },
         "note": {
@@ -77,14 +198,42 @@
           }
         }
       },
-      "block_order": ["intro", "h_free", "free", "free_image", "h_history", "history", "history_image", "note", "btn"],
+      "block_order": [
+        "intro",
+        "h_free",
+        "free_intro",
+        "h_free_system",
+        "free_system_1",
+        "free_system_2",
+        "free_system_3",
+        "h_free_gold",
+        "free_gold_1",
+        "free_gold_2",
+        "free_gold_3",
+        "h_history",
+        "history_intro",
+        "h_history_system",
+        "history_system_1",
+        "history_system_2",
+        "history_system_3",
+        "h_history_gold",
+        "history_gold_1",
+        "history_gold_2",
+        "history_gold_3",
+        "note",
+        "btn"
+      ],
       "settings": {
         "heading": "",
         "max_width": 900,
         "padding_top": 56,
-        "padding_bottom": 56
+        "padding_bottom": 56,
+        "image_layout": "3-column"
       }
     }
   },
-  "order": ["banner", "content"]
+  "order": [
+    "banner",
+    "content"
+  ]
 }

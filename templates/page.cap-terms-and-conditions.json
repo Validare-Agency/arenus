@@ -1,19 +1,28 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "banner": {
       "type": "arenus-colic-banner",
       "settings": {
-        "heading": "Terms & Conditions",
-        "description": "<p>The Colic Assurance Program™ is a reimbursement program operated by Assurance Health Program, LLC.</p>",
+        "heading": "Colic Assurance Program™ Terms & Conditions",
+        "description": "",
         "button_label": "",
         "button_link": "",
         "image": "shopify://shop_images/colic_assurance_program_banner.png",
         "media_opacity": 30,
         "heading_size_mobile": 32,
         "heading_size_desktop": 56,
-        "min_height_mobile": 400,
-        "min_height_desktop": 480,
-        "content_max_width_desktop": 860,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
+        "content_max_width_desktop": 700,
         "background_color": "#191919",
         "text_color": "#ffffff",
         "show_overlay": true,
@@ -25,98 +34,163 @@
     "content": {
       "type": "arenus-cap-content",
       "blocks": {
-        "h_overview": {
+        "h_agreement": {
           "type": "heading",
-          "settings": { "text": "Program Overview" }
+          "settings": {
+            "text": "Agreement"
+          }
         },
-        "overview": {
+        "agreement": {
           "type": "text",
           "settings": {
-            "content": "<p>The Colic Assurance Program (CAP) is a reimbursement program operated by Assurance Health Program, LLC that covers qualifying horses for colic-related veterinary expenses up to $15,000 lifetime maximum.</p>"
+            "content": "<p>This agreement (\"Agreement\") is a legal agreement between you (both the individual entering this Agreement and any other person or entity on behalf of which such individual is acting) and Assurance Health Program, LLC regarding the Colic Assurance Program™ (CAP™). If you are entering this Agreement on behalf of any other person or entity, you hereby represent that you have the authority to legally bind such person or entity. This Agreement and any of the terms or conditions under this Agreement, cannot be altered or modified by any employee, contractor, or affiliate of the Assurance Health Program, LLC, whether in writing or orally. Any changes to the program terms and conditions can only be made through a written update of this Agreement and are valid and binding on all program participants upon notification via delivery through email.</p>"
+          }
+        },
+        "h_terms": {
+          "type": "heading",
+          "settings": {
+            "text": "Colic Assurance Program™ Terms"
+          }
+        },
+        "terms": {
+          "type": "text",
+          "settings": {
+            "content": "<p>Horses that are enrolled in and that comply with all Colic Assurance Program™ terms (\"Qualifying Horses\") will be eligible for reimbursement from Assurance Health Program, LLC for up to $15,000.00 (as applicable and as described further below) for medical (non-surgical) colic treatment or colic surgery assistance fees (\"Reimbursement\").</p>"
+          }
+        },
+        "h_requirements": {
+          "type": "heading",
+          "settings": {
+            "text": "Colic Assurance Program™ Requirements"
+          }
+        },
+        "requirements": {
+          "type": "text",
+          "settings": {
+            "content": "<p>To comply with the Colic Assurance Program™ and remain eligible for Reimbursement, in addition to the requirements for Reimbursement stated below, a Qualifying Horse must meet the following \"Program Requirements\": All lifetime coverage maximums require purchase and daily administration of the required dose of qualifying Assure Digestive Aid products (Assure® Guard and Assure® Plus or Assure® Guard Gold) as stated on the corresponding CAP Coverage \"Minimum Dose\" Guides posted or described and assigned by the Program Administrator (Assurance Health Program, LLC) and duly named \"Wellness Programs.\" Any changes in Qualifying Products or dosing levels must be approved in writing by the Program Administrator, Assurance Health Program, LLC.</p><p>The Minimum Dose requirements for Qualified Horses with no history of colic within the twelve (12) months prior to enrollment is dictated by the Colic Free Wellness Program as provided by the Program Administrator. The Minimum Dose requirements for Qualified Horses with a prior history of colic; defined as any episode of colic within the twelve (12) months prior to enrollment or no more than one (1) previous abdominal surgery of any type is dictated by the Colic History Wellness Program as provided by the Program Administrator.</p><p>Coverage for horses enrolled with no prior history of colic begins once the loading period of their required Minimum Dose requirements has been completed. Coverage for horses enrolled with a history of colic but not experiencing more than two (2) colics in the twelve (12) months prior to enrollment begins at the end of the loading period or periods and beginning of the maintenance period.</p><p>Qualified Horses with a history of recurrent colic (defined as three (3) or more colic episodes) in the twelve (12) months prior to enrollment are eligible for Reimbursement once the loading period of their required Minimum Dose has been completed as well as twelve (12) months of the required maintenance period, during which the horse has experienced no colic episodes. A Qualified Horse with a history of no more than one (1) prior abdominal surgery in their lifetime is eligible for Reimbursement once the loading period of their required Minimum Dose has been completed as well as twelve (12) months of the required maintenance period, during which the horse has experienced no colic episodes.</p><p>Qualified Horses with a history of abdominal surgery will receive reduced benefits as outlined in the Reimbursement section below. Any Qualified Horse that experiences three (3) episodes or more of colic while enrolled in CAP™, will no longer be eligible for benefits under the Colic Assurance Program.</p>"
           }
         },
         "h_eligibility": {
           "type": "heading",
-          "settings": { "text": "Horse Eligibility Requirements" }
+          "settings": {
+            "text": "Eligibility"
+          }
         },
         "eligibility": {
           "type": "text",
           "settings": {
-            "content": "<ul><li>Formally accepted into the program via enrollment form</li><li>Reside in the United States or Canada</li><li>Under care of a licensed veterinarian</li><li>Fully weaned and at least five months old</li><li>Cannot have had more than one abdominal surgery</li><li>Cannot be miniature horses, donkeys, burros, mules, zebras, or zorses</li></ul><p><strong>Ineligible conditions include:</strong> diagnosis of lipomas or enterolithiasis; chronic orthopedic conditions or metabolic disease; cases where the attending veterinarian cannot rule out non-colic causes.</p>"
+            "content": "<p>In addition to the other requirements of this Agreement, to be a Qualifying Horse, a horse must:</p><ol><li>Be formally accepted into the Colic Assurance Program™ (note that acceptance does not necessarily mean an owner will be entitled to Reimbursement). To be accepted, the horse's owner must have completed the Colic Assurance Program Enrollment Form and have received written confirmation from the Program Administrator (Assurance Health Program, LLC) that the horse has been formally accepted into the Colic Assurance Program™ (\"Acceptance Notification\") — see Colic Assurance Program™ Requirements above. Assurance Health Program, LLC reserves the right to contact the horse owner's veterinarian or the veterinary clinic listed in the Colic Assurance Program™ Enrollment Form or Reimbursement Forms to verify that the information on the Enrollment Form or Reimbursement Forms is correct.</li><li>Reside in the United States or Canada and be under the care of a veterinarian who is licensed in their residing country (\"Licensed Veterinarian\"); and</li><li>Be fully weaned and at least five months of age.</li></ol><p>A horse is not eligible for acceptance or reimbursement if:</p><ol><li>It has had more than one abdominal surgery (defined as any surgical procedure done to a horse's abdomen at any time during a horse's life); or</li><li>The Attending Veterinarian cannot attest to the rule out of other causes (chronic ongoing illness, metabolic disease and/or severe acute or chronic pain due to orthopedic injury — i.e. advanced laminitis) of colic considered to be illness other than digestive disturbance; or</li><li>It has either had a presumptive diagnosis or been diagnosed with either lipomas or enterolithiasis; or</li><li>It is considered one of the following breeds: miniature horse, donkey, burro, mule, zebra or zorse.</li></ol>"
           }
         },
-        "h_products": {
+        "h_purchase": {
           "type": "heading",
-          "settings": { "text": "Product Requirements" }
-        },
-        "products": {
-          "type": "text",
           "settings": {
-            "content": "<p>Horses must purchase and administer qualifying products — Assure Guard, Assure Plus, or Assure Guard Gold — at minimum doses based on assigned wellness programs.</p><p><strong>Purchase timeline:</strong></p><ul><li>No more than 48 hours before enrollment submission</li><li>No later than five business days after formal acceptance</li><li>Initial purchase through veterinarian, approved retailer, or Arenus</li></ul>"
+            "text": "Purchase Requirements"
           }
         },
-        "h_coverage": {
-          "type": "heading",
-          "settings": { "text": "Coverage Details" }
-        },
-        "coverage": {
+        "purchase": {
           "type": "text",
           "settings": {
-            "content": "<p><strong>Maximum benefits vary by history:</strong></p><ul><li>No prior colic: $15,000 lifetime</li><li>Prior colic history: varies by colic episodes</li><li>One abdominal surgery history: $3,750 months 13–24; potentially $7,500 thereafter</li><li>Three or more colics during enrollment: program disqualification</li></ul><p><strong>Per-incident limits:</strong></p><ul><li>Medical colic: $800 maximum per episode</li><li>Surgical colic: one episode covered</li></ul>"
+            "content": "<p>Assure® Guard, Assure® Plus and Assure® Guard Gold are referred to collectively as \"Qualifying Products\". Coverage in the Colic Assurance Program™ only applies to purchases of Qualifying Products made no more than 48 consecutive hours prior to completion of the enrollment application and receipt of enrollment application submission, and no later than five (5) business days following notification of formal acceptance of the Qualified Horse into the Colic Assurance Program™.</p><p>The initial (first) purchase of Qualifying Products must be made directly through the enrollee's primary care veterinarian, a Qualified Veterinarian, an approved qualifying retailer, or Arenus. Initial purchases not made directly through Arenus, must provide proof of purchase at time of completion of the enrollment application. In addition, Qualifying Horses that complete their initial purchase through Arenus, must have the initial purchase containing Qualifying Products shipped within five (5) business days of formal acceptance into the Colic Assurance Program™, barring any delays caused by Arenus.</p><p>After initial purchase, all subsequent purchases of Qualifying Products must be purchased from a veterinarian, directly from Arenus or through any approved qualifying retailer of Qualifying Products. Should product availability become impaired at any time or for any reason during coverage under this program, it is your responsibility to contact the Colic Assurance Program™ administrator at Assurance Health Program, LLC for instructions on alternate supplementation during the period of shortage, and those instructions are considered additional requirements to remaining qualified for benefits.</p>"
           }
         },
-        "h_docs": {
+        "h_other_eligibility": {
           "type": "heading",
-          "settings": { "text": "Required Documentation for Claims" }
-        },
-        "docs": {
-          "type": "text",
           "settings": {
-            "content": "<ul><li>Annual physical examinations by licensed veterinarian</li><li>Annual dental examinations and treatments</li><li>Core vaccinations (tetanus, EEE/WEE, WNV, rabies)</li><li>Veterinarian-directed deworming program documentation</li><li>Purchase records for all qualifying products</li><li>Medical records and proof of payment for treated colic episodes</li><li>Complete 12-month veterinary health history via affidavit</li></ul>"
+            "text": "Other Eligibility Requirements"
           }
         },
-        "h_reporting": {
-          "type": "heading",
-          "settings": { "text": "Reporting Requirements" }
-        },
-        "reporting": {
+        "other_eligibility": {
           "type": "text",
           "settings": {
-            "content": "<p>Owners must report all colic episodes within 14 calendar days, regardless of claim filing. Failure to report renders horses ineligible for future benefits.</p>"
+            "content": "<p>After acceptance into the Colic Assurance Program™, owners must:</p><ol><li>Maintain purchases and supply of Qualifying Products to comply with all purchase and Minimum Dosing Requirements; and</li><li>Have continuously administered the corresponding Qualifying Products at the required protocol based on the Qualified Horse's assigned Wellness Program or any recommended special/customized Eligible Product feeding program directed by the Program Administrator for the entire time since acceptance.</li></ol><p>Any changes in Qualifying Products or dosing levels must be approved in writing by the Program Administrator. If, at any time, the Colic Assurance Program™ eligibility requirements are not met, the owner will be required to reapply for the program with a new loading period OR adjust dosing protocol within their assigned Wellness Program for administering the corresponding Qualifying Products. Any delay in the initial start of consumption of the Qualifying Products may postpone the reimbursement eligibility start date.</p><p>Owners are required to report all colic episodes experienced by an enrolled horse, whether a claim is filed or not, within fourteen (14) calendar days of the date of the colic episode. Upon reporting of a colic episode, the episode will be reviewed, and program/dosing changes may be required to assist in eliminating future incidences of colic. Failure to report colic or failure to enact program dosing changes will render the enrolled horse ineligible for future benefits.</p><p>Employees of Arenus, Revival Animal Health and Assurance Health Program, its parents, subsidiaries, contractors or affiliates and their employees are not eligible to participate in the Colic Assurance Program. Arenus sponsored individuals (Ambassadors) or organizations and approved qualifying retailers and their employees and family can be eligible to participate in the Colic Assurance Program™. Maintaining eligibility requires proof of sale from the enrollee's primary care veterinarian, a Qualified Veterinarian, an approved qualifying retailer, or the Program Administrator; Assurance Health Program, LLC at retail price for all purchases of Qualifying Products (Arenus Professional Referral Program Purchases do qualify) and all other eligibility requirements including enrollment.</p><p>Those not purchasing Qualifying Products at the full retail value (as stated in the corresponding price list or online, discounting through the PRP can be applied) cannot maintain eligibility in the Colic Assurance Program™. Qualifying Products may be placed on the Arenus Automatic Shipment Program (auto-ship) with the auto-ship discount although the auto-ship discount and PRP discounts cannot be combined.</p>"
           }
         },
-        "h_submission": {
+        "h_reimbursement": {
           "type": "heading",
-          "settings": { "text": "Claim Submission Timeline" }
+          "settings": {
+            "text": "Reimbursement"
+          }
         },
-        "submission": {
+        "reimbursement": {
           "type": "text",
           "settings": {
-            "content": "<p>All required forms must be submitted within 30 calendar days of treatment completion, including the Primary Care Veterinarian Form, Attending Veterinarian Form, and Reimbursement Claim Form.</p>"
+            "content": "<p>Reimbursement is limited to a maximum of $15,000.00 over the lifetime of a Qualifying Horse and is limited to qualifying expenses incurred while a horse is a Qualifying Horse.</p><p>Qualifying Horses that have been accepted into the Colic Assurance Program with a history of three (3) or more colic episodes in the twelve (12) months prior to enrollment are subject to a colic free waiting period of twelve (12) months beginning at the completion of administering the required loading period of the Minimum Dosing Requirements associated with their assigned Wellness Program before becoming eligible for the maximum lifetime benefit of $15,000.00.</p><p>Qualifying Horses that have been accepted into the Colic Assurance Program with a history of no more than one (1) abdominal surgery are subject to lifetime maximums of $3,750.00 in months thirteen (13) to twenty-four (24) of the program under the condition that the Qualified Horse has remained colic free during the first twelve (12) months of administration of the maintenance period of their assigned Wellness Program; lifetime maximum is increased to $7,500.00 during months twenty-five (25) forward should the horse remain colic free during months thirteen (13) to twenty-four (24) of administration of the maintenance period of their assigned Wellness Program. However, should a Qualified Horse with a history of colic surgery not remain colic free during months thirteen (13) to twenty-four (24) of administering the required maintenance period associated with their assigned Wellness Program, the Qualified Horse is subject to remain at a $3,750.00 Reimbursement maximum for the remainder of their lifetime.</p><p>Medical (non-surgical) colic episodes will be subject to a $800.00 maximum Reimbursement for any single event. Any fees that exceed the reimbursement shall be the sole responsibility of the owner. Multiple episodes of medical colic will be covered during the lifetime of a Qualified Horse, subject to the limitations herein. One episode of surgical colic will be covered during the lifetime of a Qualified Horse, subject to the limitations herein.</p><p>Expenses eligible for reimbursement (\"Qualifying Expenses\") include those costs incurred for the treatment of a medical or surgical colic incident and may include the following:</p><ol><li>Ambulatory (trip charges) associated with travel to the farm or facility,</li><li>Emergency fees associated with daytime or afterhours emergency care,</li><li>Exam, laboratory and drug costs associated with colic treatment,</li><li>Preoperative veterinary care provided at the horse's stable or facility or a veterinary hospital, clinic or surgical facility,</li><li>Surgery (limited to the digestive tract) provided at a veterinary surgical facility, and/or</li><li>Postoperative veterinary care provided at the horse's stable or facility or a veterinary hospital, clinic or surgical facility.</li></ol><p>To apply for and receive reimbursement, the horse owner or agent must:</p><ol><li>Have received an official Acceptance Notification,</li><li>Purchase the corresponding Qualifying Products after enrollment application submission (purchases made more than 48 hours prior to enrollment application submission do not qualify) and have administered the corresponding Qualifying Products at the Minimum Dosing Requirements based on the Qualifying Horse's assigned Wellness Program to the Qualifying Horse for the full loading period and during all consecutive calendar days since acceptance,</li><li>Ensure that both the Primary Care Veterinarian and, should the horse need medical or surgical colic treatment, the Attending Veterinarian and/or Veterinary Surgeon be licensed in the United States or, if outside the contiguous United States, that the Attending Veterinarian and/or Veterinary Surgeon be duly licensed in the country in which the illness occurred,</li><li>Notify Assurance Health Program, LLC through the Program administrator by completing the International Travel Form at least fourteen (14) days prior to the start of travel outside the contiguous United States and administer the corresponding loading period for Colic Free Wellness Programs and early loading period for Colic History Wellness Programs requirements and continue administration of during travel as well as the seven (7) day period after return to the contiguous United States,</li><li>Notify Assurance Health Program, LLC through the Program Administrator of the medical colic or colic surgery within fourteen (14) calendar days of the date of surgery or medical treatment of the colic episode by completing the Claim Initiation Form,</li><li>Have the Primary Care Veterinarian complete and submit the Colic Primary Care Veterinarian Form to Assurance Health Program, LLC through the Program Administrator within thirty (30) calendar days of the date of completion of treatment for the surgery or medical colic incident,</li><li>Have the Attending Veterinarian(s) (or applicable veterinary practice or facility) complete and send the Attending Veterinarian Form to Assurance Health Program, LLC through the Program Administrator within thirty (30) calendar days of the date of completion of treatment for the surgery or medical colic incident,</li><li>Complete and submit the Reimbursement Claim Form to Assurance Health Program, LLC through the Program Administrator within thirty (30) calendar days of date of completion of treatment for the surgery or medical colic incident,</li><li>Have assumed responsibility for all costs associated with the medical colic or colic surgery prior to submission (Assurance Health Program, LLC may require proof of payment),</li><li>Submit all required documents to the Program Administrator to gain approval from Assurance Health Program, LLC for the Reimbursement from Assurance Health Program, LLC; and</li><li>Not be in default of payment for any services rendered in relationship to the Reimbursement.</li></ol>"
+          }
+        },
+        "h_documentation": {
+          "type": "heading",
+          "settings": {
+            "text": "Documentation Required for Reimbursement"
+          }
+        },
+        "documentation": {
+          "type": "text",
+          "settings": {
+            "content": "<p>When a claim for Reimbursement is submitted, the following will be required:</p><ol><li>Documentation of at least one (1) physical examination by a Licensed Veterinarian each year (defined as a twelve (12) month period prior to the date of incidence of colic) and compliance with all of Licensed Veterinarian's recommendations (both as a result of any physical examinations or other recommendations of the Licensed Veterinarian),</li><li>Documentation of at least one (1) dental examination by a Licensed Veterinarian each year (defined as a twelve (12) month period prior to the date of incidence of colic) and administration of dental treatment(s) as recommended by such examination,</li><li>Documentation of annual (defined as a twelve (12) month period prior to the date of incidence of colic) \"core\" vaccinations administered by a Licensed Veterinarian — as recommended by the American Association of Equine Practitioners: (e.g. tetanus, EEE/WEE, WNV and rabies), as well as any additional vaccinations as recommended by the Licensed Veterinarian,</li><li>Documentation and affidavit of participation in a Veterinarian-directed deworming program by the Licensed Veterinarian, considered as the primary veterinarian, that includes at least two (2) deworming administrations each year (one including praziquantel and other to include moxidectin or 5 day double dose fenbendazole) and at least one (1) fecal egg count test each year (defined as a twelve (12) month period prior to the date of incidence of colic). Although deworming requirements do not have to be met for enrollment, all claims will be subject to these minimum deworming requirements. Should these deworming requirements conflict with any veterinary recommendations, the program minimums for deworming are still a condition for claim approval. Administration of dewormer does not have to be completed by the Licensed Veterinarian and may be completed by the owner or agent. However, proof of purchase of dewormer administered by anyone other than the Licensed Veterinarian will be required,</li><li>Proof of purchase for all products required by the Colic Assurance Program™ for the Qualifying Horse as well as any additional Qualifying Horses owned and enrolled by the same owner or agent; the said purchase records can be either individual receipts of purchase, veterinary clinic purchase records, Arenus provided purchase records or purchase records from any approved qualifying retailer of Qualifying Products,</li><li>Medical records for the colic incident and from each veterinarian treating for such colic whether medical treatment or surgery, for which reimbursement is being sought as well as proof of payment to the veterinarian(s) for all services rendered for treatment of the colic incident,</li><li>A general release to obtain medical records from all treating veterinarians throughout the Qualifying Horse's life,</li><li>A complete veterinary health history for the twelve (12) months period preceding enrollment in the Colic Assurance Program, via a veterinary health affidavit that has either been placed on file during the enrollment period or is sought by the owner and prepared specifically for reimbursement purposes.</li></ol>"
           }
         },
         "h_termination": {
           "type": "heading",
-          "settings": { "text": "Program Termination" }
+          "settings": {
+            "text": "Termination"
+          }
         },
         "termination": {
           "type": "text",
           "settings": {
-            "content": "<p>Assurance Health Program, LLC may cancel with 90 days' notice. Owners may discontinue anytime via the Discontinuation Form. False or fraudulent claims result in disqualification.</p>"
+            "content": "<p>Assurance Health Program, LLC may cancel the Colic Assurance Program™ upon ninety (90) days notification to owners of Qualifying Horses; at the end of such period all benefits under the Colic Assurance Program™ will terminate. Any notification to you under this Agreement may be by any reasonable method chosen by Assurance Health Program, LLC. Owner or agent reserves the right to un-enroll a Qualified Horse at any time by completing a Discontinuation Form and submitting to Assurance Health Program, LLC through the Program Administrator.</p><p>Assurance Health Program, LLC reserves the right to investigate any claim and reserves the right at its sole discretion to reject any claim and disqualify any horse, horse owner or veterinarian from the Colic Assurance Program™. Any false or fraudulent claim made by the horse owner is grounds for disqualification of benefits and removal from the Colic Assurance Program™. Any false or fraudulent claim made by a veterinarian is grounds for disqualification from the Colic Assurance Program™ and may be reported to the applicable state Veterinary Medical Board (or other applicable veterinary regulatory board) for having submitted a false or fraudulent claim.</p>"
           }
         },
-        "h_disclaimers": {
+        "h_misc": {
           "type": "heading",
-          "settings": { "text": "Important Disclaimers" }
+          "settings": {
+            "text": "Miscellaneous"
+          }
         },
-        "disclaimers": {
+        "misc": {
           "type": "text",
           "settings": {
-            "content": "<p><em>Compliance with the terms of this Agreement does not constitute a guarantee that a Qualifying Horse will not experience colic.</em></p><p>The program is <strong>not intended to be a substitute for insurance</strong> and maximum liability is limited to applicable reimbursement amounts.</p>"
+            "content": "<p>This Agreement, including the accompanying Colic Assurance Program™ Enrollment Form, constitutes the entire agreement between the parties with respect to the Colic Assurance Program™. This Agreement is solely between you and Assurance Health Program, LLC. You agree that Arenus and Revival Animal Health are certified agents working for Assurance Health Program, LLC and will have no obligation to you arising out of or related to this Agreement or the Colic Assurance Program™.</p><p>As between Assurance Health Program, LLC and Arenus, all claims, losses, liabilities, damages, costs or expenses arising out of or related to this Agreement or the Colic Assurance Program™ will be the sole responsibility of Assurance Health Program, LLC. You acknowledge that Arenus and Revival Animal Health is a third-party beneficiary of this Agreement and will have the right to enforce its terms. This Agreement is not assignable or transferable by you, in whole or in part, without Assurance Health Program, LLC prior written consent. Assurance Health Program, LLC may assign its rights or obligations under this Agreement upon notice to you.</p><p>Assurance Health Program, LLC reserves the right to change the terms of this Agreement or the Colic Assurance Program™ upon notice to you and shall be evidenced by a new effective date. Assurance Health Program, LLC may require you to provide consent to the updated Agreement. If you disagree with the changes, your sole remedy shall be to discontinue participation in the Colic Assurance Program™. Otherwise, your continued participation in the Colic Assurance Program™ constitutes your acceptance of the changes. If any provision of this Agreement shall be found unenforceable or contrary to law, the remaining provisions of this Agreement shall remain in full force and effect. This Agreement shall be governed by the laws of the State of Delaware.</p>"
+          }
+        },
+        "h_disclaimer": {
+          "type": "heading",
+          "settings": {
+            "text": "Disclaimer of Warranties / Limitation of Liability"
+          }
+        },
+        "disclaimer": {
+          "type": "text",
+          "settings": {
+            "content": "<p>Assurance Health Program, LLC. <strong>DISCLAIMS ALL WARRANTIES AND CONDITIONS, EXPRESS OR IMPLIED, AND EXPRESSLY DISCLAIMS ANY IMPLIED WARRANTIES, INCLUDING THE WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</strong> Compliance with the terms of this Agreement does not constitute a guarantee that a Qualifying Horse will not experience colic.</p><p>Assurance Health Program, LLC <strong>MAXIMUM LIABILITY FOR ANY CAUSE OF ACTION ARISING UNDER CORRELATED TO THIS AGREEMENT SHALL NOT EXCEED THE AMOUNT OF THE APPLICABLE REIMBURSEMENT.</strong> Assurance Health Program, LLC assumes no responsibility or liability for any services or products not under Assurance Health Program, LLC control. The Colic Assurance Program™ is not intended to be a substitute for insurance coverage and the Colic Assurance Program™ is not an insurance policy.</p>"
           }
         }
       },
-      "block_order": ["h_overview", "overview", "h_eligibility", "eligibility", "h_products", "products", "h_coverage", "coverage", "h_docs", "docs", "h_reporting", "reporting", "h_submission", "submission", "h_termination", "termination", "h_disclaimers", "disclaimers"],
+      "block_order": [
+        "h_agreement",
+        "agreement",
+        "h_terms",
+        "terms",
+        "h_requirements",
+        "requirements",
+        "h_eligibility",
+        "eligibility",
+        "h_purchase",
+        "purchase",
+        "h_other_eligibility",
+        "other_eligibility",
+        "h_reimbursement",
+        "reimbursement",
+        "h_documentation",
+        "documentation",
+        "h_termination",
+        "termination",
+        "h_misc",
+        "misc",
+        "h_disclaimer",
+        "disclaimer"
+      ],
       "settings": {
         "heading": "",
         "max_width": 900,
@@ -125,5 +199,8 @@
       }
     }
   },
-  "order": ["banner", "content"]
+  "order": [
+    "banner",
+    "content"
+  ]
 }

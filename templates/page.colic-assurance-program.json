@@ -20,8 +20,8 @@
         "media_opacity": 30,
         "heading_size_mobile": 32,
         "heading_size_desktop": 56,
-        "min_height_mobile": 540,
-        "min_height_desktop": 640,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
         "content_max_width_desktop": 860,
         "background_color": "#191919",
         "text_color": "#ffffff",
@@ -39,7 +39,7 @@
         "tab_enroll": { "type": "tab", "settings": { "label": "Enroll Now", "icon": "enroll", "link": "shopify://pages/colic-assurance-program-form" } },
         "tab_wellness": { "type": "tab", "settings": { "label": "Wellness Programs", "icon": "wellness", "link": "shopify://pages/cap-wellness-programs" } },
         "tab_claim": { "type": "tab", "settings": { "label": "File a Claim", "icon": "claim", "link": "shopify://pages/cap-file-a-claim" } },
-        "tab_report": { "type": "tab", "settings": { "label": "Report", "icon": "report", "link": "shopify://pages/cap-report" } },
+        "tab_report": { "type": "tab", "settings": { "label": "Report Episode", "icon": "report", "link": "shopify://pages/cap-report" } },
         "tab_terms": { "type": "tab", "settings": { "label": "Terms & Conditions", "icon": "terms", "link": "shopify://pages/cap-terms-and-conditions" } }
       },
       "block_order": [

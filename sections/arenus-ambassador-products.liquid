@@ -33,7 +33,13 @@
   "
 >
   <div class="arenus-products__header">
-    <h2 class="arenus-products__heading">{{ ambassador.name }}'s Favorite Products</h2>
+    {%- if amb_collection.url != blank -%}
+      <h2 class="arenus-products__heading">
+        <a class="arenus-products__heading-link" href="{{ amb_collection.url }}">{{ ambassador.name }}'s Favorite Products</a>
+      </h2>
+    {%- else -%}
+      <h2 class="arenus-products__heading">{{ ambassador.name }}'s Favorite Products</h2>
+    {%- endif -%}
 
     {%- if amb_collection.products.size > 1 -%}
       <div class="arenus-products__nav">
@@ -254,6 +260,16 @@
     line-height: 1.1;
     letter-spacing: -0.64px;
     margin: 0;
+  }
+
+  .arenus-products__heading-link {
+    color: inherit;
+    /* text-decoration: none; */
+    transition: color 0.2s ease;
+  }
+
+  .arenus-products__heading-link:hover {
+    /* color: #e6b236; */
   }
 
   .arenus-products__nav {

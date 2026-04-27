@@ -18,8 +18,10 @@
     <h1 class="arenus-cap-content__heading">{{ section.settings.heading }}</h1>
   {%- endif -%}
 
+  {%- assign image_layout = section.settings.image_layout | default: 'stacked' -%}
+
   {%- if section.blocks.size > 0 -%}
-    <div class="arenus-cap-content__body">
+    <div class="arenus-cap-content__body arenus-cap-content__body--{{ image_layout }}">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'heading' -%}
@@ -30,7 +32,16 @@
             </div>
           {%- when 'image' -%}
             {%- if block.settings.image != blank -%}
-              <div class="arenus-cap-content__image-wrap" {{ block.shopify_attributes }}>
+              <button
+                type="button"
+                class="arenus-cap-content__image-wrap arenus-cap-content__image-wrap--clickable"
+                data-cap-img-trigger
+                data-cap-img-full="{{ block.settings.image | image_url: width: 2400 }}"
+                data-cap-img-alt="{{ block.settings.alt | default: block.settings.caption | escape }}"
+                data-cap-img-caption="{{ block.settings.caption | escape }}"
+                aria-label="View image{% if block.settings.caption != blank %} — {{ block.settings.caption | escape }}{% endif %}"
+                {{ block.shopify_attributes }}
+              >
                 {{
                   block.settings.image
                   | image_url: width: 1800
@@ -44,7 +55,7 @@
                 {%- if block.settings.caption != blank -%}
                   <p class="arenus-cap-content__caption">{{ block.settings.caption }}</p>
                 {%- endif -%}
-              </div>
+              </button>
             {%- endif -%}
           {%- when 'button' -%}
             {%- if block.settings.label != blank and block.settings.link != blank -%}
@@ -55,6 +66,17 @@
         {%- endcase -%}
       {%- endfor -%}
     </div>
+
+    {%- comment -%} ───── Single-image lightbox (populated dynamically by JS) ───── {%- endcomment -%}
+    <dialog class="arenus-cap-lightbox" data-cap-lightbox aria-label="Image preview">
+      <button type="button" class="arenus-cap-lightbox__close" data-cap-lb-close aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="arenus-cap-lightbox__stage">
+        <img class="arenus-cap-lightbox__img" data-cap-lb-img alt="" />
+        <p class="arenus-cap-lightbox__caption" data-cap-lb-caption hidden></p>
+      </div>
+    </dialog>
   {%- endif -%}
 </section>
 
@@ -84,6 +106,22 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+  }
+
+  /* ── 3-column image layout ──
+     Images flow into rows of 3 on desktop while headings, text, and buttons
+     span the full width. On mobile, everything stacks. */
+  .arenus-cap-content__body--3-column {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .arenus-cap-content__body--3-column > .arenus-cap-content__h2,
+  .arenus-cap-content__body--3-column > .arenus-cap-content__richtext,
+  .arenus-cap-content__body--3-column > .arenus-cap-content__button-wrap {
+    grid-column: 1 / -1;
   }
 
   .arenus-cap-content__h2 {
@@ -138,6 +176,20 @@
     margin: 8px 0;
   }
 
+  /* Reset button-default styles when image-wrap is rendered as a <button> */
+  .arenus-cap-content__image-wrap--clickable {
+    all: unset;
+    display: block;
+    cursor: zoom-in;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .arenus-cap-content__image-wrap--clickable:focus-visible {
+    outline: 2px solid #e6b236;
+    outline-offset: 4px;
+  }
+
   .arenus-cap-content__image {
     display: block;
     width: 100%;
@@ -180,6 +232,82 @@
     background: #d9a42a;
   }
 
+  /* ═══════════ Lightbox ═══════════ */
+  .arenus-cap-lightbox {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .arenus-cap-lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.65);
+  }
+
+  .arenus-cap-lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arenus-cap-lightbox__close {
+    all: unset;
+    box-sizing: border-box;
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    transition: background 0.2s ease;
+  }
+
+  .arenus-cap-lightbox__close:hover {
+    background: rgba(0, 0, 0, 0.75);
+  }
+
+  .arenus-cap-lightbox__stage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 16px;
+    box-sizing: border-box;
+  }
+
+  .arenus-cap-lightbox__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    background: transparent;
+  }
+
+  .arenus-cap-lightbox__caption {
+    margin: 0;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
+  }
+
   @media screen and (min-width: 750px) {
     .arenus-cap-content {
       padding-inline: 40px;
@@ -200,8 +328,98 @@
       font-size: 18px;
       letter-spacing: -0.18px;
     }
+
+    .arenus-cap-content__body--3-column {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Image blocks in 3-column mode keep their natural 1-col width and flow into rows of 3 */
+    .arenus-cap-content__body--3-column > .arenus-cap-content__image-wrap {
+      margin: 0;
+    }
+
+    .arenus-cap-lightbox__close {
+      width: 48px;
+      height: 48px;
+    }
+
+    .arenus-cap-lightbox__stage {
+      padding: 80px;
+    }
   }
 {% endstylesheet %}
+
+<script>
+  (function() {
+    var section = document.getElementById('ArenusCapContent-{{ section.id }}');
+    if (!section) return;
+    var lightbox = section.querySelector('[data-cap-lightbox]');
+    if (!lightbox) return;
+
+    var imgEl = lightbox.querySelector('[data-cap-lb-img]');
+    var captionEl = lightbox.querySelector('[data-cap-lb-caption]');
+    var triggers = section.querySelectorAll('[data-cap-img-trigger]');
+
+    function open(src, alt, caption) {
+      if (imgEl) {
+        imgEl.src = src || '';
+        imgEl.alt = alt || '';
+      }
+      if (captionEl) {
+        if (caption) {
+          captionEl.textContent = caption;
+          captionEl.hidden = false;
+        } else {
+          captionEl.textContent = '';
+          captionEl.hidden = true;
+        }
+      }
+      if (typeof lightbox.showModal === 'function') {
+        lightbox.showModal();
+      } else {
+        lightbox.setAttribute('open', '');
+      }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      if (typeof lightbox.close === 'function') {
+        lightbox.close();
+      } else {
+        lightbox.removeAttribute('open');
+      }
+      document.body.style.overflow = '';
+      /* Clear src so the large image isn't held in memory */
+      if (imgEl) imgEl.removeAttribute('src');
+    }
+
+    triggers.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        open(
+          btn.getAttribute('data-cap-img-full'),
+          btn.getAttribute('data-cap-img-alt'),
+          btn.getAttribute('data-cap-img-caption')
+        );
+      });
+    });
+
+    var closeBtn = lightbox.querySelector('[data-cap-lb-close]');
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    /* Close on any click outside the image and the close button */
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === imgEl) return;
+      if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) return;
+      close();
+    });
+
+    /* Escape / native cancel */
+    lightbox.addEventListener('cancel', function(e) {
+      e.preventDefault();
+      close();
+    });
+  })();
+</script>
 
 {% schema %}
 {
@@ -247,6 +465,17 @@
       "step": 4,
       "unit": "px",
       "default": 56
+    },
+    {
+      "type": "select",
+      "id": "image_layout",
+      "label": "Image layout",
+      "options": [
+        { "value": "stacked", "label": "Stacked (full width)" },
+        { "value": "3-column", "label": "3-column grid (images in rows of 3)" }
+      ],
+      "default": "stacked",
+      "info": "When 3-column is selected, consecutive image blocks lay out in rows of 3 on desktop. Headings, text, and buttons still span full width."
     }
   ],
   "blocks": [

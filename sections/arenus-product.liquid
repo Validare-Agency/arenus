@@ -3,7 +3,6 @@
   assign short_desc = product.metafields.custom.short_description
   assign ingredients_meta = product.metafields.custom.ingredients
   assign how_to_use_meta = product.metafields.custom.how_to_use
-  assign first_collection = product.collections | first
 -%}
 
 {%- comment -%} ── Breadcrumbs ── {%- endcomment -%}
@@ -11,21 +10,14 @@
   <nav class="arenus-product-breadcrumbs" aria-label="Breadcrumb">
     <div class="arenus-product-breadcrumbs__inner">
       {%- comment -%} Mobile: back link {%- endcomment -%}
-      <a
-        class="arenus-product-breadcrumbs__back"
-        href="{{ first_collection.url | default: collections.all.url }}"
-      >
+      <a class="arenus-product-breadcrumbs__back" href="{{ collections.all.url }}">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        {{ first_collection.title | default: 'Shop All' }}
+        Shop All
       </a>
 
       {%- comment -%} Desktop: full trail {%- endcomment -%}
       <ol class="arenus-product-breadcrumbs__trail">
         <li><a href="/">Home</a></li>
-        <li>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <a href="{{ first_collection.url | default: collections.all.url }}">{{ first_collection.title | default: 'Shop All' }}</a>
-        </li>
         <li>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span aria-current="page">{{ product.title }}</span>

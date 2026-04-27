@@ -68,7 +68,7 @@
         "enable_sticky_header": "always",
         "color_scheme_top": "scheme-1",
         "color_scheme_transparent": "scheme-6",
-        "transparent_pages": "index, collection, ambassadors, about-us, contact, employees, research, colic-assurance-program, colic-form, 404",
+        "transparent_pages": "index, collection, ambassadors, about-us, contact, employees, research, colic-assurance-program, colic-form, 404, cap-overview, cap-faq, cap-wellness-programs, cap-file-a-claim, cap-terms-and-conditions, cap-report, cap-claim-initiation-form, cap-colic-reimbursement-claim-form, cap-primary-care-veterinarian-form, cap-attending-veterinarian-form",
         "transparent_color_scheme": "default"
       }
     }

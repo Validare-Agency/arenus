@@ -21,7 +21,7 @@
         "heading_size_mobile": 28,
         "heading_size_desktop": 48,
         "min_height_mobile": 360,
-        "min_height_desktop": 400,
+        "min_height_desktop": 420,
         "content_max_width_desktop": 860,
         "background_color": "#191919",
         "text_color": "#ffffff",

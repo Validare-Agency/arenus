@@ -4,15 +4,15 @@
       "type": "arenus-colic-banner",
       "settings": {
         "heading": "File a Claim",
-        "description": "<p>Follow these four steps to file a reimbursement claim. All forms must be submitted within 30 days of treatment completion.</p>",
+        "description": "<p>Follow these four steps to file a reimbursement claim. All forms can be completed online.</p>",
         "button_label": "",
         "button_link": "",
         "image": "shopify://shop_images/colic_assurance_program_banner.png",
         "media_opacity": 30,
         "heading_size_mobile": 32,
         "heading_size_desktop": 56,
-        "min_height_mobile": 400,
-        "min_height_desktop": 480,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
         "content_max_width_desktop": 860,
         "background_color": "#191919",
         "text_color": "#ffffff",
@@ -25,10 +25,10 @@
     "steps": {
       "type": "arenus-cap-tabs",
       "blocks": {
-        "step_1": { "type": "tab", "settings": { "label": "Step 1 — Claim Initiation Form", "icon": "enroll", "link": "shopify://pages/cap-claim-initiation-form" } },
-        "step_2": { "type": "tab", "settings": { "label": "Step 2 — Colic Reimbursement Claim Form", "icon": "claim", "link": "shopify://pages/cap-colic-reimbursement-claim-form" } },
-        "step_3": { "type": "tab", "settings": { "label": "Step 3 — Primary Care Veterinarian Form", "icon": "wellness", "link": "shopify://pages/cap-primary-care-veterinarian-form" } },
-        "step_4": { "type": "tab", "settings": { "label": "Step 4 — Attending Veterinarian Form", "icon": "wellness", "link": "shopify://pages/cap-attending-veterinarian-form" } }
+        "step_1": { "type": "tab", "settings": { "label": "Claim Initiation Form", "icon": "number-1", "link": "shopify://pages/cap-claim-initiation-form" } },
+        "step_2": { "type": "tab", "settings": { "label": "Colic Reimbursement Claim Form", "icon": "number-2", "link": "shopify://pages/cap-colic-reimbursement-claim-form" } },
+        "step_3": { "type": "tab", "settings": { "label": "Primary Care Veterinarian Form", "icon": "number-3", "link": "shopify://pages/cap-primary-care-veterinarian-form" } },
+        "step_4": { "type": "tab", "settings": { "label": "Attending Veterinarian Form", "icon": "number-4", "link": "shopify://pages/cap-attending-veterinarian-form" } }
       },
       "block_order": ["step_1", "step_2", "step_3", "step_4"],
       "settings": {
@@ -43,7 +43,7 @@
         "intro": {
           "type": "text",
           "settings": {
-            "content": "<p><strong>Within 14 days</strong> of a colic episode, complete the Claim Initiation Form. Primary care veterinarian completes their form; attending veterinarian(s) complete their forms. All forms and materials due <strong>within 30 days</strong> of treatment completion for reimbursement eligibility.</p><p>Reimbursement decisions are made within 5 business days and payments processed within 10 business days of approval.</p>"
+            "content": "<p><em>All forms can be completed online.</em></p><p><strong>What we need from you within 14 days of the colic episode:</strong></p><ul><li>Complete the <a href=\"/pages/cap-claim-initiation-form\">Claim Initiation Form</a></li></ul><p><strong>What we need from you within 30 days of the end of treatment of the colic episode:</strong></p><ul><li>Complete the <a href=\"/pages/cap-colic-reimbursement-claim-form\">Colic Reimbursement Claim Form</a></li><li>Have your primary care veterinarian complete the <a href=\"/pages/cap-primary-care-veterinarian-form\">Primary Care Veterinarian Form</a></li><li>Have the attending veterinarian complete the <a href=\"/pages/cap-attending-veterinarian-form\">Attending Veterinarian Form</a></li></ul><p><strong>What happens next:</strong></p><ul><li>Completed claims are reviewed and you'll be notified of the reimbursement decision within 5 business days.</li><li>Reimbursement payments are issued within 10 business days of the reimbursement decision. All veterinary bills associated with the colic incident must be paid in full prior to reimbursement allocation.</li></ul>"
           }
         }
       },

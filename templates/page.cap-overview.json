@@ -4,15 +4,15 @@
       "type": "arenus-colic-banner",
       "settings": {
         "heading": "Overview",
-        "description": "<p>Simple enrollment. Instant peace of mind.</p>",
+        "description": "<p>Simple enrollment. Peace of mind for you and your horse.</p>",
         "button_label": "ENROLL NOW",
         "button_link": "shopify://pages/colic-assurance-program-form",
         "image": "shopify://shop_images/colic_assurance_program_banner.png",
         "media_opacity": 30,
         "heading_size_mobile": 32,
         "heading_size_desktop": 56,
-        "min_height_mobile": 400,
-        "min_height_desktop": 480,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
         "content_max_width_desktop": 860,
         "background_color": "#191919",
         "text_color": "#ffffff",
@@ -28,47 +28,67 @@
         "intro": {
           "type": "text",
           "settings": {
-            "content": "<p>The Colic Assurance Program offers customized wellness protocols and financial reimbursement for surgical and non-surgical colic-related expenses, providing peace of mind for horse owners. Qualified horses are eligible for up to $15,000 in lifetime reimbursement benefits.</p><p>The Assure System is a comprehensive digestive health solution offering unmatched, total digestive system support — designed by a team of veterinarians, nutritionists, and animal health specialists.</p>"
+            "content": "<p>When it comes to digestive health support, nothing compares to the Arenus Assure System.</p><p>That's why we're proud to offer our unmatched Colic Assurance Program. The solution for your horse's digestive health and your peace of mind is only a few simple steps away.</p>"
+          }
+        },
+        "h_why": {
+          "type": "heading",
+          "settings": { "text": "Why use the Assure System?" }
+        },
+        "why_text": {
+          "type": "text",
+          "settings": {
+            "content": "<p>The Assure System products are trusted by veterinarians and equestrians across the country to solve the most challenging cases and provide unmatched, total digestive system support. The highly researched and patented formulas are proven to relieve recurrent colic, loose stool and ulcers as well as help maintain body condition throughout aging and performance.</p><p>The Arenus team is made up of veterinarians, nutritionists and animal health specialists. Our products are the result of our combined years of research and experience with equine athletes. The unique combination of pre and probiotics, digestive enzymes, yeast and psyllium in the Assure System products combine to offer the most powerful digestive aids available. We trust our products for our own horses because they work.</p>"
           }
         },
         "h_promise": {
           "type": "heading",
           "settings": { "text": "The CAP Promise" }
         },
-        "promise": {
+        "promise_text": {
           "type": "text",
           "settings": {
-            "content": "<ul><li>Covers both surgical and non-surgical colic (unlike competitors)</li><li>No age restrictions; accepts horses with colic histories</li><li>Coverage: up to $15,000 in lifetime reimbursement benefits</li><li>Eligibility begins at weaning with no upper age limit</li></ul>"
+            "content": "<p>The Colic Assurance Program is our promise to you that we are always striving to keep your horse happy, healthy and feeling its best. When you enroll with CAP you're quickly assigned a custom Wellness Program based on your horse's specific needs. Once you're approved you can start your horse on their Wellness Program loading dose for CAP eligibility.</p><p>Assure System products are so effective in preventing colic and digestive upset that we cover more than other colic programs. Most companies offer a colic reimbursement program that only assists with surgical colics.</p><p>But the majority of horses treated for colic don't end up going into surgery. This means if your horse colics on a different program then you'll only receive reimbursement for surgical colic — a rare case! You might think you're covered with other programs, but you could be stuck with the bill if your horse colics. We're confident in the ability of our products to prevent colic so our reimbursement program covers both surgical and non-surgical (medical) colic.</p><p>Other programs also place restrictions on the horses that can be enrolled. Older horses and horses with colic histories are instantly disqualified for coverage. Our program does not exclude these horses.</p><p>Why? Because these are some of the horses that need the help of an effective digestive aid the most. We're confident we can get these horses on the right track to feeling better with the correct Assure System products.</p><p>You can trust that the custom Wellness Program assigned to your horse has been scientifically developed, veterinarian approved and clinically tested. We have the best digestive health aids available and the most comprehensive colic program to back it up.</p>"
           }
         },
-        "h_features": {
+        "h_benefits": {
           "type": "heading",
-          "settings": { "text": "Program Features" }
+          "settings": { "text": "Benefits" }
         },
-        "features": {
+        "benefits": {
           "type": "text",
           "settings": {
-            "content": "<ul><li>Custom wellness programs</li><li>International travel coverage</li><li>Leased horse eligibility</li><li>No additional cost for eligible enrolled horses</li></ul>"
+            "content": "<ul><li>Qualified horses are eligible for up to $15,000 in lifetime reimbursement benefits</li><li>Custom Wellness Program selected for your horse by our team of professionals based on colic history, size, weight and other factors</li><li>Medical (non-surgical) and surgical colic episodes are eligible for reimbursement</li><li>Coverage for horses ineligible for other colic programs due to a prior history of colic or colic surgery</li><li>Qualified horses remain covered during international travel</li><li>Horses are eligible for reimbursement benefits as soon as they're weaned and there is no upper age limit for eligibility</li><li>No limit to the number of horses an owner or agent can enroll</li><li>Leased horses are eligible for enrollment</li><li>There is no additional cost for this coverage for eligible, enrolled horses on a qualified Wellness Program</li></ul>"
           }
         },
         "h_enroll": {
           "type": "heading",
-          "settings": { "text": "Enrollment Process" }
+          "settings": { "text": "How to Enroll" }
         },
         "enroll": {
           "type": "text",
           "settings": {
-            "content": "<ol><li>Complete online enrollment form</li><li>Receive confirmation email</li><li>Get qualification notice within 5 business days</li><li>Purchase initial products within 5 days of qualification</li><li>Begin loading dose protocol</li></ol>"
+            "content": "<p>Follow these simple steps to enroll your horse in the Colic Assurance Program. There is no additional cost for this coverage for eligible horses.</p><ol><li>Complete the <a href=\"/pages/colic-assurance-program-form\">Enrollment Form</a> online.</li><li>You'll be sent a confirmation email that your enrollment form has been submitted.</li><li>Next you'll receive an official qualification notice and full <a href=\"/pages/cap-wellness-programs\">Wellness Program</a> details within 5 business days of completing the <a href=\"/pages/colic-assurance-program-form\">Enrollment Form</a>.</li><li>Now you can purchase your horse's initial qualifying Assure System products from Arenus or your veterinarian. This must be done within 5 days of official qualification notice.</li><li>Start the loading dose assigned for your horse's <a href=\"/pages/cap-wellness-programs\">Wellness Program</a>. Your horse is now enrolled in the CAP.</li></ol>"
           }
         },
-        "h_claims": {
+        "h_claim": {
           "type": "heading",
-          "settings": { "text": "Claims Process" }
+          "settings": { "text": "How to File a Claim" }
         },
-        "claims": {
+        "claim_intro": {
           "type": "text",
           "settings": {
-            "content": "<ul><li><strong>Within 14 days:</strong> file claim initiation</li><li><strong>Within 30 days:</strong> submit reimbursement forms from owner and veterinarians</li><li><strong>Review and payment:</strong> decisions within 5 business days; payments within 10 business days</li></ul>"
+            "content": "<p><em>All forms can be completed online.</em></p><p><strong>What we need from you within 14 days of the colic episode:</strong></p><ul><li>Complete the <a href=\"/pages/cap-claim-initiation-form\">Claim Initiation Form</a></li></ul><p><strong>What we need from you within 30 days of the end of treatment of the colic episode:</strong></p><ul><li>Complete the <a href=\"/pages/cap-colic-reimbursement-claim-form\">Colic Reimbursement Claim Form</a></li><li>Have your primary care veterinarian complete the <a href=\"/pages/cap-primary-care-veterinarian-form\">Primary Care Veterinarian Form</a></li><li>Have the attending veterinarian complete the <a href=\"/pages/cap-attending-veterinarian-form\">Attending Veterinarian Form</a></li></ul><p><strong>What happens next:</strong></p><ul><li>Completed claims are reviewed and you'll be notified of the reimbursement decision within 5 business days.</li><li>Reimbursement payments are issued within 10 business days of the reimbursement decision. All veterinary bills associated with the colic incident must be paid in full prior to reimbursement allocation.</li></ul>"
+          }
+        },
+        "h_wellness": {
+          "type": "heading",
+          "settings": { "text": "Wellness Programs" }
+        },
+        "wellness": {
+          "type": "text",
+          "settings": {
+            "content": "<ul><li>Upon completing your horse's enrollment form, you will receive a confirmation email and be assigned to one of two custom Wellness Programs based on your answers to the enrollment questions.</li><li>When you receive your official qualification email, you will be expected to purchase the product(s) associated with your horse's Wellness Program within 5 days.</li><li>Once your supplements have arrived, you will need to begin your horse's assigned Wellness Plan as directed in the <a href=\"/pages/cap-wellness-programs\">program charts</a>. You are expected to follow these dosing protocols throughout their enrollment in order to remain eligible for reimbursement benefits.</li></ul>"
           }
         },
         "btn": {
@@ -79,7 +99,7 @@
           }
         }
       },
-      "block_order": ["intro", "h_promise", "promise", "h_features", "features", "h_enroll", "enroll", "h_claims", "claims", "btn"],
+      "block_order": ["intro", "h_why", "why_text", "h_promise", "promise_text", "h_benefits", "benefits", "h_enroll", "enroll", "h_claim", "claim_intro", "h_wellness", "wellness", "btn"],
       "settings": {
         "heading": "",
         "max_width": 900,

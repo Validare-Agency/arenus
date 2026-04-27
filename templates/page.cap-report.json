@@ -12,7 +12,7 @@
     "banner": {
       "type": "arenus-colic-banner",
       "settings": {
-        "heading": "Report",
+        "heading": "Colic Episode Report",
         "description": "<p>Report a colic episode for your enrolled horse. All colic episodes must be reported within 14 calendar days, regardless of whether a claim is filed.</p>",
         "button_label": "",
         "button_link": "",
@@ -20,8 +20,8 @@
         "media_opacity": 30,
         "heading_size_mobile": 32,
         "heading_size_desktop": 56,
-        "min_height_mobile": 400,
-        "min_height_desktop": 480,
+        "min_height_mobile": 360,
+        "min_height_desktop": 420,
         "content_max_width_desktop": 860,
         "background_color": "#191919",
         "text_color": "#ffffff",

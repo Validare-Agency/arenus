@@ -11,7 +11,13 @@
 >
   <div class="arenus-products__header">
     {%- if section.settings.heading != blank -%}
-      <h2 class="arenus-products__heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.collection != blank -%}
+        <h2 class="arenus-products__heading">
+          <a class="arenus-products__heading-link" href="{{ section.settings.collection.url }}">{{ section.settings.heading }}</a>
+        </h2>
+      {%- else -%}
+        <h2 class="arenus-products__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
     {%- endif -%}
 
     {%- if section.settings.collection != blank and section.settings.collection.products.size > 1 -%}
@@ -233,6 +239,17 @@
     line-height: 1.1;
     letter-spacing: -0.64px;
     margin: 0;
+  }
+
+  .arenus-products__heading-link {
+    color: inherit;
+    /* text-decoration: none; */
+    transition: text-decoration 0.1s ease;
+  }
+
+  .arenus-products__heading-link:hover {
+    /* color: #e6b236; */
+    text-decoration: underline;
   }
 
   /* Navigation buttons — hidden on mobile */

@@ -36,6 +36,14 @@
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 14V10C4 9.44772 4.44772 9 5 9H9L18 5V19L9 15H5C4.44772 15 4 14.5523 4 14Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 5V19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 {%- when 'terms' -%}
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 4H17V20C17 20.5523 17.4477 21 18 21H7C5.89543 21 5 20.1046 5 19V4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M17 4H19C20.1046 4 21 4.89543 21 6V19C21 20.1046 20.1046 21 19 21H18C17.4477 21 17 20.5523 17 20V4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 9H13M9 13H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                {%- when 'number-1' -%}
+                  <span class="arenus-cap-tabs__num">1</span>
+                {%- when 'number-2' -%}
+                  <span class="arenus-cap-tabs__num">2</span>
+                {%- when 'number-3' -%}
+                  <span class="arenus-cap-tabs__num">3</span>
+                {%- when 'number-4' -%}
+                  <span class="arenus-cap-tabs__num">4</span>
                 {%- else -%}
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V12L14.5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               {%- endcase -%}
@@ -84,22 +92,22 @@
     padding: 0;
   }
 
-  .arenus-cap-tabs__tile {
-    aspect-ratio: 1;
+  .arenus-cap-tabs__tile { 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 16px;
-    border: 1px solid #eeeeef;
-    border-radius: 12px;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #191919;
+    border-radius: 6px;
     background: #ffffff;
     text-decoration: none;
     color: #191919;
     text-align: center;
     transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    height: 100%;
   }
 
   .arenus-cap-tabs__tile:hover {
@@ -112,16 +120,34 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #fff8e0;
     color: #191919;
     transition: background 0.2s ease;
   }
 
+  .arenus-cap-tabs__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .arenus-cap-tabs__num {
+    font-family: var(--font-heading--family);
+    font-style: var(--font-heading--style);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+    color: #191919;
+  }
+
   .arenus-cap-tabs__tile:hover .arenus-cap-tabs__icon {
     background: #e6b236;
+    color: #ffffff;
+  }
+
+  .arenus-cap-tabs__tile:hover .arenus-cap-tabs__num {
     color: #ffffff;
   }
 
@@ -152,18 +178,22 @@
     }
 
     .arenus-cap-tabs__tile {
-      padding: 24px;
-      gap: 16px;
+      padding: 16px;
+      gap: 10px;
     }
 
     .arenus-cap-tabs__icon {
-      width: 72px;
-      height: 72px;
+      width: 56px;
+      height: 56px;
     }
 
     .arenus-cap-tabs__icon svg {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .arenus-cap-tabs__num {
+      font-size: 30px;
     }
 
     .arenus-cap-tabs__label {
@@ -239,6 +269,10 @@
             { "value": "claim", "label": "Claim (clipboard)" },
             { "value": "report", "label": "Report (megaphone)" },
             { "value": "terms", "label": "Terms (scroll)" },
+            { "value": "number-1", "label": "Number 1" },
+            { "value": "number-2", "label": "Number 2" },
+            { "value": "number-3", "label": "Number 3" },
+            { "value": "number-4", "label": "Number 4" },
             { "value": "default", "label": "Default (info)" }
           ],
           "default": "overview"
